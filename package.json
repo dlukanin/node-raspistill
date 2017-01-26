@@ -1,0 +1,41 @@
+{
+  "name": "node-raspistill",
+  "version": "0.0.1",
+  "description": "Node wrapper for taking photos using raspberry pi raspistill app.",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "test": "mocha build/test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dlukanin/node-raspistill.git"
+  },
+  "keywords": [
+    "raspberry",
+    "camera",
+    "raspistill",
+    "typescript"
+  ],
+  "author": "dylukanin@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dlukanin/node-raspistill/issues"
+  },
+  "homepage": "https://github.com/dlukanin/node-raspistill#readme",
+  "devDependencies": {
+    "@types/chai": "^3.4.34",
+    "@types/mocha": "^2.2.38",
+    "@types/sinon": "^1.16.34",
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0",
+    "nock-exec": "^0.1.0",
+    "sinon": "^1.17.7",
+    "tslint": "^4.4.2",
+    "typescript": "^2.1.5"
+  },
+  "dependencies": {
+    "@types/node": "^7.0.4"
+  }
+}

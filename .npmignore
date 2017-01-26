@@ -1,0 +1,6 @@
+photos
+src
+build/test
+tsconfig.json
+.gitignore
+.idea

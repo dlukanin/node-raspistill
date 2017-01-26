@@ -1,0 +1,15 @@
+{
+    "version": "1.0.0",
+    "compilerOptions": {
+        "target": "es6",
+        "module": "commonjs",
+        "noImplicitAny": false,
+        "removeComments": true,
+        "noLib": false,
+        "declaration": true,
+        "rootDir": "./src",
+        "declarationDir": "./build",
+        "outDir": "./build",
+        "suppressImplicitAnyIndexErrors": true
+    }
+}
