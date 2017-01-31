@@ -1,8 +1,8 @@
-import {DefaultWatcher} from '../src/watcher/default';
-import defaultOptions from '../src/watcher/options/default';
+import {DefaultWatcher} from '../lib/watcher/default';
+import defaultOptions from '../lib/watcher/options/default';
 import * as fs from 'fs-extra';
 import {expect} from 'chai';
-import {IWatcherOptions} from "../src/watcher/interfaces";
+import {IWatcherOptions} from "../lib/watcher/interfaces";
 
 const PHOTOS_DIR = './photos/';
 
@@ -89,7 +89,7 @@ describe('watcher', function() {
                 if (err) {
                     done(err);
                 }
-            })
+            });
         });
     })
 });

@@ -2,7 +2,7 @@ import {expect} from 'chai';
 import * as fs from 'fs';
 import * as sinon from 'sinon';
 import * as child_process from 'child_process';
-import {DefaultCamera} from '../src/camera/default';
+import {DefaultCamera} from '../lib/camera/default';
 
 let sandbox = sinon.sandbox.create();
 
@@ -36,7 +36,16 @@ describe('camera', function() {
             });
     });
 
-    afterEach(function(){
+    afterEach(function() {
         sandbox.restore();
+    });
+
+    after(function(done) {
+        fs.unlink(PHOTOS_DIR + FILE_NAME, function(err) {
+            if (err) {
+                done(err);
+            }
+            done();
+        });
     });
 });
