@@ -6,10 +6,10 @@ export abstract class AbstractWatcher {
 
     private options: IWatcherOptions;
 
-    constructor(options?: IWatcherOptions) {
+    constructor(options: IWatcherOptions = {}) {
         this.options = {};
-        Object.keys(options).forEach((key: string) => {
-            this.options[key] = options[key];
+        Object.keys(AbstractWatcher.DEFAULT_OPTIONS).forEach((key: string) => {
+            this.options[key] = options.hasOwnProperty(key) ? options[key] : AbstractWatcher.DEFAULT_OPTIONS[key];
         });
         this.setOptions(options);
     }
