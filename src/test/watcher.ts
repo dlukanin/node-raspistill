@@ -32,7 +32,7 @@ describe('watcher', function(): void {
     });
 
     it('should init/set options', function(done: Function): void {
-        const options: IWatcherOptions = {expireTime: 2000, recursive: true};
+        const options: IWatcherOptions = {expireTime: 2000};
 
         const testWatcher = new DefaultWatcher(options);
 

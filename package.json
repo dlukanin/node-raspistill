@@ -7,7 +7,7 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "test": "mocha build/test",
-    "lint": "tslint './src/**/*.ts' --type-check --project tsconfig.json "
+    "lint": "tslint './src/**/*.ts' --type-check --project tsconfig.json"
   },
   "repository": {
     "type": "git",

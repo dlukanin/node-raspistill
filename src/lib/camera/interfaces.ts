@@ -13,9 +13,27 @@ export interface ICameraOptions {
     fileName?: string;
 }
 
+/**
+ * Interface for raspberry camera.
+ */
 export interface ICamera {
+    /**
+     * Executes command and returns taken photo.
+     * @param {ICameraOptions} options
+     */
     takePhoto(options?: ICameraOptions): Promise<Buffer>;
+    /**
+     * Sets new camera options.
+     * @param options
+     */
     setOptions(options: ICameraOptions): void;
+    /**
+     * Gets current camera options.
+     */
     getOptions(): ICameraOptions;
+    /**
+     * Returns current camera option by key.
+     * @param key
+     */
     getOption(key: string): any;
 }

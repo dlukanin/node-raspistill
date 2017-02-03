@@ -2,8 +2,16 @@ import {IWatcherOptions} from './interfaces';
 import defaultOptions from './options/default';
 
 export abstract class AbstractWatcher {
+    /**
+     * Default watcher options.
+     * @type {IWatcherOptions}
+     */
     public static readonly DEFAULT_OPTIONS: IWatcherOptions = defaultOptions;
 
+    /**
+     * Current watcher options.
+     * @type {IWatcherOptions}
+     */
     private options: IWatcherOptions;
 
     constructor(options: IWatcherOptions = {}) {

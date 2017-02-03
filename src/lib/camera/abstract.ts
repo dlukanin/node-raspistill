@@ -4,11 +4,23 @@ import {IWatcher} from '../watcher/interfaces';
 import defaultOptions from './options/default';
 
 export abstract class AbstractCamera implements ICamera {
+    /**
+     * Default camera options
+     * @type {ICameraOptions}
+     */
     public static readonly DEFAULT_OPTIONS: ICameraOptions = defaultOptions;
 
     public abstract takePhoto: (options?: ICameraOptions) => Promise<Buffer>;
 
+    /**
+     * Watcher object for current camera.
+     * @type {IWatcher}
+     */
     protected watcher: IWatcher;
+    /**
+     * Camera options.
+     * @type {ICameraOptions}
+     */
     protected options: ICameraOptions;
 
     constructor(options: ICameraOptions = {}, watcher: IWatcher = new DefaultWatcher()) {
