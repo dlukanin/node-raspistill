@@ -36,6 +36,8 @@
     "typescript": "^2.1.5"
   },
   "dependencies": {
-    "@types/node": "^7.0.4"
+    "@types/fs-extra": "0.0.37",
+    "@types/node": "^7.0.4",
+    "fs-extra": "^2.0.0"
   }
 }
