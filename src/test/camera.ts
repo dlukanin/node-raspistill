@@ -20,11 +20,12 @@ describe('camera', function() {
             try {
                 fs.mkdirSync(PHOTOS_DIR);
             } catch (error) {
-                done(error);
+                console.log(error);
             }
             fs.writeFileSync(PHOTOS_DIR + FILE_NAME, FILE_DATA);
             callback(null, 'success');
         });
+        done();
     });
 
     it('should take photo', function(done) {
