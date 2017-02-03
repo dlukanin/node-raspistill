@@ -1,8 +1,8 @@
-import {IWatcherOptions} from "./interfaces";
+import {IWatcherOptions} from './interfaces';
 import defaultOptions from './options/default';
 
 export abstract class AbstractWatcher {
-    static readonly DEFAULT_OPTIONS: IWatcherOptions = defaultOptions;
+    public static readonly DEFAULT_OPTIONS: IWatcherOptions = defaultOptions;
 
     private options: IWatcherOptions;
 

@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "test": "mocha build/test"
+    "test": "mocha build/test",
+    "lint": "tslint './src/**/*.ts' --type-check --project tsconfig.json "
   },
   "repository": {
     "type": "git",
@@ -27,13 +28,14 @@
   "devDependencies": {
     "@types/chai": "^3.4.34",
     "@types/mocha": "^2.2.38",
-    "@types/sinon": "^1.16.34",
     "@types/node": "^7.0.4",
+    "@types/sinon": "^1.16.34",
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
     "nock-exec": "^0.1.0",
     "sinon": "^1.17.7",
     "tslint": "^4.4.2",
+    "tslint-eslint-rules": "^3.2.3",
     "typescript": "^2.1.5"
   },
   "dependencies": {}

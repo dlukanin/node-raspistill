@@ -6,7 +6,7 @@ import {DefaultCamera} from '../lib/camera/default';
 
 let sandbox = sinon.sandbox.create();
 
-describe('camera', function() {
+describe('camera', function(): void {
     const PHOTOS_DIR = './photos/';
     const FILE_NAME = 'test.jpg';
     const FILE_DATA = '111';
@@ -15,14 +15,11 @@ describe('camera', function() {
 
     this.timeout(4000);
 
-    beforeEach(function(done: Function) {
-        sandbox.stub(child_process, 'execFile', function(arg, secondArg, callback) {
-            fs.mkdir(PHOTOS_DIR, function(err) {
-                if (err) {
-                    // NOTE directory can exists, so we don't try to fail-first here
-                    console.log(err);
-                }
-                fs.writeFile(PHOTOS_DIR + FILE_NAME, FILE_DATA, function(err) {
+    beforeEach(function(done: Function): void {
+        sandbox.stub(child_process, 'execFile', function(arg: any, secondArg: any, callback: Function): void {
+            fs.mkdir(PHOTOS_DIR, (err: any) => {
+                // NOTE directory can exists and it's ok, so we don't try to fail-first here
+                fs.writeFile(PHOTOS_DIR + FILE_NAME, FILE_DATA, (err) => {
                     if (err) {
                         callback(err);
                     } else {
@@ -34,9 +31,9 @@ describe('camera', function() {
         done();
     });
 
-    it('should take photo', function(done) {
+    it('should take photo', (done: Function) => {
         camera.takePhoto(FILE_NAME)
-            .then((data) => {
+            .then((data: any) => {
                 expect(data).to.be.instanceOf(Buffer);
                 done();
             })
@@ -45,12 +42,12 @@ describe('camera', function() {
             });
     });
 
-    afterEach(function() {
+    afterEach(function(): void {
         sandbox.restore();
     });
 
-    after(function(done) {
-        fs.unlink(PHOTOS_DIR + FILE_NAME, function(err) {
+    after(function(done: Function): void {
+        fs.unlink(PHOTOS_DIR + FILE_NAME, (err) => {
             if (err) {
                 done(err);
             }

@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import {AbstractWatcher} from "./abstract";
-import {IWatcher, IWatcherOptions} from "./interfaces";
+import {AbstractWatcher} from './abstract';
+import {IWatcher, IWatcherOptions} from './interfaces';
 
 const EVENT_RENAME = 'rename';
 const EVENT_CHANGE = 'change';
@@ -46,7 +46,7 @@ export class DefaultWatcher extends AbstractWatcher implements IWatcher {
                             }
 
                             resolve(data);
-                        })
+                        });
                     }
                 });
 

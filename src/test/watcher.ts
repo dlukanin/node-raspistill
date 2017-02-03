@@ -2,11 +2,11 @@ import {DefaultWatcher} from '../lib/watcher/default';
 import defaultOptions from '../lib/watcher/options/default';
 import * as fs from 'fs';
 import {expect} from 'chai';
-import {IWatcherOptions} from "../lib/watcher/interfaces";
+import {IWatcherOptions} from '../lib/watcher/interfaces';
 
 const PHOTOS_DIR = './photos/';
 
-describe('watcher', function() {
+describe('watcher', function(): void {
     const FILE_NAME = '1.txt';
     const FILE_DATA = 'test';
 
@@ -14,19 +14,24 @@ describe('watcher', function() {
 
     const watcher = new DefaultWatcher({expireTime: 2000});
 
-    it('should create dir if not exists', function(done) {
-        fs.rmdirSync(PHOTOS_DIR);
-        watcher.watch(PHOTOS_DIR + FILE_NAME);
-        fs.access(PHOTOS_DIR, function(err) {
+    it('should create dir if not exists', function(done: Function): void {
+        fs.rmdir(PHOTOS_DIR, (err: any) => {
             if (err) {
                 done(err);
             } else {
-                done();
+                watcher.watch(PHOTOS_DIR + FILE_NAME);
+                fs.access(PHOTOS_DIR, (err: any) => {
+                    if (err) {
+                        done(err);
+                    } else {
+                        done();
+                    }
+                });
             }
         });
     });
 
-    it('should init/set options', function(done) {
+    it('should init/set options', function(done: Function): void {
         const options: IWatcherOptions = {expireTime: 2000, recursive: true};
 
         const testWatcher = new DefaultWatcher(options);
@@ -39,7 +44,7 @@ describe('watcher', function() {
         done();
     });
 
-    it('should ignore non WatcherOptions attrs', function() {
+    it('should ignore non WatcherOptions attrs', function(): void {
         const opts = {foo: 1};
         const testWatcher = new DefaultWatcher(opts);
 
@@ -47,7 +52,7 @@ describe('watcher', function() {
 
     });
 
-    it('should return buffer object', function(done) {
+    it('should return buffer object', function(done: Function): void {
         watcher.watch(PHOTOS_DIR + FILE_NAME).then((file) => {
             expect(file).to.be.instanceof(Buffer);
             expect(file.toString()).to.eq('test');
@@ -56,14 +61,14 @@ describe('watcher', function() {
             .catch((err) => {
                 done(err);
             });
-        fs.writeFile(PHOTOS_DIR + FILE_NAME, FILE_DATA, function(err) {
+        fs.writeFile(PHOTOS_DIR + FILE_NAME, FILE_DATA, (err) => {
             if (err) {
                 done(err);
             }
         });
     });
 
-    it('should return error if no file exists after timeout', function(done) {
+    it('should return error if no file exists after timeout', function(done: Function): void {
         watcher.watch(PHOTOS_DIR + '2.txt').catch((error) => {
             expect(error).to.eql(new Error('No file found'));
             expect(error.message).to.eq('No file found');

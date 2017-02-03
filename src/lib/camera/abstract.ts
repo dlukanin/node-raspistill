@@ -1,15 +1,17 @@
 import {ICamera, ICameraOptions} from './interfaces';
-import {DefaultWatcher} from "../watcher/default";
-import {IWatcher} from "../watcher/interfaces";
+import {DefaultWatcher} from '../watcher/default';
+import {IWatcher} from '../watcher/interfaces';
 import defaultOptions from './options/default';
 
 export abstract class AbstractCamera implements ICamera {
-    static readonly DEFAULT_OPTIONS: ICameraOptions = defaultOptions;
+    public static readonly DEFAULT_OPTIONS: ICameraOptions = defaultOptions;
 
-    private options: ICameraOptions;
+    public abstract takePhoto: (options?: ICameraOptions) => Promise<Buffer>;
+
     protected watcher: IWatcher;
+    protected options: ICameraOptions;
 
-    constructor(options: ICameraOptions = {}, watcher = new DefaultWatcher()) {
+    constructor(options: ICameraOptions = {}, watcher: IWatcher = new DefaultWatcher()) {
         this.options = {};
         Object.keys(AbstractCamera.DEFAULT_OPTIONS).forEach((key: string) => {
             this.options[key] = options.hasOwnProperty(key) ? options[key] : AbstractCamera.DEFAULT_OPTIONS[key];
@@ -40,6 +42,4 @@ export abstract class AbstractCamera implements ICamera {
     public getOptions = (): ICameraOptions => {
         return this.options;
     }
-
-    public abstract takePhoto;
 }

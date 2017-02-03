@@ -1,5 +1,5 @@
 import {ICamera, ICameraOptions} from './interfaces';
-import {AbstractCamera} from "./abstract";
+import {AbstractCamera} from './abstract';
 import {execFile} from 'child_process';
 
 const CMD = 'raspistill';
@@ -12,7 +12,7 @@ export class DefaultCamera extends AbstractCamera implements ICamera {
                     if (error) {
                         reject(error);
                     }
-                    resolve(stdout)
+                    resolve(stdout);
                 });
             }),
             this.watcher.watch(this.getOption('outputDir') + fileName || this.getOption('fileName'))

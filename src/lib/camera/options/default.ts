@@ -3,4 +3,4 @@ export default {
     horizontalFlip: false,
     outputDir: 'photos',
     fileName: 'test.jpg'
-}
+};
