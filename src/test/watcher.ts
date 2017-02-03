@@ -75,11 +75,12 @@ describe('watcher', function() {
     });
 
     it('should return null on deleting files', function(done) {
+        this.timeout(5000);
         fs.writeFile(PHOTOS_DIR + FILE_NAME, FILE_DATA, function(err) {
             if (err) {
                 done(err);
             }
-
+            watcher.setOptions({expireTime: 4000});
             watcher.watch(PHOTOS_DIR + FILE_NAME).then((file) => {
                 expect(file).to.eq(null);
                 done();
