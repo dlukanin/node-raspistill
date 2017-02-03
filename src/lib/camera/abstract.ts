@@ -8,7 +8,10 @@ export abstract class AbstractCamera implements ICamera {
     protected watcher: IWatcher;
 
     constructor(options?: ICameraOptions, watcher = new DefaultWatcher()) {
-        this.options = Object.assign({}, defaultOptions);
+        this.options = {};
+        Object.keys(options).forEach((key: string) => {
+            this.options[key] = options[key];
+        });
         this.setOptions(options);
         this.watcher = watcher;
     }

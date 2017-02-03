@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
     "compilerOptions": {
-        "target": "es6",
+        "target": "es5",
         "module": "commonjs",
         "noImplicitAny": false,
         "removeComments": true,
@@ -10,6 +10,7 @@
         "rootDir": "./src",
         "declarationDir": "./build",
         "outDir": "./build",
-        "suppressImplicitAnyIndexErrors": true
+        "suppressImplicitAnyIndexErrors": true,
+        "lib": ["es5", "es2015.promise"]
     }
 }
