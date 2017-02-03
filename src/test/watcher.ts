@@ -91,5 +91,5 @@ describe('watcher', function() {
                 }
             });
         });
-    })
+    });
 });
