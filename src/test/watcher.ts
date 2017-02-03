@@ -10,7 +10,9 @@ describe('watcher', function() {
     const FILE_NAME = '1.txt';
     const FILE_DATA = 'test';
 
-    const watcher = new DefaultWatcher({expireTime: 1000});
+    this.timeout(8000);
+
+    const watcher = new DefaultWatcher({expireTime: 4000});
 
     it('should create dir if not exists', function(done) {
         fs.rmdirSync(PHOTOS_DIR);
@@ -24,12 +26,12 @@ describe('watcher', function() {
     });
 
     it('should init/set options', function(done) {
-        const options: IWatcherOptions = {expireTime: 1000, recursive: true};
+        const options: IWatcherOptions = {expireTime: 4000, recursive: true};
 
         const testWatcher = new DefaultWatcher(options);
 
         expect(testWatcher.getOptions()).to.eql(options);
-        options.expireTime = 1600;
+        options.expireTime = 4600;
         expect(testWatcher.getOptions()).not.to.eql(options);
         testWatcher.setOptions(options);
         expect(testWatcher.getOptions()).to.eql(options);

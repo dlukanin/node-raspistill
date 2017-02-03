@@ -13,6 +13,8 @@ describe('camera', function() {
 
     const camera = new DefaultCamera({outputDir: PHOTOS_DIR});
 
+    this.timeout(8000);
+
     beforeEach(function() {
         sandbox.stub(child_process, 'execFile', function(arg, secondArg, callback) {
             try {
