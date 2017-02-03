@@ -1,6 +1,6 @@
 import {DefaultWatcher} from '../lib/watcher/default';
 import defaultOptions from '../lib/watcher/options/default';
-import * as fs from 'fs-extra';
+import * as fs from 'fs';
 import {expect} from 'chai';
 import {IWatcherOptions} from "../lib/watcher/interfaces";
 
@@ -17,12 +17,13 @@ describe('watcher', function() {
     it('should create dir if not exists', function(done) {
         fs.rmdirSync(PHOTOS_DIR);
         watcher.watch(PHOTOS_DIR + FILE_NAME);
-        try {
-            fs.accessSync(PHOTOS_DIR, fs.constants.F_OK);
-            done();
-        } catch (error) {
-            done(error)
-        }
+        fs.access(PHOTOS_DIR, function(err) {
+            if (err) {
+                done(err);
+            } else {
+                done();
+            }
+        });
     });
 
     it('should init/set options', function(done) {

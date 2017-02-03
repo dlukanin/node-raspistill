@@ -28,6 +28,7 @@
     "@types/chai": "^3.4.34",
     "@types/mocha": "^2.2.38",
     "@types/sinon": "^1.16.34",
+    "@types/node": "^7.0.4",
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
     "nock-exec": "^0.1.0",
@@ -35,9 +36,5 @@
     "tslint": "^4.4.2",
     "typescript": "^2.1.5"
   },
-  "dependencies": {
-    "@types/fs-extra": "0.0.37",
-    "@types/node": "^7.0.4",
-    "fs-extra": "^2.0.0"
-  }
+  "dependencies": {}
 }

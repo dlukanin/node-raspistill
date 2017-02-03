@@ -17,13 +17,19 @@ describe('camera', function() {
 
     beforeEach(function(done: Function) {
         sandbox.stub(child_process, 'execFile', function(arg, secondArg, callback) {
-            try {
-                fs.mkdirSync(PHOTOS_DIR);
-            } catch (error) {
-                console.log(error);
-            }
-            fs.writeFileSync(PHOTOS_DIR + FILE_NAME, FILE_DATA);
-            callback(null, 'success');
+            fs.mkdir(PHOTOS_DIR, function(err) {
+                if (err) {
+                    // NOTE directory can exists, so we don't try to fail-first here
+                    console.log(err);
+                }
+                fs.writeFile(PHOTOS_DIR + FILE_NAME, FILE_DATA, function(err) {
+                    if (err) {
+                        callback(err);
+                    } else {
+                        callback(null, 'success');
+                    }
+                });
+            });
         });
         done();
     });
