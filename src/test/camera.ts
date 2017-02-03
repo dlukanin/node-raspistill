@@ -13,14 +13,14 @@ describe('camera', function() {
 
     const camera = new DefaultCamera({outputDir: PHOTOS_DIR});
 
-    this.timeout(8000);
+    this.timeout(4000);
 
-    beforeEach(function() {
+    beforeEach(function(done: Function) {
         sandbox.stub(child_process, 'execFile', function(arg, secondArg, callback) {
             try {
                 fs.mkdirSync(PHOTOS_DIR);
             } catch (error) {
-
+                done(error);
             }
             fs.writeFileSync(PHOTOS_DIR + FILE_NAME, FILE_DATA);
             callback(null, 'success');
