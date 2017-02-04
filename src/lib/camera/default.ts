@@ -36,6 +36,10 @@ export class DefaultCamera extends AbstractCamera implements ICamera {
         ])
             .then((arr) => {
                 return arr[1];
+            })
+            .catch((error) => {
+                // TODO Own error
+                throw new Error((new Date()).toISOString() + ' Raspistill failed: ' + error.message);
             });
     }
 }

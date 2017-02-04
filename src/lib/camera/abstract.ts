@@ -90,11 +90,15 @@ export abstract class AbstractCamera implements ICamera {
             }
 
             if (typeof currentOptions[key] === 'string') {
-                processedOptions.push(this.optionsMap[key] + ' ' + currentOptions[key]);
+                processedOptions.push(this.optionsMap[key]);
+                processedOptions.push(this.optionsMap[key]);
             }
         });
 
-        processedOptions.push('-o ' + currentOptions.outputDir + currentOptions.fileName);
+        processedOptions.push('-o');
+        processedOptions.push(
+            currentOptions.outputDir + currentOptions.encoding + currentOptions.fileName
+        );
 
         return processedOptions;
     }
