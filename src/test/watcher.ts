@@ -17,7 +17,7 @@ describe('watcher', function(): void {
     it('should create dir if not exists', function(done: Function): void {
         fs.rmdir(PHOTOS_DIR, (err: any) => {
             if (err) {
-                done(err);
+
             } else {
                 watcher.watch(PHOTOS_DIR + FILE_NAME);
                 fs.access(PHOTOS_DIR, (err: any) => {
