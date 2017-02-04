@@ -1,3 +1,5 @@
+export type TCameraFileEncoding = 'jpg' | 'bpm' | 'gif' | 'png';
+
 export interface ICameraOptions {
     verticalFlip?: boolean;
     horizontalFlip?: boolean;
@@ -11,6 +13,12 @@ export interface ICameraOptions {
      * E.g. test.jpg
      */
     fileName?: string;
+    /**
+     * File encoding. jpg, bpm, gif or png
+     */
+    encoding?: TCameraFileEncoding;
+    width?: number;
+    height?: number;
 }
 
 /**

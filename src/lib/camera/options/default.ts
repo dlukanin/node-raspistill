@@ -1,6 +1,10 @@
-export default {
+import {ICameraOptions} from '../interfaces';
+export const defaultOptions: ICameraOptions = {
     verticalFlip: false,
     horizontalFlip: false,
     outputDir: 'photos',
-    fileName: 'test.jpg'
+    fileName: undefined,
+    encoding: 'jpg',
+    width: undefined,
+    height: undefined
 };

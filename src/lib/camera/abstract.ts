@@ -1,7 +1,8 @@
 import {ICamera, ICameraOptions} from './interfaces';
 import {DefaultWatcher} from '../watcher/default';
 import {IWatcher} from '../watcher/interfaces';
-import defaultOptions from './options/default';
+import {defaultOptions} from './options/default';
+import * as assign from 'object.assign';
 
 export abstract class AbstractCamera implements ICamera {
     /**
@@ -13,22 +14,38 @@ export abstract class AbstractCamera implements ICamera {
     public abstract takePhoto: (options?: ICameraOptions) => Promise<Buffer>;
 
     /**
+     * Command for executing in child_process
+     * @type {string}
+     */
+    protected readonly command: string = 'raspistill';
+
+    /**
      * Watcher object for current camera.
      * @type {IWatcher}
      */
     protected watcher: IWatcher;
+
     /**
      * Camera options.
      * @type {ICameraOptions}
      */
-    protected options: ICameraOptions;
+    protected options: ICameraOptions = {};
+
+    /**
+     * Map "option and option value -> raspistil exec arg"
+     * @type {any}
+     */
+    protected optionsMap: any = {
+        verticalFlip: '-vf',
+        horizontalFlip: '-hf',
+        encoding: '-e',
+        width: '-w',
+        height: '-h'
+    };
 
     constructor(options: ICameraOptions = {}, watcher: IWatcher = new DefaultWatcher()) {
-        this.options = {};
-        Object.keys(AbstractCamera.DEFAULT_OPTIONS).forEach((key: string) => {
-            this.options[key] = options.hasOwnProperty(key) ? options[key] : AbstractCamera.DEFAULT_OPTIONS[key];
-        });
-        this.setOptions(options);
+        const opts = assign({}, AbstractCamera.DEFAULT_OPTIONS, options);
+        this.setOptions(opts);
         this.watcher = watcher;
     }
 
@@ -53,5 +70,32 @@ export abstract class AbstractCamera implements ICamera {
 
     public getOptions = (): ICameraOptions => {
         return this.options;
+    }
+
+    /**
+     * Returns ready-to-use in child_process methods array of options
+     * @return {Array<string>}
+     */
+    protected processOptions = (newOptions?: ICameraOptions): Array<string> => {
+        const currentOptions: ICameraOptions = assign({}, this.options, newOptions);
+        const processedOptions = [];
+
+        Object.keys(currentOptions).forEach((key) => {
+            if (!this.optionsMap.hasOwnProperty(key)) {
+                return;
+            }
+
+            if (currentOptions[key] === true) {
+                processedOptions.push(this.optionsMap[key]);
+            }
+
+            if (typeof currentOptions[key] === 'string') {
+                processedOptions.push(this.optionsMap[key] + ' ' + currentOptions[key]);
+            }
+        });
+
+        processedOptions.push('-o ' + currentOptions.outputDir + currentOptions.fileName);
+
+        return processedOptions;
     }
 }

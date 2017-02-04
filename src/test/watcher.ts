@@ -78,4 +78,14 @@ describe('watcher', function(): void {
                 done(err);
             });
     });
+
+    after(function(done: Function): void {
+        fs.unlink(PHOTOS_DIR + FILE_NAME, (err) => {
+            if (err) {
+                done(err);
+            } else {
+                done();
+            }
+        });
+    });
 });

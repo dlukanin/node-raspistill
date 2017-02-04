@@ -38,5 +38,7 @@
     "tslint-eslint-rules": "^3.2.3",
     "typescript": "^2.1.5"
   },
-  "dependencies": {}
+  "dependencies": {
+    "object.assign": "^4.0.4"
+  }
 }

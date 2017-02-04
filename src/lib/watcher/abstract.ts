@@ -1,5 +1,6 @@
 import {IWatcherOptions} from './interfaces';
 import defaultOptions from './options/default';
+import * as assign from 'object.assign';
 
 export abstract class AbstractWatcher {
     /**
@@ -12,14 +13,11 @@ export abstract class AbstractWatcher {
      * Current watcher options.
      * @type {IWatcherOptions}
      */
-    private options: IWatcherOptions;
+    private options: IWatcherOptions = {};
 
     constructor(options: IWatcherOptions = {}) {
-        this.options = {};
-        Object.keys(AbstractWatcher.DEFAULT_OPTIONS).forEach((key: string) => {
-            this.options[key] = options.hasOwnProperty(key) ? options[key] : AbstractWatcher.DEFAULT_OPTIONS[key];
-        });
-        this.setOptions(options);
+        const opts = assign({}, AbstractWatcher.DEFAULT_OPTIONS, options);
+        this.setOptions(opts);
     }
 
     // TODO move to some kind of configurable abstract class
