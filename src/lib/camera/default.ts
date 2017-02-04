@@ -7,7 +7,7 @@ export class DefaultCamera extends AbstractCamera implements ICamera {
         let cameraFileName = this.getOption('fileName') || Date.now().toString();
         let cameraEncoding = this.getOption('encoding');
 
-        if (fileName.length) {
+        if (fileName && fileName.length) {
             const processedFileName = fileName.split('.');
             if (processedFileName.length > 1) {
                 cameraFileName = processedFileName[0];
