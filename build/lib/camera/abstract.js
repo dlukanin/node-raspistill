@@ -45,11 +45,11 @@ var AbstractCamera = (function () {
                 }
                 if (typeof currentOptions[key] === 'string') {
                     processedOptions.push(_this.optionsMap[key]);
-                    processedOptions.push(_this.optionsMap[key]);
+                    processedOptions.push(currentOptions[key]);
                 }
             });
             processedOptions.push('-o');
-            processedOptions.push(currentOptions.outputDir + currentOptions.encoding + currentOptions.fileName);
+            processedOptions.push(currentOptions.outputDir + currentOptions.fileName + '.' + currentOptions.encoding);
             return processedOptions;
         };
         var opts = assign({}, AbstractCamera.DEFAULT_OPTIONS, options);
