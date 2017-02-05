@@ -91,13 +91,13 @@ export abstract class AbstractCamera implements ICamera {
 
             if (typeof currentOptions[key] === 'string') {
                 processedOptions.push(this.optionsMap[key]);
-                processedOptions.push(currentOptions[key]);
+                processedOptions.push(currentOptions[key].toString());
             }
         });
 
         processedOptions.push('-o');
         processedOptions.push(
-            currentOptions.outputDir + currentOptions.fileName + '.' + currentOptions.encoding
+            currentOptions.outputDir + '/' + currentOptions.fileName + '.' + currentOptions.encoding
         );
 
         return processedOptions;
