@@ -42,5 +42,5 @@ Options - object, that can contain:
 
 `height`: number, not exists by default;
 
-### {Raspistill instance}.takePhoto([options]): Buffer
+### {Raspistill instance}.takePhoto([options]): Promise<Buffer>
 Options - same object provided for configuring current photo shoot.

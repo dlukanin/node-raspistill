@@ -1,4 +1,5 @@
 photos
+build
 src/*.js
 *.js.map
 logs
