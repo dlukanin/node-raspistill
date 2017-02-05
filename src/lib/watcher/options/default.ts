@@ -1,3 +1,3 @@
 export default {
-    expireTime: 10000
+    expireTime: 20000
 };

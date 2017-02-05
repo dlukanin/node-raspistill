@@ -32,7 +32,7 @@ export class DefaultCamera extends AbstractCamera implements ICamera {
                     }
                 );
             }),
-            this.watcher.watch(this.getOption('outputDir') + (cameraFileName + '.' + cameraEncoding))
+            this.watcher.watch(this.getOption('outputDir') + '/' + (cameraFileName + '.' + cameraEncoding))
         ])
             .then((arr) => {
                 return arr[1];
