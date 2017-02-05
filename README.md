@@ -25,7 +25,9 @@ camera.takePhoto().then((photo) => {
 });
 ```
 ##Docs
-### new Raspistill(options?): Raspistill instance
+### new Raspistill(options?: ICameraOptions): Raspistill instance
+Creates new Raspistill instance.
+
 Options - object, that can contain:
 
 `verticalFlip`: boolean, defaults to false;
@@ -42,4 +44,14 @@ Options - object, that can contain:
 
 `height`: number, not exists by default;
 
-### {Raspistill instance}.takePhoto(fileName?: string): Promise<Buffer>
+### {Raspistill instance}.takePhoto(fileName?: string): Promise
+Takes new photo. Returns Promise, resolving with Buffer object.
+
+### {Raspistill instance}.setOptions(options: ICameraOptions): void
+Sets new options for current Raspistill instance.
+
+### {Raspistill instance}.getOptions(): ICameraOptions
+Gets current raspistill options.
+
+### {Raspistill instance}.getOption(key: string): any
+Gets current raspistill option by key.
