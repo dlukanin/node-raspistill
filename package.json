@@ -3,6 +3,7 @@
   "version": "0.0.2",
   "description": "Node wrapper for taking photos using Raspberry Pi raspistill app.",
   "main": "build/index.js",
+  "typings": "build/index",
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
