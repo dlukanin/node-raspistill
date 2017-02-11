@@ -1,12 +1,15 @@
 import {expect} from 'chai';
 import * as fs from 'fs';
 import * as sinon from 'sinon';
-import * as child_process from 'child_process';
 import {DefaultCamera} from '../lib/camera/default';
+/* tslint:disable */
+// NOTE we cast child_process as any because of sinon patching
+const child_process = require('child_process');
+/* tslint:enable */
 
 describe('camera', function(): void {
     const sandbox = sinon.sandbox.create();
-    const PHOTOS_DIR = './photos/';
+    const PHOTOS_DIR = './photos';
     const FILE_NAME = 'test';
     const FILE_ENC = 'jpg';
     const FILE_DATA = '111';
@@ -21,7 +24,7 @@ describe('camera', function(): void {
         sandbox.stub(child_process, 'execFile', function(arg: any, secondArg: any, callback: Function): void {
             fs.mkdir(PHOTOS_DIR, (err: any) => {
                 // NOTE directory can exists and it's ok, so we don't try to fail-first here
-                fs.writeFile(PHOTOS_DIR + FILE_NAME + '.' + FILE_ENC, Date.now() + FILE_DATA, (err) => {
+                fs.writeFile(PHOTOS_DIR + '/' + FILE_NAME + '.' + FILE_ENC, Date.now() + FILE_DATA, (err) => {
                     if (err) {
                         callback(err);
                     } else {
@@ -30,6 +33,36 @@ describe('camera', function(): void {
                 });
             });
         });
+        done();
+    });
+
+    it('should use default args while executing raspistill command', (done: Function) => {
+        const camera = new DefaultCamera();
+        camera.takePhoto();
+        const args: Array<any> = child_process.execFile.args[0];
+        expect(args[0]).to.eql('raspistill');
+        expect(args[1]).to.eql(['-e', 'jpg', '-o', args[1][3]]); // TODO path check
+        done();
+    });
+
+    it('should apply custom args raspistill command', (done: Function) => {
+        const camera = new DefaultCamera({
+            verticalFlip: true,
+            horizontalFlip: true,
+            outputDir: 'photos_test',
+            fileName: 'foo',
+            encoding: 'png',
+            width: 1000,
+            height: 800
+        });
+        camera.takePhoto();
+        camera.takePhoto('test');
+        const args: Array<any> = child_process.execFile.args[0];
+        const secondCallArgs: Array<any> = child_process.execFile.args[1];
+        expect(args[0]).to.eql('raspistill');
+        expect(args[1]).to.eql(['-vf', '-hf', '-e', 'png', '-o', 'photos_test/foo.png']);
+        expect(secondCallArgs[0]).to.eql('raspistill');
+        expect(secondCallArgs[1]).to.eql(['-vf', '-hf', '-e', 'png', '-o', 'photos_test/test.png']);
         done();
     });
 
@@ -62,7 +95,7 @@ describe('camera', function(): void {
     });
 
     after(function(done: Function): void {
-        fs.unlink(PHOTOS_DIR + FILE_NAME + '.' + FILE_ENC, (err) => {
+        fs.unlink(PHOTOS_DIR + '/' + FILE_NAME + '.' + FILE_ENC, (err) => {
             if (err) {
                 done(err);
             } else {
