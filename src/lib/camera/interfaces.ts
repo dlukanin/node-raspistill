@@ -3,6 +3,7 @@ export type TCameraFileEncoding = 'jpg' | 'bpm' | 'gif' | 'png';
 export interface ICameraOptions {
     verticalFlip?: boolean;
     horizontalFlip?: boolean;
+    noPreview?: boolean;
     /**
      * Default output directory.
      * E.g. '/photos/'

@@ -41,7 +41,7 @@ describe('camera', function(): void {
         camera.takePhoto();
         const args: Array<any> = child_process.execFile.args[0];
         expect(args[0]).to.eql('raspistill');
-        expect(args[1]).to.eql(['-e', 'jpg', '-o', args[1][3]]); // TODO path check
+        expect(args[1]).to.eql(['-n', '-e', 'jpg', '-o', args[1][4]]); // TODO path check
         done();
     });
 
@@ -49,6 +49,7 @@ describe('camera', function(): void {
         const camera = new DefaultCamera({
             verticalFlip: true,
             horizontalFlip: true,
+            noPreview: false,
             outputDir: PHOTOS_DIR + '/test',
             fileName: 'foo',
             encoding: 'png',

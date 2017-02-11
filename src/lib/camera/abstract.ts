@@ -35,9 +35,10 @@ export abstract class AbstractCamera implements ICamera {
      * Map "option and option value -> raspistil exec arg"
      * @type {any}
      */
-    protected optionsMap: any = {
+    protected optionsMap: {[key: string]: string} = {
         verticalFlip: '-vf',
         horizontalFlip: '-hf',
+        noPreview: '-n',
         encoding: '-e',
         width: '-w',
         height: '-h'

@@ -30,34 +30,54 @@ camera.takePhoto().then((photo) => {
     ...
 });
 ```
+##Changelog
+####v 0.0.8
+Added noPreview option.
+
 ##Docs
-### new Raspistill(options?: ICameraOptions): Raspistill instance
+###Raspistill
+#### constructor(options?: ICameraOptions)
 Creates new Raspistill instance.
 
 Options - object, that can contain:
 
-`verticalFlip`: boolean, defaults to false;
+|key|type|defaults|desc|
+|---|---|---|---|
+|verticalFlip|boolean|false|   |
+|horizontalFlip|boolean|false|   |
+|noPreview|boolean|true|Disables preview window on Pi while taking photo|
+|outputDir|string|'./photos'|Output directory where photos will be stored|
+|fileName|string|new Date.now() + file encoding|Name for photo file|
+|encoding|string|'jpg'|'jpg', 'bpm', 'gif' or 'png'|
+|width|number|undefined||
+|height|number|undefined||
 
-`horizontalFlip`: boolean, defaults to false;
+```
+const camera = new Raspistill({
+    verticalFlip: true,
+    fileName: 'foo'
+});
+```
 
-`outputDir`: string, output directory where photos will be stored. Defaults to `./photos`;
 
-`fileName`: string, name for photo file, if not exixts, defaults to new Date.now() + file encoding;
-
-`encoding`: string, photo encoding, can be 'jpg', 'bpm', 'gif', 'png', defaults to `jpg`;
-
-`width`: number, not exists by default;
-
-`height`: number, not exists by default;
-
-### {Raspistill instance}.takePhoto(fileName?: string): Promise
+#### takePhoto(fileName?: string): Promise\<Buffer\>
 Takes new photo. Returns Promise, resolving with Buffer object.
+```
+camera.takePhoto('testPhotoName').then((photo) => {
+    ...
+});
+```
 
-### {Raspistill instance}.setOptions(options: ICameraOptions): void
+#### setOptions(options: ICameraOptions): void
 Sets new options for current Raspistill instance.
+```
+camera.setOptions({
+    horizontalFlip: true
+});
+```
 
-### {Raspistill instance}.getOptions(): ICameraOptions
+#### getOptions(): ICameraOptions
 Gets current raspistill options.
 
-### {Raspistill instance}.getOption(key: string): any
+#### getOption(key: string): any
 Gets current raspistill option by key.
