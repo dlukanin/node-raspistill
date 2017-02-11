@@ -1,4 +1,6 @@
 # node-raspistill
+[![Build Status](https://travis-ci.org/dlukanin/node-raspistill.svg?branch=master)](https://travis-ci.org/dlukanin/node-raspistill)
+
 Simple wrapper for taking photos using Raspberry Pi raspistill app.
 
 Module is written in typescript and provides type definitions out-of-the-box.
@@ -6,6 +8,10 @@ Module is written in typescript and provides type definitions out-of-the-box.
 Tested with Raspberry Pi 2 B (Raspbian OS), and Raspberry Camera Module v2.
 
 ##Usage
+
+```
+npm install node-raspistill
+```
 
 ```
 const Raspistill = require('node-raspistill').Raspistill;
