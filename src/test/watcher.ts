@@ -5,7 +5,7 @@ import {expect} from 'chai';
 import {IWatcherOptions} from '../lib/watcher/interfaces';
 
 const PHOTOS_DIR = './photos/';
-
+// TODO promisify fs
 describe('watcher', function(): void {
     const FILE_NAME = '1.txt';
     const FILE_DATA = 'test';
@@ -16,14 +16,19 @@ describe('watcher', function(): void {
 
     it('should create dir if not exists', function(done: Function): void {
         fs.rmdir(PHOTOS_DIR, (err: any) => {
-            watcher.watch(PHOTOS_DIR + FILE_NAME);
-            fs.access(PHOTOS_DIR, (err: any) => {
-                if (err) {
-                    done(err);
-                } else {
-                    done();
-                }
-            });
+            watcher.watch(PHOTOS_DIR + FILE_NAME)
+                .catch(() => {
+                    return;
+                })
+                .then(() => {
+                    fs.access(PHOTOS_DIR, (err: any) => {
+                        if (err) {
+                            done(err);
+                        } else {
+                            done();
+                        }
+                    });
+                });
         });
     });
 
