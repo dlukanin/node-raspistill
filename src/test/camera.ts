@@ -49,7 +49,7 @@ describe('camera', function(): void {
         const camera = new DefaultCamera({
             verticalFlip: true,
             horizontalFlip: true,
-            outputDir: 'photos_test',
+            outputDir: PHOTOS_DIR + '/test',
             fileName: 'foo',
             encoding: 'png',
             width: 1000,
@@ -60,9 +60,9 @@ describe('camera', function(): void {
         const args: Array<any> = child_process.execFile.args[0];
         const secondCallArgs: Array<any> = child_process.execFile.args[1];
         expect(args[0]).to.eql('raspistill');
-        expect(args[1]).to.eql(['-vf', '-hf', '-e', 'png', '-o', 'photos_test/foo.png']);
+        expect(args[1]).to.eql(['-vf', '-hf', '-e', 'png', '-o', PHOTOS_DIR + '/test/foo.png']);
         expect(secondCallArgs[0]).to.eql('raspistill');
-        expect(secondCallArgs[1]).to.eql(['-vf', '-hf', '-e', 'png', '-o', 'photos_test/test.png']);
+        expect(secondCallArgs[1]).to.eql(['-vf', '-hf', '-e', 'png', '-o', PHOTOS_DIR + '/test/test.png']);
         done();
     });
 
@@ -95,11 +95,23 @@ describe('camera', function(): void {
     });
 
     after(function(done: Function): void {
-        fs.unlink(PHOTOS_DIR + '/' + FILE_NAME + '.' + FILE_ENC, (err) => {
+        fs.rmdir(PHOTOS_DIR + '/test', (err) => {
             if (err) {
                 done(err);
             } else {
-                done();
+                fs.unlink(PHOTOS_DIR + '/' + FILE_NAME + '.' + FILE_ENC, (err) => {
+                    if (err) {
+                        done(err);
+                    } else {
+                        fs.rmdir(PHOTOS_DIR, (err: any) => {
+                            if (err) {
+                                done(err);
+                            } else {
+                                done();
+                            }
+                        });
+                    }
+                });
             }
         });
     });
