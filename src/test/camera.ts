@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import * as fs from 'fs';
+import * as fs from 'fs-promise';
 import * as sinon from 'sinon';
 import {DefaultCamera} from '../lib/camera/default';
 /* tslint:disable */
@@ -22,26 +22,31 @@ describe('camera', function(): void {
 
     beforeEach(function(done: Function): void {
         sandbox.stub(child_process, 'execFile', function(arg: any, secondArg: any, callback: Function): void {
-            fs.mkdir(PHOTOS_DIR, (err: any) => {
-                // NOTE directory can exists and it's ok, so we don't try to fail-first here
-                fs.writeFile(PHOTOS_DIR + '/' + FILE_NAME + '.' + FILE_ENC, Date.now() + FILE_DATA, (err) => {
-                    if (err) {
-                        callback(err);
-                    } else {
-                        callback(null, 'success');
-                    }
+            fs.mkdir(PHOTOS_DIR)
+                .catch(() => {
+                    return;
+                })
+                .then(() => fs.writeFile(PHOTOS_DIR + '/' + FILE_NAME + '.' + FILE_ENC, Date.now() + FILE_DATA))
+                .then(() => {
+                    callback(null, 'success');
+                })
+                .catch((error) => {
+                    callback(error);
                 });
             });
-        });
         done();
     });
 
     it('should use default args while executing raspistill command', (done: Function) => {
         const camera = new DefaultCamera();
+
         camera.takePhoto();
+
         const args: Array<any> = child_process.execFile.args[0];
+
         expect(args[0]).to.eql('raspistill');
         expect(args[1]).to.eql(['-n', '-e', 'jpg', '-o', args[1][4]]); // TODO path check
+
         done();
     });
 
@@ -56,14 +61,18 @@ describe('camera', function(): void {
             width: 1000,
             height: 800
         });
+
         camera.takePhoto();
         camera.takePhoto('test');
+
         const args: Array<any> = child_process.execFile.args[0];
         const secondCallArgs: Array<any> = child_process.execFile.args[1];
+
         expect(args[0]).to.eql('raspistill');
         expect(args[1]).to.eql(['-vf', '-hf', '-e', 'png', '-o', PHOTOS_DIR + '/test/foo.png']);
         expect(secondCallArgs[0]).to.eql('raspistill');
         expect(secondCallArgs[1]).to.eql(['-vf', '-hf', '-e', 'png', '-o', PHOTOS_DIR + '/test/test.png']);
+
         done();
     });
 
@@ -96,24 +105,14 @@ describe('camera', function(): void {
     });
 
     after(function(done: Function): void {
-        fs.rmdir(PHOTOS_DIR + '/test', (err) => {
-            if (err) {
-                done(err);
-            } else {
-                fs.unlink(PHOTOS_DIR + '/' + FILE_NAME + '.' + FILE_ENC, (err) => {
-                    if (err) {
-                        done(err);
-                    } else {
-                        fs.rmdir(PHOTOS_DIR, (err: any) => {
-                            if (err) {
-                                done(err);
-                            } else {
-                                done();
-                            }
-                        });
-                    }
-                });
-            }
-        });
+        fs.rmdir(PHOTOS_DIR + '/test')
+            .then(() => fs.unlink(PHOTOS_DIR + '/' + FILE_NAME + '.' + FILE_ENC))
+            .then(() => fs.rmdir(PHOTOS_DIR))
+            .then(() => {
+                done();
+            })
+            .catch((error) => {
+                done(error);
+            });
     });
 });

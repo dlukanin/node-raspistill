@@ -1,11 +1,11 @@
 import {DefaultWatcher} from '../lib/watcher/default';
 import defaultOptions from '../lib/watcher/options/default';
-import * as fs from 'fs';
+import * as fs from 'fs-promise';
 import {expect} from 'chai';
 import {IWatcherOptions} from '../lib/watcher/interfaces';
 
 const PHOTOS_DIR = './photos/';
-// TODO promisify fs
+
 describe('watcher', function(): void {
     const FILE_NAME = '1.txt';
     const FILE_DATA = 'test';
@@ -15,21 +15,21 @@ describe('watcher', function(): void {
     const watcher = new DefaultWatcher({expireTime: 2000});
 
     it('should create dir if not exists', function(done: Function): void {
-        fs.rmdir(PHOTOS_DIR, (err: any) => {
-            watcher.watch(PHOTOS_DIR + FILE_NAME)
-                .catch(() => {
-                    return;
-                })
-                .then(() => {
-                    fs.access(PHOTOS_DIR, (err: any) => {
-                        if (err) {
-                            done(err);
-                        } else {
-                            done();
-                        }
-                    });
-                });
-        });
+        fs.rmdir(PHOTOS_DIR)
+            .catch((error) => {
+                return;
+            })
+            .then(() => watcher.watch(PHOTOS_DIR + FILE_NAME))
+            .catch((error) => {
+                return; // NOTE we don't need to test file watching in this case, so we ignore it.
+            })
+            .then(() => fs.access(PHOTOS_DIR))
+            .then(() => {
+                done();
+            })
+            .catch((error) => {
+                done(error);
+            });
     });
 
     it('should init/set options', function(done: Function): void {
@@ -38,10 +38,13 @@ describe('watcher', function(): void {
         const testWatcher = new DefaultWatcher(options);
 
         expect(testWatcher.getOptions()).to.eql(options);
+
         options.expireTime = 2600;
         expect(testWatcher.getOptions()).not.to.eql(options);
+
         testWatcher.setOptions(options);
         expect(testWatcher.getOptions()).to.eql(options);
+
         done();
     });
 
@@ -54,19 +57,20 @@ describe('watcher', function(): void {
     });
 
     it('should return buffer object', function(done: Function): void {
-        watcher.watch(PHOTOS_DIR + FILE_NAME).then((file) => {
+        const watcherPromise = watcher.watch(PHOTOS_DIR + FILE_NAME).then((file) => {
             expect(file).to.be.instanceof(Buffer);
             expect(file.toString()).to.eq('test');
-            done();
-        })
-            .catch((err) => {
-                done(err);
-            });
-        fs.writeFile(PHOTOS_DIR + FILE_NAME, FILE_DATA, (err) => {
-            if (err) {
-                done(err);
-            }
         });
+
+        const fsPromise = fs.writeFile(PHOTOS_DIR + FILE_NAME, FILE_DATA);
+
+        Promise.all([watcherPromise, fsPromise])
+            .then(() => {
+                done();
+            })
+            .catch((error) => {
+                done(error);
+            });
     });
 
     it('should return error if no file exists after timeout', function(done: Function): void {
@@ -81,12 +85,12 @@ describe('watcher', function(): void {
     });
 
     after(function(done: Function): void {
-        fs.unlink(PHOTOS_DIR + FILE_NAME, (err) => {
-            if (err) {
-                done(err);
-            } else {
+        fs.unlink(PHOTOS_DIR + FILE_NAME)
+            .then(() => {
                 done();
-            }
-        });
+            })
+            .catch((error) => {
+                done(error);
+            });
     });
 });

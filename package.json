@@ -28,10 +28,12 @@
   "homepage": "https://github.com/dlukanin/node-raspistill#readme",
   "devDependencies": {
     "@types/chai": "^3.4.34",
+    "@types/fs-promise": "^1.0.1",
     "@types/mocha": "^2.2.38",
     "@types/node": "^7.0.4",
     "@types/sinon": "^1.16.34",
     "chai": "^3.5.0",
+    "fs-promise": "^1.0.0",
     "mocha": "^3.2.0",
     "nock-exec": "^0.1.0",
     "sinon": "^1.17.7",
