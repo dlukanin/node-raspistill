@@ -4,3 +4,4 @@ build/test
 tsconfig.json
 .gitignore
 .idea
+.travis.yml
