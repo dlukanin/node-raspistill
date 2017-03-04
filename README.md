@@ -49,8 +49,8 @@ Options - object, that can contain:
 |outputDir|string|'./photos'|Output directory where photos will be stored|
 |fileName|string|new Date.now() + file encoding|Name for photo file|
 |encoding|string|'jpg'|'jpg', 'bpm', 'gif' or 'png'|
-|width|number|undefined||
-|height|number|undefined||
+|width|number|undefined|Width of taken image in pixels. If width is not set - raspistill uses default max camera sensor resolution width|
+|height|number|undefined|Height of taken image in pixels. If height is not set - raspistill uses default max camera sensor resolution height|
 
 ```
 const camera = new Raspistill({
@@ -75,6 +75,10 @@ camera.setOptions({
     horizontalFlip: true
 });
 ```
+
+#### setDefaultOptions(): void
+Reverts all option values of current Raspistill instance to default.
+Default values are presented in options table.
 
 #### getOptions(): ICameraOptions
 Gets current raspistill options.

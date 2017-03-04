@@ -37,6 +37,11 @@ export interface ICamera {
      */
     setOptions(options: ICameraOptions): void;
     /**
+     * Sets camera options to default.
+     * @param options
+     */
+    setDefaultOptions(): void;
+    /**
      * Gets current camera options.
      */
     getOptions(): ICameraOptions;

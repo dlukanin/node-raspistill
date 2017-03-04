@@ -50,6 +50,33 @@ describe('camera', function(): void {
         done();
     });
 
+    it('should set default options', (done: Function) => {
+        const camera = new DefaultCamera({
+            width: 1000,
+            outputDir: PHOTOS_DIR + '/test'
+        });
+
+        camera.takePhoto('foo');
+
+        const fooArgs: Array<any> = child_process.execFile.args[0];
+
+        expect(fooArgs[0]).to.eql('raspistill');
+        expect(fooArgs[1]).to.eql([
+            '-n', '-e', 'jpg', '-w', '1000', '-h', '1000', '-o', PHOTOS_DIR + '/test/foo.jpg'
+        ]);
+
+        camera.setDefaultOptions();
+        camera.takePhoto('bar');
+
+        const barArgs: Array<any> = child_process.execFile.args[1];
+
+        expect(barArgs[0]).to.eql('raspistill');
+        expect(barArgs[1]).to.eql([
+            '-n', '-e', 'jpg', '-o', 'photos/bar.jpg'
+        ]);
+        done();
+    });
+
     it('should apply custom args raspistill command', (done: Function) => {
         const camera = new DefaultCamera({
             verticalFlip: true,
@@ -65,7 +92,8 @@ describe('camera', function(): void {
         camera.takePhoto();
         camera.takePhoto('test');
         camera.setOptions({
-            noPreview: true
+            noPreview: true,
+            height: undefined
         });
         camera.takePhoto('anotherTest');
 
@@ -85,7 +113,7 @@ describe('camera', function(): void {
 
         expect(thirdCallArgs[0]).to.eql('raspistill');
         expect(thirdCallArgs[1]).to.eql([
-            '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-n', '-o', PHOTOS_DIR + '/test/anotherTest.png'
+            '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '1000', '-n', '-o', PHOTOS_DIR + '/test/anotherTest.png'
         ]);
 
         done();

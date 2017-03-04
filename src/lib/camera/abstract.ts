@@ -62,7 +62,21 @@ export abstract class AbstractCamera implements ICamera {
             if (typeof value !== 'undefined') {
                 this.options[key] = value;
             }
+
+            if (
+                typeof defaultOptions[key] === 'undefined' &&
+                options.hasOwnProperty(key) && typeof options[key] === 'undefined'
+            ) {
+                this.options[key] = undefined;
+            }
         });
+
+        this.options.width = this.options.width || this.options.height;
+        this.options.height = this.options.height || this.options.width;
+    }
+
+    public setDefaultOptions = (): void => {
+        this.options = defaultOptions;
     }
 
     public getOption = (key: string): any => {
