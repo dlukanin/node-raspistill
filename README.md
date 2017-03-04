@@ -44,6 +44,12 @@ const camera = new Raspistill({
 See full options list in the docs below.
 
 ##Changelog
+
+####v 0.0.9
+Fixed some issues with width/height options.
+Added setDefaultOptions method.
+Updated some dependencies.
+
 ####v 0.0.8
 Added noPreview option.
 
