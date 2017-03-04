@@ -64,17 +64,28 @@ describe('camera', function(): void {
 
         camera.takePhoto();
         camera.takePhoto('test');
+        camera.setOptions({
+            noPreview: true
+        });
+        camera.takePhoto('anotherTest');
 
         const args: Array<any> = child_process.execFile.args[0];
         const secondCallArgs: Array<any> = child_process.execFile.args[1];
+        const thirdCallArgs: Array<any> = child_process.execFile.args[2];
 
         expect(args[0]).to.eql('raspistill');
         expect(args[1]).to.eql([
             '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-o', PHOTOS_DIR + '/test/foo.png'
         ]);
+
         expect(secondCallArgs[0]).to.eql('raspistill');
         expect(secondCallArgs[1]).to.eql([
             '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-o', PHOTOS_DIR + '/test/test.png'
+        ]);
+
+        expect(thirdCallArgs[0]).to.eql('raspistill');
+        expect(thirdCallArgs[1]).to.eql([
+            '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-n', '-o', PHOTOS_DIR + '/test/anotherTest.png'
         ]);
 
         done();
