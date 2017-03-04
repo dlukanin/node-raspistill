@@ -30,6 +30,19 @@ camera.takePhoto().then((photo) => {
     ...
 });
 ```
+
+You can also pass some options to constructor method:
+
+```
+const camera = new Raspistill({
+    verticalFlip: true,
+    width: 800,
+    height: 600
+});
+```
+
+See full options list in the docs below.
+
 ##Changelog
 ####v 0.0.8
 Added noPreview option.
@@ -72,13 +85,14 @@ camera.takePhoto('testPhotoName').then((photo) => {
 Sets new options for current Raspistill instance.
 ```
 camera.setOptions({
-    horizontalFlip: true
+    horizontalFlip: true,
+    noPreview: false
 });
 ```
 
 #### setDefaultOptions(): void
 Reverts all option values of current Raspistill instance to default.
-Default values are presented in options table.
+Default values are presented in the options table.
 
 #### getOptions(): ICameraOptions
 Gets current raspistill options.

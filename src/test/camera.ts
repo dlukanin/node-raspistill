@@ -37,6 +37,18 @@ describe('camera', function(): void {
         done();
     });
 
+    it('should round width and height values passed to constructor', (done: Function) => {
+        const camera = new DefaultCamera({
+            width: 800.12,
+            height: 599.90
+        });
+
+        expect(camera.getOption('width')).to.eq(800);
+        expect(camera.getOption('height')).to.eq(600);
+
+        done();
+    });
+
     it('should use default args while executing raspistill command', (done: Function) => {
         const camera = new DefaultCamera();
 

@@ -73,6 +73,14 @@ export abstract class AbstractCamera implements ICamera {
 
         this.options.width = this.options.width || this.options.height;
         this.options.height = this.options.height || this.options.width;
+
+        if (this.options.width) {
+            this.options.width = Math.round(this.options.width);
+        }
+
+        if (this.options.height) {
+            this.options.height = Math.round(this.options.height);
+        }
     }
 
     public setDefaultOptions = (): void => {
