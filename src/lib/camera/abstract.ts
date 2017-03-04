@@ -90,7 +90,7 @@ export abstract class AbstractCamera implements ICamera {
                 processedOptions.push(this.optionsMap[key]);
             }
 
-            if (typeof currentOptions[key] === 'string') {
+            if (typeof currentOptions[key] === 'string' || typeof currentOptions[key] === 'number') {
                 processedOptions.push(this.optionsMap[key]);
                 processedOptions.push(currentOptions[key].toString());
             }

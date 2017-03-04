@@ -69,9 +69,13 @@ describe('camera', function(): void {
         const secondCallArgs: Array<any> = child_process.execFile.args[1];
 
         expect(args[0]).to.eql('raspistill');
-        expect(args[1]).to.eql(['-vf', '-hf', '-e', 'png', '-o', PHOTOS_DIR + '/test/foo.png']);
+        expect(args[1]).to.eql([
+            '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-o', PHOTOS_DIR + '/test/foo.png'
+        ]);
         expect(secondCallArgs[0]).to.eql('raspistill');
-        expect(secondCallArgs[1]).to.eql(['-vf', '-hf', '-e', 'png', '-o', PHOTOS_DIR + '/test/test.png']);
+        expect(secondCallArgs[1]).to.eql([
+            '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-o', PHOTOS_DIR + '/test/test.png'
+        ]);
 
         done();
     });
