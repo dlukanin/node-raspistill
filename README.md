@@ -43,6 +43,8 @@ const camera = new Raspistill({
 
 See full options list in the docs below.
 
+You can also find some usage examples here: https://github.com/dlukanin/node-raspistill/tree/master/examples
+
 ##Changelog
 
 ####v 0.0.9
