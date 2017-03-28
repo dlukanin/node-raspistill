@@ -12,8 +12,6 @@ export abstract class AbstractCamera implements ICamera {
      */
     public static readonly DEFAULT_OPTIONS: ICameraOptions = defaultOptions;
 
-    public abstract takePhoto(fileName?: string): Promise<Buffer>;
-
     /**
      * Command for executing in child_process
      * @type {string}
@@ -50,6 +48,8 @@ export abstract class AbstractCamera implements ICamera {
         this.setOptions(opts);
         this.watcher = watcher;
     }
+
+    public abstract takePhoto(fileName?: string): Promise<Buffer>;
 
     // TODO move to some kind of configurable abstract class
     public setOptions(options: ICameraOptions): void {
@@ -140,6 +140,6 @@ export abstract class AbstractCamera implements ICamera {
                     resolve(stdout);
                 }
             );
-        })
+        });
     }
 }
