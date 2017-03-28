@@ -47,6 +47,13 @@ You can also find some usage examples here: https://github.com/dlukanin/node-ras
 
 ## Changelog
 
+
+#### v 0.0.10
+Added noFileSave option. 
+If you don't want to save photos on your raspberry pi - use this option.
+
+Some bug fixes and new examples.
+
 #### v 0.0.9
 Fixed some issues with width/height options.
 Added setDefaultOptions method.
