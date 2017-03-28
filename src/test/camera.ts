@@ -131,6 +131,59 @@ describe('camera', function(): void {
         done();
     });
 
+    it('should not use filename and extension with noFileSave option', (done: Function) => {
+        child_process.execFile.restore();
+        sandbox.stub(child_process, 'execFile', function(arg: any, secondArg: any, callback: Function): void {
+            callback(null, new Buffer('test'));
+        });
+
+        let camera = new DefaultCamera({
+            noFileSave: true,
+            verticalFlip: true,
+            horizontalFlip: true,
+            noPreview: false,
+            outputDir: PHOTOS_DIR + '/test',
+            fileName: 'foo',
+            encoding: 'png',
+            width: 1000,
+            height: 800
+        });
+
+        camera.takePhoto('test');
+
+        const args: Array<any> = child_process.execFile.args[0];
+
+        expect(args[0]).to.eql('raspistill');
+        expect(args[1]).to.eql([
+            '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-o', '-'
+        ]);
+
+        camera = new DefaultCamera({
+            verticalFlip: true,
+            horizontalFlip: true,
+            noPreview: false,
+            outputDir: PHOTOS_DIR + '/test',
+            fileName: 'foo',
+            encoding: 'png',
+            width: 500,
+            height: 600
+        });
+
+        camera.setOptions({
+            noFileSave: true
+        });
+
+        camera.takePhoto('anotherTest');
+
+        const secondCallArgs: Array<any> = child_process.execFile.args[1];
+        expect(secondCallArgs[0]).to.eql('raspistill');
+        expect(secondCallArgs[1]).to.eql([
+            '-vf', '-hf', '-e', 'png', '-w', '500', '-h', '600', '-o', '-'
+        ]);
+
+        done();
+    });
+
     it('should take photo', (done: Function) => {
         camera.takePhoto(FILE_NAME)
             .then((data: any) => {

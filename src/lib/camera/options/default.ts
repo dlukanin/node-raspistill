@@ -1,5 +1,6 @@
 import {ICameraOptions} from '../interfaces';
 export const defaultOptions: ICameraOptions = {
+    noFileSave: false,
     verticalFlip: false,
     horizontalFlip: false,
     noPreview: true,

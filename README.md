@@ -7,7 +7,7 @@ Module is written in typescript and provides type definitions out-of-the-box.
 
 Tested with Raspberry Pi 2 B (Raspbian OS), and Raspberry Camera Module v2.
 
-##Usage
+## Usage
 
 ```
 npm install node-raspistill
@@ -45,18 +45,18 @@ See full options list in the docs below.
 
 You can also find some usage examples here: https://github.com/dlukanin/node-raspistill/tree/master/examples
 
-##Changelog
+## Changelog
 
-####v 0.0.9
+#### v 0.0.9
 Fixed some issues with width/height options.
 Added setDefaultOptions method.
 Updated some dependencies.
 
-####v 0.0.8
+#### v 0.0.8
 Added noPreview option.
 
-##Docs
-###Raspistill
+## Docs
+### Raspistill
 #### constructor(options?: ICameraOptions)
 Creates new Raspistill instance.
 
@@ -64,11 +64,12 @@ Options - object, that can contain:
 
 |key|type|defaults|desc|
 |---|---|---|---|
+|noFileSave|boolean|false|Disables photos saving. If true - camera output will be directly sent as Buffer without saving on the drive|
 |verticalFlip|boolean|false|   |
 |horizontalFlip|boolean|false|   |
 |noPreview|boolean|true|Disables preview window on Pi while taking photo|
 |outputDir|string|'./photos'|Output directory where photos will be stored|
-|fileName|string|new Date.now() + file encoding|Name for photo file|
+|fileName|string|undefined|Name for photo file. If undefined - photos name will be calculated as new Date.now() + file encoding|
 |encoding|string|'jpg'|'jpg', 'bpm', 'gif' or 'png'|
 |width|number|undefined|Width of taken image in pixels. If width is not set - raspistill uses default max camera sensor resolution width|
 |height|number|undefined|Height of taken image in pixels. If height is not set - raspistill uses default max camera sensor resolution height|

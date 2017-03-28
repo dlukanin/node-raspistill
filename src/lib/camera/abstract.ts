@@ -3,6 +3,7 @@ import {DefaultWatcher} from '../watcher/default';
 import {IWatcher} from '../watcher/interfaces';
 import {defaultOptions} from './options/default';
 import * as assign from 'object.assign';
+import {execFile} from 'child_process';
 
 export abstract class AbstractCamera implements ICamera {
     /**
@@ -11,7 +12,7 @@ export abstract class AbstractCamera implements ICamera {
      */
     public static readonly DEFAULT_OPTIONS: ICameraOptions = defaultOptions;
 
-    public abstract takePhoto: (options?: ICameraOptions) => Promise<Buffer>;
+    public abstract takePhoto(fileName?: string): Promise<Buffer>;
 
     /**
      * Command for executing in child_process
@@ -51,7 +52,7 @@ export abstract class AbstractCamera implements ICamera {
     }
 
     // TODO move to some kind of configurable abstract class
-    public setOptions = (options: ICameraOptions): void => {
+    public setOptions(options: ICameraOptions): void {
         if (!options) {
             return;
         }
@@ -83,15 +84,15 @@ export abstract class AbstractCamera implements ICamera {
         }
     }
 
-    public setDefaultOptions = (): void => {
+    public setDefaultOptions(): void {
         this.options = defaultOptions;
     }
 
-    public getOption = (key: string): any => {
+    public getOption(key: string): any {
         return this.options[key];
     }
 
-    public getOptions = (): ICameraOptions => {
+    public getOptions(): ICameraOptions {
         return this.options;
     }
 
@@ -99,7 +100,7 @@ export abstract class AbstractCamera implements ICamera {
      * Returns ready-to-use in child_process methods array of options
      * @return {Array<string>}
      */
-    protected processOptions = (newOptions?: ICameraOptions): Array<string> => {
+    protected processOptions(newOptions?: ICameraOptions): Array<string> {
         const currentOptions: ICameraOptions = assign({}, this.options, newOptions);
         const processedOptions = [];
 
@@ -120,9 +121,25 @@ export abstract class AbstractCamera implements ICamera {
 
         processedOptions.push('-o');
         processedOptions.push(
-            currentOptions.outputDir + '/' + currentOptions.fileName + '.' + currentOptions.encoding
+            this.getOption('noFileSave') === true ? '-' :
+                (currentOptions.outputDir + '/' + currentOptions.fileName + '.' + currentOptions.encoding)
         );
 
         return processedOptions;
+    }
+
+    protected execRaspistill(newCameraOptions: ICameraOptions = {}): Promise<Buffer> {
+        return new Promise((resolve, reject) => {
+            execFile(
+                this.command,
+                this.processOptions(newCameraOptions),
+                (error: any, stdout: Buffer, stderr: Buffer) => {
+                    if (error) {
+                        reject(error);
+                    }
+                    resolve(stdout);
+                }
+            );
+        })
     }
 }

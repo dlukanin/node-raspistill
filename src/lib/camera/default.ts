@@ -1,11 +1,14 @@
-import {ICamera, TCameraFileEncoding} from './interfaces';
+import {ICamera} from './interfaces';
 import {AbstractCamera} from './abstract';
-import {execFile} from 'child_process';
 
 export class DefaultCamera extends AbstractCamera implements ICamera {
-    public takePhoto = (fileName?: string): Promise<Buffer> => {
+    public takePhoto(fileName?: string): Promise<Buffer> {
         let cameraFileName = this.getOption('fileName') || Date.now().toString();
         let cameraEncoding = this.getOption('encoding');
+
+        if (this.getOption('noFileSave') === true) {
+            return this.execRaspistill();
+        }
 
         if (fileName && fileName.length) {
             const processedFileName = fileName.split('.');
@@ -16,26 +19,20 @@ export class DefaultCamera extends AbstractCamera implements ICamera {
                 cameraFileName = fileName;
             }
         }
+
         return Promise.all([
-            new Promise((resolve, reject) => {
-                execFile(
-                    this.command,
-                    this.processOptions({
-                        fileName: cameraFileName,
-                        encoding: cameraEncoding
-                    }),
-                    (error: any, stdout: string, stderr: string) => {
-                        if (error) {
-                            reject(error);
-                        }
-                        resolve(stdout);
-                    }
-                );
+            this.execRaspistill({
+                fileName: cameraFileName,
+                encoding: cameraEncoding
             }),
             this.watcher.watch(this.getOption('outputDir') + '/' + (cameraFileName + '.' + cameraEncoding))
         ])
-            .then((arr) => {
-                return arr[1];
+            .then((result) => {
+                if (result instanceof Array) {
+                    return result[1];
+                }
+
+                return result;
             })
             .catch((error) => {
                 // TODO Own error

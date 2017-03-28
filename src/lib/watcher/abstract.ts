@@ -21,7 +21,7 @@ export abstract class AbstractWatcher {
     }
 
     // TODO move to some kind of configurable abstract class
-    public setOptions = (options: IWatcherOptions): void => {
+    public setOptions(options: IWatcherOptions): void {
         if (!options) {
             return;
         }
@@ -35,11 +35,11 @@ export abstract class AbstractWatcher {
         });
     }
 
-    public getOption = (key: string): any => {
+    public getOption(key: string): any {
         return this.options[key];
     }
 
-    public getOptions = (): IWatcherOptions => {
+    public getOptions(): IWatcherOptions {
         return this.options;
     }
 }

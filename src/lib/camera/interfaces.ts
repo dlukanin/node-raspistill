@@ -1,6 +1,10 @@
 export type TCameraFileEncoding = 'jpg' | 'bpm' | 'gif' | 'png';
 
 export interface ICameraOptions {
+    /**
+     * Keep saving photos on the drive or not.
+     */
+    noFileSave?: boolean;
     verticalFlip?: boolean;
     horizontalFlip?: boolean;
     noPreview?: boolean;
@@ -28,9 +32,9 @@ export interface ICameraOptions {
 export interface ICamera {
     /**
      * Executes command and returns taken photo.
-     * @param {ICameraOptions} options
+     * @param {fileName: string} options
      */
-    takePhoto(options?: ICameraOptions): Promise<Buffer>;
+    takePhoto(fileName?: string): Promise<Buffer>;
     /**
      * Sets new camera options.
      * @param options

@@ -21,7 +21,7 @@ export class DefaultWatcher extends AbstractWatcher implements IWatcher {
      * @param expireTime
      * @return {Promise<Buffer | null>}
      */
-    public watch = (filePath: string, options?: IWatcherOptions): Promise<Buffer> => {
+    public watch(filePath: string, options?: IWatcherOptions): Promise<Buffer> {
         const dirName = path.dirname(filePath);
         const fileName = path.basename(filePath);
 
