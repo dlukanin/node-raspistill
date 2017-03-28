@@ -3,12 +3,12 @@ import {AbstractCamera} from './abstract';
 
 export class DefaultCamera extends AbstractCamera implements ICamera {
     public takePhoto(fileName?: string): Promise<Buffer> {
+        if (this.getOption('noFileSave') === true) {
+            return this.spawnRaspistill();
+        }
+
         let cameraFileName = this.getOption('fileName') || Date.now().toString();
         let cameraEncoding = this.getOption('encoding');
-
-        if (this.getOption('noFileSave') === true) {
-            return this.execRaspistill();
-        }
 
         if (fileName && fileName.length) {
             const processedFileName = fileName.split('.');

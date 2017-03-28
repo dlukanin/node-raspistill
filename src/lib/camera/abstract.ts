@@ -3,7 +3,7 @@ import {DefaultWatcher} from '../watcher/default';
 import {IWatcher} from '../watcher/interfaces';
 import {defaultOptions} from './options/default';
 import * as assign from 'object.assign';
-import {execFile} from 'child_process';
+import {execFile, spawn} from 'child_process';
 
 export abstract class AbstractCamera implements ICamera {
     /**
@@ -17,6 +17,12 @@ export abstract class AbstractCamera implements ICamera {
      * @type {string}
      */
     protected readonly command: string = 'raspistill';
+
+    /**
+     * Max buffer size when using execFile raspistill command.
+     * @type {number}
+     */
+    protected maxBuffer: number = 400 * 1024;
 
     /**
      * Watcher object for current camera.
@@ -138,13 +144,60 @@ export abstract class AbstractCamera implements ICamera {
             execFile(
                 this.command,
                 this.processOptions(newCameraOptions),
-                (error: any, stdout: Buffer, stderr: Buffer) => {
+                {
+                    maxBuffer: this.maxBuffer,
+                    encoding: 'binary'
+                },
+                (error: any, stdout, stderr) => {
                     if (error) {
                         reject(error);
                     }
                     resolve(stdout);
                 }
             );
+        });
+    }
+
+    /**
+     * Spawns raspistill process and returns buffer from stdout.
+     * @param newCameraOptions
+     * @return {Promise<T>}
+     */
+    protected spawnRaspistill(newCameraOptions: ICameraOptions = {}): Promise<Buffer> {
+        return new Promise((resolve, reject) => {
+            let photoBuffer: Buffer = new Buffer(0);
+            let errorBuffer: Buffer = new Buffer(0);
+            let error: any;
+
+            const childProcess = spawn(
+                this.command,
+                this.processOptions(newCameraOptions)
+            );
+
+            childProcess.on('error', (processError: any) => {
+                error = processError;
+            });
+
+            childProcess.on('close', () => {
+                if (error) {
+                    reject(error);
+                }
+
+                if (errorBuffer.toString().length) {
+                    reject(new Error(errorBuffer.toString()));
+                }
+
+                childProcess.kill();
+                resolve(photoBuffer);
+            });
+
+            childProcess.stdout.on('data', (data: Buffer) => {
+                photoBuffer = Buffer.concat([photoBuffer, data]);
+            });
+
+            childProcess.stderr.on('data', (data: Buffer) => {
+                errorBuffer = Buffer.concat([errorBuffer, data]);
+            });
         });
     }
 }

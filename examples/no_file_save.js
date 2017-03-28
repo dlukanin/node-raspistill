@@ -1,16 +1,14 @@
 const Raspistill = require('node-raspistill').Raspistill;
 const fs = require('fs');
 const raspistill = new Raspistill({
-    width: 640,
-    height: 480,
     noFileSave: true,
-    encoding: 'png'
+    encoding: 'bmp'
 });
 
-raspistill.takePhoto('first')
+raspistill.takePhoto()
     .then((photo) => {
-        console.log('took first photo', photo);
-        fs.writeFile('1.png', photo, function (err) {
+        console.log('took photo');
+        fs.writeFile('1.bmp', photo, {encoding: 'binary'}, function (err) {
             if (err) {
                 throw err;
             }
