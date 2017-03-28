@@ -1,8 +1,9 @@
 import {DefaultWatcher} from '../lib/watcher/default';
 import defaultOptions from '../lib/watcher/options/default';
-import * as fs from 'fs-promise';
 import {expect} from 'chai';
 import {IWatcherOptions} from '../lib/watcher/interfaces';
+
+const fs = require('fs-promise');
 
 const PHOTOS_DIR = './photos/';
 

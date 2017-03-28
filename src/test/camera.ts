@@ -1,10 +1,10 @@
 import {expect} from 'chai';
-import * as fs from 'fs-promise';
 import * as sinon from 'sinon';
 import {DefaultCamera} from '../lib/camera/default';
 /* tslint:disable */
 // NOTE we cast child_process as any because of sinon patching
 const child_process = require('child_process');
+const fs = require('fs-promise');
 /* tslint:enable */
 
 describe('camera', function(): void {
