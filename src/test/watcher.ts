@@ -2,9 +2,9 @@ import {DefaultWatcher} from '../lib/watcher/default';
 import defaultOptions from '../lib/watcher/options/default';
 import {expect} from 'chai';
 import {IWatcherOptions} from '../lib/watcher/interfaces';
-
+/* tslint:disable */
 const fs = require('fs-promise');
-
+/* tslint:enable */
 const PHOTOS_DIR = './photos/';
 
 describe('watcher', function(): void {
