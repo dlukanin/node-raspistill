@@ -161,7 +161,7 @@ export abstract class AbstractCamera implements ICamera {
     /**
      * Spawns raspistill process and returns buffer from stdout.
      * @param newCameraOptions
-     * @return {Promise<T>}
+     * @return {Promise<Buffer>}
      */
     protected spawnRaspistill(newCameraOptions: ICameraOptions = {}): Promise<Buffer> {
         return new Promise((resolve, reject) => {
@@ -179,6 +179,8 @@ export abstract class AbstractCamera implements ICamera {
             });
 
             childProcess.on('close', () => {
+                childProcess.kill();
+
                 if (error) {
                     reject(error);
                 }
@@ -187,7 +189,6 @@ export abstract class AbstractCamera implements ICamera {
                     reject(new Error(errorBuffer.toString()));
                 }
 
-                childProcess.kill();
                 resolve(photoBuffer);
             });
 
