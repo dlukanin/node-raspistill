@@ -69,7 +69,7 @@ Options - object, that can contain:
 |horizontalFlip|boolean|false|   |
 |noPreview|boolean|true|Disables preview window on Pi while taking photo|
 |outputDir|string|'./photos'|Output directory where photos will be stored|
-|fileName|string|undefined|Name for photo file. If undefined - photos name will be calculated as new Date.now() + file encoding|
+|fileName|string|undefined|Name for photo file. If undefined - photos file names will be calculated as new Date.now() + file encoding|
 |encoding|string|'jpg'|'jpg', 'bpm', 'gif' or 'png'|
 |width|number|undefined|Width of taken image in pixels. If width is not set - raspistill uses default max camera sensor resolution width|
 |height|number|undefined|Height of taken image in pixels. If height is not set - raspistill uses default max camera sensor resolution height|

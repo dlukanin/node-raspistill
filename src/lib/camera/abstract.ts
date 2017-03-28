@@ -128,6 +128,11 @@ export abstract class AbstractCamera implements ICamera {
         return processedOptions;
     }
 
+    /**
+     * Executes raspistill command.
+     * @param newCameraOptions
+     * @return {Promise<Buffer>}
+     */
     protected execRaspistill(newCameraOptions: ICameraOptions = {}): Promise<Buffer> {
         return new Promise((resolve, reject) => {
             execFile(
