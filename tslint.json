@@ -4,12 +4,11 @@
   "rules": {
     "quotemark": [true, "single"],
     "eofline": false,
-    "ordered-imports": "any",
+    "ordered-imports": false,
     "object-literal-sort-keys": false,
     "trailing-comma": [true, {"multiline": "never", "singleline": "never"}],
     "only-arrow-functions": false,
     "no-shadowed-variable": false,
-    "array-type": [true, "generic"],
     "typedef": [true,
       "call-signature",
       "parameter",

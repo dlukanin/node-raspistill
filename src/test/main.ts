@@ -1,0 +1,1 @@
+export type TMochaDoneFunction = (err?: any) => void;

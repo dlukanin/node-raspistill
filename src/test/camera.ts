@@ -1,6 +1,7 @@
 import {expect} from 'chai';
 import * as sinon from 'sinon';
 import {DefaultCamera} from '../lib/camera/default';
+import {TMochaDoneFunction} from './main';
 /* tslint:disable */
 // NOTE we cast child_process as any because of sinon patching
 const child_process = require('child_process');
@@ -20,11 +21,11 @@ describe('camera', function(): void {
 
     this.timeout(4000);
 
-    beforeEach(function(done: Function): void {
+    beforeEach(function(done: TMochaDoneFunction): void {
         sandbox.stub(
             child_process,
-            'execFile', function(arg: any, secondArg: any, opts: any, callback: Function
-        ): void {
+            'execFile'
+        ).callsFake(function(arg: any, secondArg: any, opts: any, callback: (...args: any[]) => void): void {
             fs.mkdir(PHOTOS_DIR)
                 .catch(() => {
                     return;
@@ -36,11 +37,11 @@ describe('camera', function(): void {
                 .catch((error) => {
                     callback(error);
                 });
-            });
+        });
         done();
     });
 
-    it('should round width and height values passed to constructor', (done: Function) => {
+    it('should round width and height values passed to constructor', (done: TMochaDoneFunction) => {
         const camera = new DefaultCamera({
             width: 800.12,
             height: 599.90
@@ -52,12 +53,12 @@ describe('camera', function(): void {
         done();
     });
 
-    it('should use default args while executing raspistill command', (done: Function) => {
+    it('should use default args while executing raspistill command', (done: TMochaDoneFunction) => {
         const camera = new DefaultCamera();
 
         camera.takePhoto();
 
-        const args: Array<any> = child_process.execFile.args[0];
+        const args: any[] = child_process.execFile.args[0];
 
         expect(args[0]).to.eql('raspistill');
         expect(args[1]).to.eql(['-n', '-e', 'jpg', '-o', args[1][4]]); // TODO path check
@@ -65,7 +66,7 @@ describe('camera', function(): void {
         done();
     });
 
-    it('should set default options', (done: Function) => {
+    it('should set default options', (done: TMochaDoneFunction) => {
         const camera = new DefaultCamera({
             width: 1000,
             outputDir: PHOTOS_DIR + '/test'
@@ -73,7 +74,7 @@ describe('camera', function(): void {
 
         camera.takePhoto('foo');
 
-        const fooArgs: Array<any> = child_process.execFile.args[0];
+        const fooArgs: any[] = child_process.execFile.args[0];
 
         expect(fooArgs[0]).to.eql('raspistill');
         expect(fooArgs[1]).to.eql([
@@ -83,7 +84,7 @@ describe('camera', function(): void {
         camera.setDefaultOptions();
         camera.takePhoto('bar');
 
-        const barArgs: Array<any> = child_process.execFile.args[1];
+        const barArgs: any[] = child_process.execFile.args[1];
 
         expect(barArgs[0]).to.eql('raspistill');
         expect(barArgs[1]).to.eql([
@@ -92,7 +93,7 @@ describe('camera', function(): void {
         done();
     });
 
-    it('should apply custom args raspistill command', (done: Function) => {
+    it('should apply custom args raspistill command', (done: TMochaDoneFunction) => {
         const camera = new DefaultCamera({
             verticalFlip: true,
             horizontalFlip: true,
@@ -112,9 +113,9 @@ describe('camera', function(): void {
         });
         camera.takePhoto('anotherTest');
 
-        const args: Array<any> = child_process.execFile.args[0];
-        const secondCallArgs: Array<any> = child_process.execFile.args[1];
-        const thirdCallArgs: Array<any> = child_process.execFile.args[2];
+        const args: any[] = child_process.execFile.args[0];
+        const secondCallArgs: any[] = child_process.execFile.args[1];
+        const thirdCallArgs: any[] = child_process.execFile.args[2];
 
         expect(args[0]).to.eql('raspistill');
         expect(args[1]).to.eql([
@@ -134,9 +135,43 @@ describe('camera', function(): void {
         done();
     });
 
-    // TODO test on spawnRaspistill
+    it('should return buffer object with noFileSave option', (done: TMochaDoneFunction) => {
+        const originalSpawn = child_process.spawn;
 
-    it('should take photo', (done: Function) => {
+        sandbox.stub(
+            child_process,
+            'spawn'
+        ).callsFake((command: string, args: string[]) => {
+            return originalSpawn.call(child_process, 'node', [__dirname + '/helpers/child_process.js']);
+        });
+
+        const camera = new DefaultCamera({
+            noFileSave: true,
+            outputDir: PHOTOS_DIR + '/test',
+            fileName: 'no_file_saved',
+            encoding: 'jpg'
+        });
+
+        camera.takePhoto()
+            .then((data: any) => {
+                expect(data).to.be.instanceof(Buffer);
+            })
+            .catch((error) => {
+                done(error);
+            });
+
+        expect(child_process.execFile.args.length).to.eq(0);
+
+        const args: any = child_process.spawn.args[0];
+        expect(args[0]).to.eql('raspistill');
+        expect(args[1]).to.eql([
+            '-n', '-e', 'jpg', '-o', '-'
+        ]);
+
+        done();
+    });
+
+    it('should take photo', (done: TMochaDoneFunction) => {
         camera.takePhoto(FILE_NAME)
             .then((data: any) => {
                 expect(data).to.be.instanceOf(Buffer);
@@ -148,7 +183,7 @@ describe('camera', function(): void {
             });
     });
 
-    it('should take photo with same name', (done: Function) => {
+    it('should take photo with same name', (done: TMochaDoneFunction) => {
         camera.takePhoto(FILE_NAME)
             .then((data: any) => {
                 expect(data).to.be.instanceOf(Buffer);
@@ -164,7 +199,7 @@ describe('camera', function(): void {
         sandbox.restore();
     });
 
-    after(function(done: Function): void {
+    after(function(done: TMochaDoneFunction): void {
         fs.rmdir(PHOTOS_DIR + '/test')
             .then(() => fs.unlink(PHOTOS_DIR + '/' + FILE_NAME + '.' + FILE_ENC))
             .then(() => fs.rmdir(PHOTOS_DIR))

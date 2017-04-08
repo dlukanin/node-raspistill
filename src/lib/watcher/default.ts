@@ -25,7 +25,7 @@ export class DefaultWatcher extends AbstractWatcher implements IWatcher {
         const dirName = path.dirname(filePath);
         const fileName = path.basename(filePath);
 
-        return new Promise((resolve: Function, reject: Function) => {
+        return new Promise((resolve: (result: any) => void, reject: (error: any) => void) => {
             fs.mkdir(dirName, (err: any) => {
                 if (err) {
                     if (err.code !== EEXISTS) {
