@@ -23,8 +23,8 @@ describe('camera', function(): void {
     beforeEach(function(done: Function): void {
         sandbox.stub(
             child_process,
-            'execFile', function(arg: any, secondArg: any, opts: any, callback: Function
-        ): void {
+            'execFile'
+        ).callsFake(function(arg: any, secondArg: any, opts: any, callback: Function): void {
             fs.mkdir(PHOTOS_DIR)
                 .catch(() => {
                     return;
@@ -36,7 +36,7 @@ describe('camera', function(): void {
                 .catch((error) => {
                     callback(error);
                 });
-            });
+        });
         done();
     });
 
@@ -134,7 +134,41 @@ describe('camera', function(): void {
         done();
     });
 
-    // TODO test on spawnRaspistill
+    it('should return buffer object with noFileSave option', (done: Function) => {
+        const originalSpawn = child_process.spawn;
+
+        sandbox.stub(
+            child_process,
+            'spawn'
+        ).callsFake((command: string, args: Array<string>) => {
+            return originalSpawn.call(child_process, 'node', [__dirname + '/helpers/child_process.js']);
+        });
+
+        const camera = new DefaultCamera({
+            noFileSave: true,
+            outputDir: PHOTOS_DIR + '/test',
+            fileName: 'no_file_saved',
+            encoding: 'jpg'
+        });
+
+        camera.takePhoto()
+            .then((data: any) => {
+                expect(data).to.be.instanceof(Buffer);
+            })
+            .catch((error) => {
+                done(error);
+            });
+
+        expect(child_process.execFile.args.length).to.eq(0);
+
+        const args: Array<any> = child_process.spawn.args[0];
+        expect(args[0]).to.eql('raspistill');
+        expect(args[1]).to.eql([
+            '-n', '-e', 'jpg', '-o', '-'
+        ]);
+
+        done();
+    });
 
     it('should take photo', (done: Function) => {
         camera.takePhoto(FILE_NAME)
