@@ -106,7 +106,7 @@ export abstract class AbstractCamera implements ICamera {
      * Returns ready-to-use in child_process methods array of options
      * @return {Array<string>}
      */
-    protected processOptions(newOptions?: ICameraOptions): Array<string> {
+    protected processOptions(newOptions?: ICameraOptions): string[] {
         const currentOptions: ICameraOptions = assign({}, this.options, newOptions);
         const processedOptions = [];
 

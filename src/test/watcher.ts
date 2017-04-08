@@ -2,6 +2,7 @@ import {DefaultWatcher} from '../lib/watcher/default';
 import defaultOptions from '../lib/watcher/options/default';
 import {expect} from 'chai';
 import {IWatcherOptions} from '../lib/watcher/interfaces';
+import {TMochaDoneFunction} from './main';
 /* tslint:disable */
 const fs = require('fs-promise');
 /* tslint:enable */
@@ -15,7 +16,7 @@ describe('watcher', function(): void {
 
     const watcher = new DefaultWatcher({expireTime: 2000});
 
-    it('should create dir if not exists', function(done: Function): void {
+    it('should create dir if not exists', function(done: TMochaDoneFunction): void {
         fs.rmdir(PHOTOS_DIR)
             .catch((error) => {
                 return;
@@ -33,7 +34,7 @@ describe('watcher', function(): void {
             });
     });
 
-    it('should init/set options', function(done: Function): void {
+    it('should init/set options', function(done: TMochaDoneFunction): void {
         const options: IWatcherOptions = {expireTime: 2000};
 
         const testWatcher = new DefaultWatcher(options);
@@ -57,7 +58,7 @@ describe('watcher', function(): void {
 
     });
 
-    it('should return buffer object', function(done: Function): void {
+    it('should return buffer object', function(done: TMochaDoneFunction): void {
         const watcherPromise = watcher.watch(PHOTOS_DIR + FILE_NAME).then((file) => {
             expect(file).to.be.instanceof(Buffer);
             expect(file.toString()).to.eq('test');
@@ -74,7 +75,7 @@ describe('watcher', function(): void {
             });
     });
 
-    it('should return error if no file exists after timeout', function(done: Function): void {
+    it('should return error if no file exists after timeout', function(done: TMochaDoneFunction): void {
         watcher.watch(PHOTOS_DIR + '2.txt').catch((error) => {
             expect(error).to.eql(new Error('No file found'));
             expect(error.message).to.eq('No file found');
@@ -85,7 +86,7 @@ describe('watcher', function(): void {
             });
     });
 
-    after(function(done: Function): void {
+    after(function(done: TMochaDoneFunction): void {
         fs.unlink(PHOTOS_DIR + FILE_NAME)
             .then(() => {
                 done();
