@@ -4,6 +4,7 @@ import {IWatcher} from '../watcher/interfaces';
 import {defaultOptions} from './options/default';
 import * as assign from 'object.assign';
 import {execFile, spawn} from 'child_process';
+import * as imageType from 'image-type';
 
 export abstract class AbstractCamera implements ICamera {
     /**
@@ -46,7 +47,8 @@ export abstract class AbstractCamera implements ICamera {
         noPreview: '-n',
         encoding: '-e',
         width: '-w',
-        height: '-h'
+        height: '-h',
+        timelapse: '-tl'
     };
 
     constructor(options: ICameraOptions = {}, watcher: IWatcher = new DefaultWatcher()) {
@@ -57,7 +59,19 @@ export abstract class AbstractCamera implements ICamera {
 
     public abstract takePhoto(fileName?: string): Promise<Buffer>;
 
-    // TODO move to some kind of configurable abstract class
+    public abstract timelapse(
+        fileName: string,
+        intervalMs: number,
+        execTimeMs: number,
+        cb: (image: Buffer) => any
+    ): Promise<void>;
+
+    public abstract timelapse(
+        intervalMs: number,
+        execTimeMs: number,
+        cb: (image: Buffer) => any
+    ): Promise<void>;
+
     public setOptions(options: ICameraOptions): void {
         if (!options) {
             return;
@@ -134,6 +148,8 @@ export abstract class AbstractCamera implements ICamera {
         return processedOptions;
     }
 
+    // TODO move raspistill exec methods to the separate class (e.g. raspistill executor)
+
     /**
      * Executes raspistill command.
      * @param newCameraOptions
@@ -155,6 +171,54 @@ export abstract class AbstractCamera implements ICamera {
                     resolve(stdout);
                 }
             );
+        });
+    }
+
+    protected spawnRaspistillForTimelapse(
+        cb: (img: Buffer) => any,
+        newCameraOptions: ICameraOptions = {}
+    ): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            let photoBuffer: Buffer = new Buffer(0);
+            let errorBuffer: Buffer = new Buffer(0);
+            let error: any;
+
+            const childProcess = spawn(
+                this.command,
+                this.processOptions(assign({}, newCameraOptions, {timelapse: true}))
+            );
+
+            childProcess.on('error', (processError: any) => {
+                error = processError;
+            });
+
+            childProcess.on('close', () => {
+                if (error) {
+                    childProcess.kill();
+                    reject(error);
+                }
+
+                if (errorBuffer.toString().length) {
+                    childProcess.kill();
+                    reject(new Error(errorBuffer.toString()));
+                }
+
+                cb(photoBuffer);
+                resolve();
+            });
+
+            childProcess.stdout.on('data', (data: Buffer) => {
+                if (imageType(data) && photoBuffer.length) {
+                    cb(photoBuffer);
+                    photoBuffer = data;
+                    return;
+                }
+                photoBuffer = Buffer.concat([photoBuffer, data]);
+            });
+
+            childProcess.stderr.on('data', (data: Buffer) => {
+                errorBuffer = Buffer.concat([errorBuffer, data]);
+            });
         });
     }
 

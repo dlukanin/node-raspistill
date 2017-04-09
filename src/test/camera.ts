@@ -195,6 +195,34 @@ describe('camera', function(): void {
             });
     });
 
+    it('should exec camera in timelapse mode', function(done: TMochaDoneFunction): void {
+        const originalSpawn = child_process.spawn;
+
+        sandbox.stub(
+            child_process,
+            'spawn'
+        ).callsFake((command: string, args: string[]) => {
+            return originalSpawn.call(child_process, 'node', [__dirname + '/helpers/child_process_timelapse.js']);
+        });
+
+        const camera = new DefaultCamera({
+            noFileSave: true,
+            outputDir: PHOTOS_DIR + '/test',
+            fileName: 'no_file_saved',
+            encoding: 'jpg'
+        });
+
+        let i = 0;
+        camera.timelapse(500, 10000, (image: Buffer) => {
+            i++;
+        }).then(() => {
+            expect(i).to.eq(4);
+            done();
+        }).catch((err) => {
+            done(err);
+        });
+    });
+
     afterEach(function(): void {
         sandbox.restore();
     });

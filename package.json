@@ -43,6 +43,7 @@
     "typescript": "^2.2.1"
   },
   "dependencies": {
+    "image-type": "^3.0.0",
     "object.assign": "^4.0.4"
   }
 }
