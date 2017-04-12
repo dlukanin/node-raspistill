@@ -26,6 +26,11 @@ export interface ICameraOptions {
     height?: number;
 }
 
+export interface IInnerExecCameraOptions extends ICameraOptions {
+    timelapse?: number;
+    time?: number;
+}
+
 /**
  * Interface for raspberry camera.
  */

@@ -1,10 +1,26 @@
-import {ICamera} from './interfaces';
+import {ICamera, ICameraOptions} from './interfaces';
 import {AbstractCamera} from './abstract';
+import {IWatcher} from '../watcher/interfaces';
+import {DefaultWatcher} from '../watcher/default';
+import {IRaspistillExecutor} from '../executor/interfaces';
+import {DefaultRaspistillExecutor} from '../executor/default';
 
 export class DefaultCamera extends AbstractCamera implements ICamera {
+    constructor(
+        options: ICameraOptions = {},
+        protected watcher: IWatcher = new DefaultWatcher(),
+        protected executor: IRaspistillExecutor = new DefaultRaspistillExecutor()
+    ) {
+        super(options);
+    }
+
     public timelapse(
-        ...args: any[]
-    ): Promise<void> {
+        fileName: string, intervalMs: number, execTimeMs: number, cb: (image: Buffer) => any
+    ): Promise<void>;
+    public timelapse(
+        intervalMs: number, execTimeMs: number, cb: (image: Buffer) => any
+    ): Promise<void>;
+    public timelapse(...args: any[]): Promise<void> {
         let fileName: string;
         let intervalMs: number;
         let execTimeMs: number;
@@ -21,12 +37,16 @@ export class DefaultCamera extends AbstractCamera implements ICamera {
             cb = args[2];
         }
 
-        return this.spawnRaspistillForTimelapse(cb, {fileName});
+        return this.executor.spawnAndGetImages(this.processOptions({
+            time: execTimeMs,
+            timelapse: intervalMs,
+            fileName
+        }), cb);
     }
 
     public takePhoto(fileName?: string): Promise<Buffer> {
         if (this.getOption('noFileSave') === true) {
-            return this.spawnRaspistill();
+            return this.executor.spawnAndGetImage(this.processOptions());
         }
 
         let cameraFileName = this.getOption('fileName') || Date.now().toString();
@@ -43,10 +63,10 @@ export class DefaultCamera extends AbstractCamera implements ICamera {
         }
 
         return Promise.all([
-            this.execRaspistill({
+            this.executor.exec(this.processOptions({
                 fileName: cameraFileName,
                 encoding: cameraEncoding
-            }),
+            })),
             this.watcher.watch(this.getOption('outputDir') + '/' + (cameraFileName + '.' + cameraEncoding))
         ])
             .then((result) => {
@@ -57,7 +77,6 @@ export class DefaultCamera extends AbstractCamera implements ICamera {
                 return result;
             })
             .catch((error) => {
-                // TODO Own error
                 throw new Error((new Date()).toISOString() + ' Raspistill failed: ' + error.message);
             });
     }

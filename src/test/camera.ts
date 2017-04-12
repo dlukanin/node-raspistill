@@ -213,7 +213,8 @@ describe('camera', function(): void {
         });
 
         let i = 0;
-        camera.timelapse(500, 10000, (image: Buffer) => {
+        camera.timelapse(500, 10000, (image) => {
+            expect(image).to.be.instanceOf(Buffer);
             i++;
         }).then(() => {
             expect(i).to.eq(4);
