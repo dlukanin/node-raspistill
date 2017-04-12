@@ -6,20 +6,16 @@ import {IRaspistillExecutor} from '../executor/interfaces';
 import {DefaultRaspistillExecutor} from '../executor/default';
 
 export class DefaultCamera extends AbstractCamera implements ICamera {
-    constructor(
-        options: ICameraOptions = {},
-        protected watcher: IWatcher = new DefaultWatcher(),
-        protected executor: IRaspistillExecutor = new DefaultRaspistillExecutor()
-    ) {
+    constructor(options: ICameraOptions = {},
+                protected watcher: IWatcher = new DefaultWatcher(),
+                protected executor: IRaspistillExecutor = new DefaultRaspistillExecutor()) {
         super(options);
     }
 
     public timelapse(
         fileName: string, intervalMs: number, execTimeMs: number, cb: (image: Buffer) => any
     ): Promise<void>;
-    public timelapse(
-        intervalMs: number, execTimeMs: number, cb: (image: Buffer) => any
-    ): Promise<void>;
+    public timelapse(intervalMs: number, execTimeMs: number, cb: (image: Buffer) => any): Promise<void>;
     public timelapse(...args: any[]): Promise<void> {
         let fileName: string;
         let intervalMs: number;
@@ -37,11 +33,38 @@ export class DefaultCamera extends AbstractCamera implements ICamera {
             cb = args[2];
         }
 
-        return this.executor.spawnAndGetImages(this.processOptions({
-            time: execTimeMs,
-            timelapse: intervalMs,
-            fileName
-        }), cb);
+        if (this.getOption('noFileSave')) {
+            return this.executor.spawnAndGetImages(this.processOptions({
+                time: execTimeMs,
+                timelapse: intervalMs,
+                fileName
+            }), cb);
+        }
+
+        let cameraFileName = this.getOption('fileName') || Date.now().toString() + '%04d';
+        let cameraEncoding = this.getOption('encoding');
+
+        if (fileName && fileName.length) {
+            const processedFileName = fileName.split('.');
+            if (processedFileName.length > 1) {
+                cameraFileName = processedFileName[0];
+                cameraEncoding = processedFileName[1];
+            } else {
+                cameraFileName = fileName;
+            }
+        }
+
+        return Promise.all([
+            this.executor.exec(this.processOptions({
+                fileName: cameraFileName,
+                encoding: cameraEncoding
+            })),
+            this.watcher.watchAndGetFiles(this.getOption('outputDir'), execTimeMs, cb)
+        ])
+            .then(() => { return; })
+            .catch((error) => {
+                throw new Error((new Date()).toISOString() + ' Raspistill failed: ' + error.message);
+            });
     }
 
     public takePhoto(fileName?: string): Promise<Buffer> {
