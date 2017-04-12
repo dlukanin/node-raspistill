@@ -6,25 +6,23 @@ let counter = 0;
 function generateImage(): void {
     counter++;
     if (counter <= 4) {
-        setTimeout(() => {
-            const val = Math.floor(Math.random() * 20);
-            imageGenerator.generateImage(
-                800 + val,
-                600,
-                40,
-                function(err: any, image: any): void {
+        const val = Math.floor(Math.random() * 20);
+        imageGenerator.generateImage(
+            800 + val,
+            600,
+            40,
+            function(err: any, image: any): void {
+                if (err) {
+                    throw err;
+                }
+
+                fs.writeFile('./photos/' + val.toString() + counter, image.data, (err) => {
                     if (err) {
                         throw err;
                     }
-
-                    fs.writeFile('./photos/' + val.toString() + counter, image.data, (err) => {
-                        if (err) {
-                            throw err;
-                        }
-                        generateImage();
-                    });
+                    generateImage();
                 });
-        }, 300);
+            });
     }
 }
 
