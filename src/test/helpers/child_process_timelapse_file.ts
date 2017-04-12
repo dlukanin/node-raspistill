@@ -17,14 +17,12 @@ function generateImage(): void {
                         throw err;
                     }
 
-                    if (counter <= 4) {
-                        fs.writeFile('./photos/' + val.toString() + counter, image.data, (err) => {
-                            if (err) {
-                                throw err;
-                            }
-                        });
+                    fs.writeFile('./photos/' + val.toString() + counter, image.data, (err) => {
+                        if (err) {
+                            throw err;
+                        }
                         generateImage();
-                    }
+                    });
                 });
         }, 300);
     }
