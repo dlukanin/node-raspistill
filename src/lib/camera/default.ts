@@ -67,7 +67,7 @@ export class DefaultCamera extends AbstractCamera implements ICamera {
                 fileName: cameraFileName,
                 encoding: cameraEncoding
             })),
-            this.watcher.watch(this.getOption('outputDir') + '/' + (cameraFileName + '.' + cameraEncoding))
+            this.watcher.watchAndGetFile(this.getOption('outputDir') + '/' + (cameraFileName + '.' + cameraEncoding))
         ])
             .then((result) => {
                 if (result instanceof Array) {

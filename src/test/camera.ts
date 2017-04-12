@@ -2,6 +2,7 @@ import {expect} from 'chai';
 import * as sinon from 'sinon';
 import {DefaultCamera} from '../lib/camera/default';
 import {TMochaDoneFunction} from './main';
+import * as rmdir from 'rmdir';
 /* tslint:disable */
 // NOTE we cast child_process as any because of sinon patching
 const child_process = require('child_process');
@@ -229,14 +230,12 @@ describe('camera', function(): void {
     });
 
     after(function(done: TMochaDoneFunction): void {
-        fs.rmdir(PHOTOS_DIR + '/test')
-            .then(() => fs.unlink(PHOTOS_DIR + '/' + FILE_NAME + '.' + FILE_ENC))
-            .then(() => fs.rmdir(PHOTOS_DIR))
-            .then(() => {
+        rmdir(PHOTOS_DIR, (err) => {
+            if (err) {
+                done(err);
+            } else {
                 done();
-            })
-            .catch((error) => {
-                done(error);
-            });
+            }
+        });
     });
 });
