@@ -65,7 +65,6 @@ export class DefaultWatcher extends AbstractWatcher implements IWatcher {
                 }
 
                 const watcher = fs.watch(dirName, (eventType: string, changedFileName: string) => {
-                    console.log(eventType);
                     if ((eventType === EVENT_RENAME || eventType === EVENT_CHANGE)) {
                         fs.readFile(dirName + '/' + changedFileName, (err: any, data: Buffer) => {
                             if (err) {

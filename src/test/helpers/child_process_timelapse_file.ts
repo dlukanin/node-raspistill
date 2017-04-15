@@ -14,14 +14,11 @@ function generateImage(): void {
                     throw err;
                 }
 
-                fs.writeFile('./photos/' + val.toString() + counter + '.jpg', image.data, (err) => {
-                    if (err) {
-                        throw err;
-                    }
-                    counter++;
-                    generateImage();
-                });
-            });
+                fs.writeFileSync('./photos/' + val.toString() + counter + '.jpg', image.data);
+                counter++;
+                generateImage();
+            }
+        );
     }
 }
 
