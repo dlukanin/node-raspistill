@@ -197,6 +197,7 @@ describe('camera', function(): void {
     });
 
     it('should exec camera in timelapse mode', function(done: TMochaDoneFunction): void {
+        this.timeout(0);
         const originalSpawn = child_process.spawn;
 
         sandbox.stub(
@@ -218,7 +219,7 @@ describe('camera', function(): void {
             expect(image).to.be.instanceOf(Buffer);
             i++;
         }).then(() => {
-            expect(i).to.eq(4);
+            expect(i).to.eq(5);
             done();
         }).catch((err) => {
             done(err);

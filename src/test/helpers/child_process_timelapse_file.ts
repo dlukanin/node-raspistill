@@ -1,12 +1,10 @@
 import * as imageGenerator from 'js-image-generator';
 import * as fs from 'fs';
 
-let counter = 0;
-
+let counter: number = 0;
 function generateImage(): void {
-    counter++;
+    const val = Math.floor(Math.random() * 20);
     if (counter <= 4) {
-        const val = Math.floor(Math.random() * 20);
         imageGenerator.generateImage(
             800 + val,
             600,
@@ -16,10 +14,11 @@ function generateImage(): void {
                     throw err;
                 }
 
-                fs.writeFile('./photos/' + val.toString() + counter, image.data, (err) => {
+                fs.writeFile('./photos/' + val.toString() + counter + '.jpg', image.data, (err) => {
                     if (err) {
                         throw err;
                     }
+                    counter++;
                     generateImage();
                 });
             });

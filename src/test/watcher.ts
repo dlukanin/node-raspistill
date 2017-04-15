@@ -96,7 +96,7 @@ describe('watcher', function(): void {
             counter++;
         })
             .then(() => {
-                expect(counter).to.eq(4);
+                expect(counter).to.eq(5);
                 done();
             })
             .catch((error) => {
