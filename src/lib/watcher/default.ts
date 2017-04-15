@@ -64,13 +64,18 @@ export class DefaultWatcher extends AbstractWatcher implements IWatcher {
                     }
                 }
 
+                const processedFiles: string[] = [];
                 const watcher = fs.watch(dirName, (eventType: string, changedFileName: string) => {
-                    if ((eventType === EVENT_RENAME || eventType === EVENT_CHANGE)) {
+                    if (
+                        (eventType === EVENT_RENAME || eventType === EVENT_CHANGE) &&
+                        processedFiles.indexOf(changedFileName) === -1
+                    ) {
                         fs.readFile(dirName + '/' + changedFileName, (err: any, data: Buffer) => {
                             if (err) {
                                 reject(err);
                             } else {
                                 cb(data);
+                                processedFiles.push(changedFileName);
                             }
                         });
                     }
