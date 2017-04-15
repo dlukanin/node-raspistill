@@ -91,7 +91,7 @@ describe('watcher', function(): void {
 
     it('should watch for files and apply callback', function(done: TMochaDoneFunction): void {
         let counter = 0;
-        watcher.watchAndGetFiles(PHOTOS_DIR, 3000, (file) => {
+        watcher.watchAndGetFiles(PHOTOS_DIR, 3500, (file) => {
             expect(file).to.be.instanceOf(Buffer);
             counter++;
         })
