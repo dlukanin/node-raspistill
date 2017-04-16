@@ -2,6 +2,7 @@ import {expect} from 'chai';
 import * as sinon from 'sinon';
 import {DefaultCamera} from '../lib/camera/default';
 import {TMochaDoneFunction} from './main';
+import * as rmdir from 'rmdir';
 /* tslint:disable */
 // NOTE we cast child_process as any because of sinon patching
 const child_process = require('child_process');
@@ -195,19 +196,91 @@ describe('camera', function(): void {
             });
     });
 
+    it('should exec camera in timelapse mode (no file save)', function(done: TMochaDoneFunction): void {
+        this.timeout(4000);
+        const originalSpawn = child_process.spawn;
+
+        sandbox.stub(
+            child_process,
+            'spawn'
+        ).callsFake((command: string, args: string[]) => {
+            return originalSpawn.call(child_process, 'node', [__dirname + '/helpers/child_process_timelapse.js']);
+        });
+
+        const camera = new DefaultCamera({
+            noFileSave: true,
+            outputDir: PHOTOS_DIR + '/test',
+            fileName: 'no_file_saved',
+            encoding: 'jpg'
+        });
+
+        let i = 0;
+        camera.timelapse(500, 3000, (image) => {
+            expect(image).to.be.instanceOf(Buffer);
+            i++;
+        }).then(() => {
+            expect(i).to.eq(5);
+            done();
+        }).catch((err) => {
+            done(err);
+        });
+
+        const args: any = child_process.spawn.args[0];
+        expect(args[0]).to.eql('raspistill');
+        expect(args[1]).to.eql([
+            '-n', '-e', 'jpg', '-t', '3000', '-tl', '500', '-o', '-'
+        ]);
+    });
+
+    it('should exec camera in timelapse mode (file save)', function(done: TMochaDoneFunction): void {
+        this.timeout(4000);
+        child_process.execFile.restore();
+
+        sandbox.stub(
+            child_process,
+            'execFile'
+        ).callsFake(function(arg: any, secondArg: any, opts: any, callback: (...args: any[]) => void): void {
+            const process = child_process.spawn('node', [__dirname + '/helpers/child_process_timelapse_file.js']);
+            process.on('close', function(): void {
+                callback(null, 'success');
+            });
+        });
+
+        const camera = new DefaultCamera({
+            outputDir: PHOTOS_DIR,
+            fileName: 'image%04d',
+            encoding: 'jpg'
+        });
+
+        let i = 0;
+        camera.timelapse(500, 3000, (image) => {
+            expect(image).to.be.instanceOf(Buffer);
+            i++;
+        }).then(() => {
+            expect(i).to.eq(5);
+            done();
+        }).catch((err) => {
+            done(err);
+        });
+
+        const args: any = child_process.execFile.args[0];
+        expect(args[0]).to.eql('raspistill');
+        expect(args[1]).to.eql([
+            '-n', '-e', 'jpg', '-t', '3000', '-tl', '500', '-o', PHOTOS_DIR + '/image%04d.jpg'
+        ]);
+    });
+
     afterEach(function(): void {
         sandbox.restore();
     });
 
     after(function(done: TMochaDoneFunction): void {
-        fs.rmdir(PHOTOS_DIR + '/test')
-            .then(() => fs.unlink(PHOTOS_DIR + '/' + FILE_NAME + '.' + FILE_ENC))
-            .then(() => fs.rmdir(PHOTOS_DIR))
-            .then(() => {
+        rmdir(PHOTOS_DIR, (err) => {
+            if (err) {
+                done(err);
+            } else {
                 done();
-            })
-            .catch((error) => {
-                done(error);
-            });
+            }
+        });
     });
 });

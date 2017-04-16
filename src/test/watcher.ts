@@ -3,10 +3,13 @@ import defaultOptions from '../lib/watcher/options/default';
 import {expect} from 'chai';
 import {IWatcherOptions} from '../lib/watcher/interfaces';
 import {TMochaDoneFunction} from './main';
+import * as rmdir from 'rmdir';
 /* tslint:disable */
 const fs = require('fs-promise');
 /* tslint:enable */
 const PHOTOS_DIR = './photos/';
+
+import * as childProcess from 'child_process';
 
 describe('watcher', function(): void {
     const FILE_NAME = '1.txt';
@@ -21,7 +24,7 @@ describe('watcher', function(): void {
             .catch((error) => {
                 return;
             })
-            .then(() => watcher.watch(PHOTOS_DIR + FILE_NAME))
+            .then(() => watcher.watchAndGetFile(PHOTOS_DIR + FILE_NAME))
             .catch((error) => {
                 return; // NOTE we don't need to test file watching in this case, so we ignore it.
             })
@@ -59,7 +62,7 @@ describe('watcher', function(): void {
     });
 
     it('should return buffer object', function(done: TMochaDoneFunction): void {
-        const watcherPromise = watcher.watch(PHOTOS_DIR + FILE_NAME).then((file) => {
+        const watcherPromise = watcher.watchAndGetFile(PHOTOS_DIR + FILE_NAME).then((file) => {
             expect(file).to.be.instanceof(Buffer);
             expect(file.toString()).to.eq('test');
         });
@@ -76,7 +79,7 @@ describe('watcher', function(): void {
     });
 
     it('should return error if no file exists after timeout', function(done: TMochaDoneFunction): void {
-        watcher.watch(PHOTOS_DIR + '2.txt').catch((error) => {
+        watcher.watchAndGetFile(PHOTOS_DIR + '2.txt').catch((error) => {
             expect(error).to.eql(new Error('No file found'));
             expect(error.message).to.eq('No file found');
             done();
@@ -86,13 +89,30 @@ describe('watcher', function(): void {
             });
     });
 
-    after(function(done: TMochaDoneFunction): void {
-        fs.unlink(PHOTOS_DIR + FILE_NAME)
+    it('should watch for files and apply callback', function(done: TMochaDoneFunction): void {
+        let counter = 0;
+        watcher.watchAndGetFiles(PHOTOS_DIR, 3500, (file) => {
+            expect(file).to.be.instanceOf(Buffer);
+            counter++;
+        })
             .then(() => {
+                expect(counter).to.eq(5);
                 done();
             })
             .catch((error) => {
                 done(error);
             });
+
+        childProcess.spawn('node', [__dirname + '/helpers/child_process_timelapse_file.js']);
+    });
+
+    after(function(done: TMochaDoneFunction): void {
+        rmdir(PHOTOS_DIR, (err) => {
+            if (err) {
+                done(err);
+            } else {
+                done();
+            }
+        });
     });
 });

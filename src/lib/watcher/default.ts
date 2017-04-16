@@ -12,16 +12,13 @@ const EEXISTS = 'EEXIST';
  * Default watcher class - wrapper around fs.watch.
  */
 export class DefaultWatcher extends AbstractWatcher implements IWatcher {
+    public static readonly IMAGE_IN_PROGRESS_SYMBOL: string = '~';
+
     constructor(options?: IWatcherOptions) {
         super(options);
     }
-    /**
-     * Watcher file for changes and return file buffer on change.
-     * @param filePath
-     * @param expireTime
-     * @return {Promise<Buffer | null>}
-     */
-    public watch(filePath: string, options?: IWatcherOptions): Promise<Buffer> {
+
+    public watchAndGetFile(filePath: string, options?: IWatcherOptions): Promise<Buffer> {
         const dirName = path.dirname(filePath);
         const fileName = path.basename(filePath);
 
@@ -54,6 +51,45 @@ export class DefaultWatcher extends AbstractWatcher implements IWatcher {
                     watcher.close();
                     reject(new Error('No file found'));
                 }, this.getOption('expireTime'));
+            });
+        });
+    }
+
+    public watchAndGetFiles(dirPath: string, watchTimeMs: number, cb: (file: Buffer) => any): Promise<void> {
+        const dirName = path.basename(dirPath);
+
+        return new Promise((resolve: (result?: any) => void, reject: (error: any) => void) => {
+            fs.mkdir(dirName, (err: any) => {
+                if (err) {
+                    if (err.code !== EEXISTS) {
+                        reject(err);
+                    }
+                }
+
+                const watcher = fs.watch(dirName, (eventType: string, changedFileName: string) => {
+                    if (
+                        changedFileName[changedFileName.length - 1] === DefaultWatcher.IMAGE_IN_PROGRESS_SYMBOL
+                    ) {
+                        return;
+                    }
+
+                    if (
+                        (eventType === EVENT_RENAME)
+                    ) {
+                        fs.readFile(dirName + '/' + changedFileName, (err: any, data: Buffer) => {
+                            if (err) {
+                                reject(err);
+                            } else {
+                                cb(data);
+                            }
+                        });
+                    }
+                });
+
+                setTimeout(() => {
+                    watcher.close();
+                    resolve();
+                }, watchTimeMs);
             });
         });
     }

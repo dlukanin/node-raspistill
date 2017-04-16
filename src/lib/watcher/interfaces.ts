@@ -13,7 +13,15 @@ export interface IWatcher {
      * Watches passed file path and returns file buffer if file appeared.
      * @param filePath
      */
-    watch(filePath: string): Promise<Buffer | null>;
+    watchAndGetFile(filePath: string): Promise<Buffer | null>;
+
+    /**
+     * Watches dir file path calls callback on returned buffer.
+     * @param dirPath
+     * @param watchTimeMs
+     */
+    watchAndGetFiles(dirPath: string, watchTimeMs: number, cb: (file: Buffer) => any): Promise<void>;
+
     /**
      * Sets current watcher options.
      * @param options

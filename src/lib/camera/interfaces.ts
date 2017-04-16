@@ -26,15 +26,35 @@ export interface ICameraOptions {
     height?: number;
 }
 
+export interface IInnerExecCameraOptions extends ICameraOptions {
+    timelapse?: number;
+    time?: number;
+}
+
 /**
  * Interface for raspberry camera.
  */
 export interface ICamera {
     /**
      * Executes command and returns taken photo.
-     * @param {fileName: string} options
+     * @param {string} fileName
      */
     takePhoto(fileName?: string): Promise<Buffer>;
+    /**
+     * Executes command and returns taken photo.
+     * @param {string} fileName
+     * @param {number} intervalMs
+     * @param {number} executionTimeMs
+     * @param {Function} cb
+     */
+    timelapse(fileName: string, intervalMs: number, execTimeMs: number, cb: (image: Buffer) => any): Promise<void>;
+    /**
+     * Executes command and returns taken photo.
+     * @param {number} intervalMs
+     * @param {number} executionTimeMs
+     * @param {Function} cb
+     */
+    timelapse(intervalMs: number, execTimeMs: number, cb: (image: Buffer) => any): Promise<void>;
     /**
      * Sets new camera options.
      * @param options
