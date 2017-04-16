@@ -57,7 +57,9 @@ export class DefaultCamera extends AbstractCamera implements ICamera {
         return Promise.all([
             this.executor.exec(this.processOptions({
                 fileName: cameraFileName,
-                encoding: cameraEncoding
+                encoding: cameraEncoding,
+                time: execTimeMs,
+                timelapse: intervalMs
             })),
             this.watcher.watchAndGetFiles(this.getOption('outputDir'), execTimeMs, cb)
         ])

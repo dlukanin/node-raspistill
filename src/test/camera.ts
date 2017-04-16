@@ -196,8 +196,8 @@ describe('camera', function(): void {
             });
     });
 
-    it('should exec camera in timelapse mode', function(done: TMochaDoneFunction): void {
-        this.timeout(0);
+    it('should exec camera in timelapse mode (no file save)', function(done: TMochaDoneFunction): void {
+        this.timeout(4000);
         const originalSpawn = child_process.spawn;
 
         sandbox.stub(
@@ -215,7 +215,7 @@ describe('camera', function(): void {
         });
 
         let i = 0;
-        camera.timelapse(500, 10000, (image) => {
+        camera.timelapse(500, 3000, (image) => {
             expect(image).to.be.instanceOf(Buffer);
             i++;
         }).then(() => {
@@ -224,6 +224,50 @@ describe('camera', function(): void {
         }).catch((err) => {
             done(err);
         });
+
+        const args: any = child_process.spawn.args[0];
+        expect(args[0]).to.eql('raspistill');
+        expect(args[1]).to.eql([
+            '-n', '-e', 'jpg', '-t', '3000', '-tl', '500', '-o', '-'
+        ]);
+    });
+
+    it('should exec camera in timelapse mode (file save)', function(done: TMochaDoneFunction): void {
+        this.timeout(4000);
+        child_process.execFile.restore();
+
+        sandbox.stub(
+            child_process,
+            'execFile'
+        ).callsFake(function(arg: any, secondArg: any, opts: any, callback: (...args: any[]) => void): void {
+            const process = child_process.spawn('node', [__dirname + '/helpers/child_process_timelapse_file.js']);
+            process.on('close', function(): void {
+                callback(null, 'success');
+            });
+        });
+
+        const camera = new DefaultCamera({
+            outputDir: PHOTOS_DIR,
+            fileName: 'image%04d',
+            encoding: 'jpg'
+        });
+
+        let i = 0;
+        camera.timelapse(500, 3000, (image) => {
+            expect(image).to.be.instanceOf(Buffer);
+            i++;
+        }).then(() => {
+            expect(i).to.eq(5);
+            done();
+        }).catch((err) => {
+            done(err);
+        });
+
+        const args: any = child_process.execFile.args[0];
+        expect(args[0]).to.eql('raspistill');
+        expect(args[1]).to.eql([
+            '-n', '-e', 'jpg', '-t', '3000', '-tl', '500', '-o', PHOTOS_DIR + '/image%04d.jpg'
+        ]);
     });
 
     afterEach(function(): void {
