@@ -49,7 +49,7 @@ You can also find some usage examples here: https://github.com/dlukanin/node-ras
 
 #### v 0.0.11
 Timelapse mode. Something like beta version, can be unstable in some cases. 
-Feel free to submit issue if you think that mode do not work well in your project.
+Feel free to submit issue if you think that mode doesn't work well in your project.
 
 #### v 0.0.10
 Added noFileSave option. 
