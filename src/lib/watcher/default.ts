@@ -12,7 +12,7 @@ const EEXISTS = 'EEXIST';
  * Default watcher class - wrapper around fs.watch.
  */
 export class DefaultWatcher extends AbstractWatcher implements IWatcher {
-    public static readonly MAX_FILE_NAMES_LIMIT: number = 100;
+    public static readonly IMAGE_IN_PROGRESS_SYMBOL: string = '~';
 
     constructor(options?: IWatcherOptions) {
         super(options);
@@ -66,16 +66,16 @@ export class DefaultWatcher extends AbstractWatcher implements IWatcher {
                     }
                 }
 
-                const processedFiles: string[] = [];
                 const watcher = fs.watch(dirName, (eventType: string, changedFileName: string) => {
                     if (
-                        (eventType === EVENT_RENAME || eventType === EVENT_CHANGE) &&
-                        processedFiles.indexOf(changedFileName) === -1
+                        changedFileName[changedFileName.length - 1] === DefaultWatcher.IMAGE_IN_PROGRESS_SYMBOL
                     ) {
-                        if (processedFiles.length > DefaultWatcher.MAX_FILE_NAMES_LIMIT) {
-                            processedFiles.length = 0;
-                        }
-                        processedFiles.push(changedFileName);
+                        return;
+                    }
+
+                    if (
+                        (eventType === EVENT_RENAME)
+                    ) {
                         fs.readFile(dirName + '/' + changedFileName, (err: any, data: Buffer) => {
                             if (err) {
                                 reject(err);

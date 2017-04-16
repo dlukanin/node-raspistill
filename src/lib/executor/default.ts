@@ -67,7 +67,6 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
     public spawnAndGetImages(args: string[], cb: (image: Buffer) => any): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             let photoBuffer: Buffer = new Buffer(0);
-            let errorBuffer: Buffer = new Buffer(0);
             let error: any;
 
             const childProcess = spawn(
@@ -85,11 +84,6 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
                     reject(error);
                 }
 
-                if (errorBuffer.toString().length) {
-                    childProcess.kill();
-                    reject(new Error(errorBuffer.toString()));
-                }
-
                 cb(photoBuffer);
                 resolve();
             });
@@ -101,10 +95,6 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
                     return;
                 }
                 photoBuffer = Buffer.concat([photoBuffer, data]);
-            });
-
-            childProcess.stderr.on('data', (data: Buffer) => {
-                errorBuffer = Buffer.concat([errorBuffer, data]);
             });
         });
     }

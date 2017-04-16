@@ -47,6 +47,9 @@ You can also find some usage examples here: https://github.com/dlukanin/node-ras
 
 ## Changelog
 
+#### v 0.0.11
+Timelapse mode. Something like beta version, can be unstable in some cases. 
+Feel free to submit issue if you think that mode do not works well in your project.
 
 #### v 0.0.10
 Added noFileSave option. 
@@ -94,6 +97,36 @@ Takes new photo. Returns Promise, resolving with Buffer object.
 ```
 camera.takePhoto('testPhotoName').then((photo) => {
     ...
+});
+```
+
+#### timelapse(fileName: string, intervalMs: number, execTimeMs: number, cb: (image: Buffer) => any): Promise\<void\>;
+#### timelapse(intervalMs: number, execTimeMs: number, cb: (image: Buffer) => any): Promise\<void\>;
+Runs camera in timelapse mode. Passes taken image picture as Buffer object to the callback. 
+Raspistill options (passed into constructor or into setOptions method) are also applicable in this mode.
+
+Remember that raspberry camera has it's own limits of taking photos speed even in timelapse mode.
+
+Check out official raspistill docs (https://www.raspberrypi.org/documentation/raspbian/applications/camera.md) for
+file naming rules and interval/total exec time params usage.
+
+```
+camera.timelapse(500, 3000, (image) => {
+    // got image from camera, do something
+}).then(() => {
+    // timelapse ended
+}).catch((err) => {
+    // something bad happened
+});
+```
+or
+```
+camera.timelapse('image%04d', 500, 3000, (image) => {
+    // got image from camera, do something
+}).then(() => {
+    // timelapse ended
+}).catch((err) => {
+    // something bad happened
 });
 ```
 
