@@ -3,7 +3,21 @@ import {execFile, spawn} from 'child_process';
 import * as imageType from 'image-type';
 import {ChildProcess} from 'child_process';
 
+// TODO refactor me
+
 export class DefaultRaspistillExecutor implements IRaspistillExecutor {
+    /**
+     * Event code for manual closing watch action.
+     * @type {string}
+     */
+    public static readonly FORCE_CLOSE_EVENT: string = 'forceClose';
+
+    /**
+     * Error message - action was force closed by user.
+     * @type {string}
+     */
+    public static readonly ERROR_FORCE_CLOSED: string = 'Action was force-closed';
+
     private childProcess: ChildProcess;
 
     private command: string = 'raspistill';
@@ -38,6 +52,11 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
                 this.command,
                 args
             );
+
+            childProcess.on(DefaultRaspistillExecutor.FORCE_CLOSE_EVENT, () => {
+                error = new Error(DefaultRaspistillExecutor.ERROR_FORCE_CLOSED);
+                childProcess.kill();
+            });
 
             childProcess.on('error', (processError: any) => {
                 error = processError;
@@ -79,6 +98,11 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
                 args
             );
 
+            childProcess.on(DefaultRaspistillExecutor.FORCE_CLOSE_EVENT, () => {
+                error = new Error(DefaultRaspistillExecutor.ERROR_FORCE_CLOSED);
+                childProcess.kill();
+            });
+
             childProcess.on('error', (processError: any) => {
                 error = processError;
             });
@@ -108,8 +132,7 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
 
     public killProcess(): void {
         if (this.childProcess) {
-            this.childProcess.kill();
-            delete this.childProcess;
+            this.childProcess.emit(DefaultRaspistillExecutor.FORCE_CLOSE_EVENT);
         }
     }
 }
