@@ -105,7 +105,7 @@ describe('watcher', function(): void {
         childProcess.spawn('node', [__dirname + '/helpers/child_process_timelapse_file.js']);
     });
 
-    it('should close watcher process', function(done: MochaDone): void {
+    it('should close watcher process (watchAndGetFile method)', function(done: MochaDone): void {
         const watcherPromise = watcher.watchAndGetFile(PHOTOS_DIR + '3.txt').then((file) => {
             done('Watcher should not trigger');
         });
@@ -119,9 +119,26 @@ describe('watcher', function(): void {
                 done('Promise should not resolve');
             })
             .catch((error) => {
-                // TODO
+                expect(error.message).to.eq(DefaultWatcher.ERROR_FORCE_CLOSED);
                 done();
             });
+    });
+
+    it('should close watcher process (watchAndGetFiles method)', function(done: MochaDone): void {
+        let counter = 0;
+        watcher.watchAndGetFiles(PHOTOS_DIR, 3500, (file) => {
+            process.stdout.write((++counter).toString(), 'files');
+        })
+            .then(() => {
+                done('Promise should not resolve');
+            })
+            .catch((error) => {
+                expect(error.message).to.eq(DefaultWatcher.ERROR_FORCE_CLOSED);
+                done();
+            });
+
+        childProcess.spawn('node', [__dirname + '/helpers/child_process_timelapse_file.js']);
+        watcher.closeWatcher();
     });
 
     after(function(done: MochaDone): void {

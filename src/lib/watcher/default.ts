@@ -5,6 +5,7 @@ import {IWatcher, IWatcherOptions} from './interfaces';
 import {FSWatcher} from 'fs';
 import Timer = NodeJS.Timer;
 
+// TODO move into watcher class (?)
 const EVENT_RENAME = 'rename';
 const EVENT_CHANGE = 'change';
 const ENOENT = 'ENOENT';
@@ -20,8 +21,25 @@ export class DefaultWatcher extends AbstractWatcher implements IWatcher {
      */
     public static readonly IMAGE_IN_PROGRESS_SYMBOL: string = '~';
 
+    /**
+     * Event code for manual closing watch action.
+     * @type {string}
+     */
+    public static readonly FORCE_CLOSE_EVENT: string = 'forceClose';
+
+    /**
+     * Error message - no file found after timeout
+     * @type {string}
+     */
+    public static readonly ERROR_NO_PHOTO: string = 'No taken photo found';
+
+    /**
+     * Error message - action was force closed by user.
+     * @type {string}
+     */
+    public static readonly ERROR_FORCE_CLOSED: string = 'Action was force-closed';
+
     private watcher: FSWatcher;
-    private timer: Timer;
 
     constructor(options?: IWatcherOptions) {
         super(options);
@@ -31,15 +49,8 @@ export class DefaultWatcher extends AbstractWatcher implements IWatcher {
         const dirName = path.dirname(filePath);
         const fileName = path.basename(filePath);
 
-        return new Promise((resolve: (result: any) => void, reject: (error: any) => void) => {
-            try {
-                fs.mkdirSync(dirName);
-            } catch (err) {
-                if (err.code !== EEXISTS) {
-                    reject(err);
-                }
-            }
-
+        return new Promise<Buffer>((resolve, reject) => {
+            this.makeDir(dirName);
             const watcher = fs.watch(dirName, (eventType: string, changedFileName: string) => {
                 if ((eventType === EVENT_RENAME || eventType === EVENT_CHANGE) && fileName === changedFileName) {
                     watcher.close();
@@ -57,28 +68,20 @@ export class DefaultWatcher extends AbstractWatcher implements IWatcher {
                 }
             });
 
-            const timer = setTimeout(() => {
+            this.addForceCloseHandler(watcher, setTimeout(() => {
                 watcher.close();
-                reject(new Error('No taken photo found'));
-            }, this.getOption('expireTime'));
+                reject(new Error(DefaultWatcher.ERROR_NO_PHOTO));
+            }, this.getOption('expireTime')), reject);
 
             this.watcher = watcher;
         });
     }
 
     public watchAndGetFiles(dirPath: string, watchTimeMs: number, cb: (file: Buffer) => any): Promise<void> {
-
         const dirName = path.basename(dirPath);
 
-        return new Promise((resolve: (result?: any) => void, reject: (error: any) => void) => {
-            try {
-                fs.mkdirSync(dirName);
-            } catch (err) {
-                if (err.code !== EEXISTS) {
-                    reject(err);
-                }
-            }
-
+        return new Promise<void>((resolve, reject) => {
+            this.makeDir(dirName);
             const watcher = fs.watch(dirName, (eventType: string, changedFileName: string) => {
                 if (
                     changedFileName[changedFileName.length - 1] === DefaultWatcher.IMAGE_IN_PROGRESS_SYMBOL
@@ -99,25 +102,36 @@ export class DefaultWatcher extends AbstractWatcher implements IWatcher {
                 }
             });
 
-            const timer = setTimeout(() => {
+            this.addForceCloseHandler(watcher, setTimeout(() => {
                 watcher.close();
                 resolve();
-            }, watchTimeMs);
+            }, watchTimeMs), reject);
 
             this.watcher = watcher;
-            this.timer = timer;
         });
     }
 
     public closeWatcher(): void {
         if (this.watcher) {
-            this.watcher.close();
-            delete this.watcher;
+            this.watcher.emit(DefaultWatcher.FORCE_CLOSE_EVENT);
         }
+    }
 
-        if (this.timer) {
-            clearTimeout(this.timer);
-            delete this.timer;
+    private makeDir(dirName: string): void {
+        try {
+            fs.mkdirSync(dirName);
+        } catch (err) {
+            if (err.code !== EEXISTS) {
+                throw err;
+            }
         }
+    }
+
+    private addForceCloseHandler(watcher: FSWatcher, timer: Timer, reject: (err: any) => void): void {
+        watcher.on(DefaultWatcher.FORCE_CLOSE_EVENT, () => {
+            watcher.close();
+            clearTimeout(timer);
+            reject(new Error(DefaultWatcher.ERROR_FORCE_CLOSED));
+        });
     }
 }
