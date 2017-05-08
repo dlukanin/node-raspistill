@@ -1,7 +1,6 @@
 import {expect} from 'chai';
 import * as sinon from 'sinon';
 import {DefaultCamera} from '../lib/camera/default';
-import {TMochaDoneFunction} from './main';
 import * as rmdir from 'rmdir';
 /* tslint:disable */
 // NOTE we cast child_process as any because of sinon patching
@@ -22,7 +21,7 @@ describe('camera', function(): void {
 
     this.timeout(4000);
 
-    beforeEach(function(done: TMochaDoneFunction): void {
+    beforeEach(function(done: MochaDone): void {
         sandbox.stub(
             child_process,
             'execFile'
@@ -42,7 +41,7 @@ describe('camera', function(): void {
         done();
     });
 
-    it('should round width and height values passed to constructor', (done: TMochaDoneFunction) => {
+    it('should round width and height values passed to constructor', (done: MochaDone) => {
         const camera = new DefaultCamera({
             width: 800.12,
             height: 599.90
@@ -54,7 +53,7 @@ describe('camera', function(): void {
         done();
     });
 
-    it('should use default args while executing raspistill command', (done: TMochaDoneFunction) => {
+    it('should use default args while executing raspistill command', (done: MochaDone) => {
         const camera = new DefaultCamera();
 
         camera.takePhoto();
@@ -67,7 +66,7 @@ describe('camera', function(): void {
         done();
     });
 
-    it('should set default options', (done: TMochaDoneFunction) => {
+    it('should set default options', (done: MochaDone) => {
         const camera = new DefaultCamera({
             width: 1000,
             outputDir: PHOTOS_DIR + '/test'
@@ -94,7 +93,7 @@ describe('camera', function(): void {
         done();
     });
 
-    it('should apply custom args raspistill command', (done: TMochaDoneFunction) => {
+    it('should apply custom args raspistill command', (done: MochaDone) => {
         const camera = new DefaultCamera({
             verticalFlip: true,
             horizontalFlip: true,
@@ -136,7 +135,7 @@ describe('camera', function(): void {
         done();
     });
 
-    it('should return buffer object with noFileSave option', (done: TMochaDoneFunction) => {
+    it('should return buffer object with noFileSave option', (done: MochaDone) => {
         const originalSpawn = child_process.spawn;
 
         sandbox.stub(
@@ -172,7 +171,7 @@ describe('camera', function(): void {
         done();
     });
 
-    it('should take photo', (done: TMochaDoneFunction) => {
+    it('should take photo', (done: MochaDone) => {
         camera.takePhoto(FILE_NAME)
             .then((data: any) => {
                 expect(data).to.be.instanceOf(Buffer);
@@ -184,7 +183,7 @@ describe('camera', function(): void {
             });
     });
 
-    it('should take photo with same name', (done: TMochaDoneFunction) => {
+    it('should take photo with same name', (done: MochaDone) => {
         camera.takePhoto(FILE_NAME)
             .then((data: any) => {
                 expect(data).to.be.instanceOf(Buffer);
@@ -196,7 +195,7 @@ describe('camera', function(): void {
             });
     });
 
-    it('should exec camera in timelapse mode (no file save)', function(done: TMochaDoneFunction): void {
+    it('should exec camera in timelapse mode (no file save)', function(done: MochaDone): void {
         this.timeout(4000);
         const originalSpawn = child_process.spawn;
 
@@ -232,7 +231,7 @@ describe('camera', function(): void {
         ]);
     });
 
-    it('should exec camera in timelapse mode (file save)', function(done: TMochaDoneFunction): void {
+    it('should exec camera in timelapse mode (file save)', function(done: MochaDone): void {
         this.timeout(4000);
         child_process.execFile.restore();
 
@@ -274,7 +273,7 @@ describe('camera', function(): void {
         sandbox.restore();
     });
 
-    after(function(done: TMochaDoneFunction): void {
+    after(function(done: MochaDone): void {
         rmdir(PHOTOS_DIR, (err) => {
             if (err) {
                 done(err);

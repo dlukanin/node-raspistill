@@ -4,6 +4,7 @@ import {IWatcher} from '../watcher/interfaces';
 import {DefaultWatcher} from '../watcher/default';
 import {IRaspistillExecutor} from '../executor/interfaces';
 import {DefaultRaspistillExecutor} from '../executor/default';
+import {ChildProcess} from 'child_process';
 
 export class DefaultCamera extends AbstractCamera implements ICamera {
     constructor(options: ICameraOptions = {},
@@ -104,5 +105,10 @@ export class DefaultCamera extends AbstractCamera implements ICamera {
             .catch((error) => {
                 throw new Error((new Date()).toISOString() + ' Raspistill failed: ' + error.message);
             });
+    }
+
+    public stop(): void {
+        this.watcher.closeWatcher();
+        this.executor.killProcess();
     }
 }

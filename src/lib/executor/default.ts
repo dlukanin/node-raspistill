@@ -1,14 +1,17 @@
 import {IRaspistillExecutor} from './interfaces';
 import {execFile, spawn} from 'child_process';
 import * as imageType from 'image-type';
+import {ChildProcess} from 'child_process';
 
 export class DefaultRaspistillExecutor implements IRaspistillExecutor {
+    private childProcess: ChildProcess;
+
     private command: string = 'raspistill';
     private maxBuffer: number = 400 * 1024;
 
     public exec(args: string[]): Promise<Buffer> {
         return new Promise((resolve, reject) => {
-            execFile(
+            this.childProcess = execFile(
                 this.command,
                 args,
                 {
@@ -61,6 +64,8 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
             childProcess.stderr.on('data', (data: Buffer) => {
                 errorBuffer = Buffer.concat([errorBuffer, data]);
             });
+
+            this.childProcess = childProcess;
         });
     }
 
@@ -96,6 +101,15 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
                 }
                 photoBuffer = Buffer.concat([photoBuffer, data]);
             });
+
+            this.childProcess = childProcess;
         });
+    }
+
+    public killProcess(): void {
+        if (this.childProcess) {
+            this.childProcess.kill();
+            delete this.childProcess;
+        }
     }
 }

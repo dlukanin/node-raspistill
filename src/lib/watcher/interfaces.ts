@@ -23,6 +23,11 @@ export interface IWatcher {
     watchAndGetFiles(dirPath: string, watchTimeMs: number, cb: (file: Buffer) => any): Promise<void>;
 
     /**
+     * Closes current running fs watcher.
+     */
+    closeWatcher(): void;
+
+    /**
      * Sets current watcher options.
      * @param options
      */
