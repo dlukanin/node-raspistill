@@ -65,9 +65,7 @@ export class DefaultCamera extends AbstractCamera implements ICamera {
             this.watcher.watchAndGetFiles(this.getOption('outputDir'), execTimeMs, cb)
         ])
             .then(() => { return; })
-            .catch((error) => {
-                throw new Error((new Date()).toISOString() + ' Raspistill failed: ' + error.message);
-            });
+            .catch(this.processError);
     }
 
     public takePhoto(fileName?: string): Promise<Buffer> {
@@ -102,13 +100,15 @@ export class DefaultCamera extends AbstractCamera implements ICamera {
 
                 return result;
             })
-            .catch((error) => {
-                throw new Error((new Date()).toISOString() + ' Raspistill failed: ' + error.message);
-            });
+            .catch(this.processError);
     }
 
     public stop(): void {
         this.watcher.closeWatcher();
         this.executor.killProcess();
+    }
+
+    private processError(error: Error): never {
+        throw new Error((new Date()).toISOString() + ' Raspistill failed: ' + error.message);
     }
 }
