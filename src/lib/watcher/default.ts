@@ -4,6 +4,7 @@ import {AbstractWatcher} from './abstract';
 import {IWatcher, IWatcherOptions} from './interfaces';
 import {FSWatcher} from 'fs';
 import Timer = NodeJS.Timer;
+import {RaspistillInterruptError} from '../error/interrupt';
 
 // TODO move into watcher class (?)
 const EVENT_RENAME = 'rename';
@@ -32,12 +33,6 @@ export class DefaultWatcher extends AbstractWatcher implements IWatcher {
      * @type {string}
      */
     public static readonly ERROR_NO_PHOTO: string = 'No taken photo found';
-
-    /**
-     * Error message - action was force closed by user.
-     * @type {string}
-     */
-    public static readonly ERROR_FORCE_CLOSED: string = 'Action was force-closed';
 
     private watcher: FSWatcher;
 
@@ -129,9 +124,9 @@ export class DefaultWatcher extends AbstractWatcher implements IWatcher {
 
     private addForceCloseHandler(watcher: FSWatcher, timer: Timer, reject: (err: any) => void): void {
         watcher.on(DefaultWatcher.FORCE_CLOSE_EVENT, () => {
-            watcher.close();
             clearTimeout(timer);
-            reject(new Error(DefaultWatcher.ERROR_FORCE_CLOSED));
+            watcher.close();
+            reject(new RaspistillInterruptError());
         });
     }
 }

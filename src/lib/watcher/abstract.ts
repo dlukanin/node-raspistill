@@ -26,7 +26,6 @@ export abstract class AbstractWatcher implements IWatcher {
 
     public abstract closeWatcher(): void;
 
-    // TODO move to some kind of configurable abstract class
     public setOptions(options: IWatcherOptions): void {
         if (!options) {
             return;

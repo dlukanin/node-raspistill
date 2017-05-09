@@ -2,6 +2,7 @@ import {IRaspistillExecutor} from './interfaces';
 import {execFile, spawn} from 'child_process';
 import * as imageType from 'image-type';
 import {ChildProcess} from 'child_process';
+import {RaspistillInterruptError} from '../error/interrupt';
 
 // TODO refactor me
 
@@ -11,12 +12,6 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
      * @type {string}
      */
     public static readonly FORCE_CLOSE_EVENT: string = 'forceClose';
-
-    /**
-     * Error message - action was force closed by user.
-     * @type {string}
-     */
-    public static readonly ERROR_FORCE_CLOSED: string = 'Action was force-closed';
 
     private childProcess: ChildProcess;
 
@@ -54,7 +49,7 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
             );
 
             childProcess.on(DefaultRaspistillExecutor.FORCE_CLOSE_EVENT, () => {
-                error = new Error(DefaultRaspistillExecutor.ERROR_FORCE_CLOSED);
+                error = new RaspistillInterruptError();
                 childProcess.kill();
             });
 
@@ -99,7 +94,7 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
             );
 
             childProcess.on(DefaultRaspistillExecutor.FORCE_CLOSE_EVENT, () => {
-                error = new Error(DefaultRaspistillExecutor.ERROR_FORCE_CLOSED);
+                error = new RaspistillInterruptError();
                 childProcess.kill();
             });
 

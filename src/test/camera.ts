@@ -2,11 +2,14 @@ import {expect} from 'chai';
 import * as sinon from 'sinon';
 import {DefaultCamera} from '../lib/camera/default';
 import * as rmdir from 'rmdir';
+import {RaspistillInterruptError} from '../lib/error/interrupt';
 /* tslint:disable */
 // NOTE we cast child_process as any because of sinon patching
 const child_process = require('child_process');
 const fs = require('fs-promise');
 /* tslint:enable */
+
+// TODO refactor me
 
 describe('camera', function(): void {
     const sandbox = sinon.sandbox.create();
@@ -267,6 +270,110 @@ describe('camera', function(): void {
         expect(args[1]).to.eql([
             '-n', '-e', 'jpg', '-t', '3000', '-tl', '500', '-o', PHOTOS_DIR + '/image%04d.jpg'
         ]);
+    });
+
+    it('should force stop (takePhoto)', function(done: MochaDone): void {
+        const camera = new DefaultCamera();
+
+        camera.takePhoto()
+            .then((photo) => {
+                done('Camera should not take photo');
+            })
+            .catch((error) => {
+                expect(error).to.be.instanceOf(RaspistillInterruptError);
+                done();
+            });
+
+        camera.stop();
+    });
+
+    it('should force stop (takePhoto with no file save)', function(done: MochaDone): void {
+        this.timeout(4000);
+        const originalSpawn = child_process.spawn;
+
+        sandbox.stub(
+            child_process,
+            'spawn'
+        ).callsFake((command: string, args: string[]) => {
+            return originalSpawn.call(child_process, 'node', [__dirname + '/helpers/child_process_timelapse.js']);
+        });
+
+        const camera = new DefaultCamera({
+            noFileSave: true
+        });
+
+        camera.takePhoto()
+            .then((photo) => {
+                done('Camera should not take photo');
+            })
+            .catch((error) => {
+                expect(error).to.be.instanceOf(RaspistillInterruptError);
+                done();
+            });
+
+        camera.stop();
+    });
+
+    it('should force stop (timelapse)', function(done: MochaDone): void {
+        this.timeout(4000);
+        child_process.execFile.restore();
+
+        sandbox.stub(
+            child_process,
+            'execFile'
+        ).callsFake(function(arg: any, secondArg: any, opts: any, callback: (...args: any[]) => void): void {
+            const process = child_process.spawn('node', [__dirname + '/helpers/child_process_timelapse_file.js']);
+            process.on('close', function(): void {
+                callback(null, 'success');
+            });
+        });
+
+        const camera = new DefaultCamera({
+            outputDir: PHOTOS_DIR,
+            fileName: 'image%04d',
+            encoding: 'jpg'
+        });
+
+        let i = 0;
+        camera.timelapse(500, 3000, (image) => {
+            i++;
+        }).then(() => {
+            done('Timelapse should not resolve');
+        }).catch((err) => {
+            expect(err).to.be.instanceOf(RaspistillInterruptError);
+            done();
+        });
+
+        camera.stop();
+    });
+
+    it('should force stop (timelapse with no file save)', function(done: MochaDone): void {
+        this.timeout(4000);
+        const originalSpawn = child_process.spawn;
+
+        sandbox.stub(
+            child_process,
+            'spawn'
+        ).callsFake((command: string, args: string[]) => {
+            return originalSpawn.call(child_process, 'node', [__dirname + '/helpers/child_process_timelapse.js']);
+        });
+
+        const camera = new DefaultCamera({
+            noFileSave: true,
+            outputDir: PHOTOS_DIR + '/test'
+        });
+
+        let i = 0;
+        camera.timelapse(500, 3000, (image) => {
+            i++;
+        }).then(() => {
+            done('Timelapse should not resolve');
+        }).catch((err) => {
+            expect(err).to.be.instanceOf(RaspistillInterruptError);
+            done();
+        });
+
+        camera.stop();
     });
 
     afterEach(function(): void {

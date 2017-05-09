@@ -9,6 +9,9 @@ const fs = require('fs-promise');
 const PHOTOS_DIR = './photos/';
 
 import * as childProcess from 'child_process';
+import {RaspistillInterruptError} from '../lib/error/interrupt';
+
+// TODO refactor me
 
 describe('watcher', function(): void {
     const FILE_NAME = '1.txt';
@@ -119,7 +122,7 @@ describe('watcher', function(): void {
                 done('Promise should not resolve');
             })
             .catch((error) => {
-                expect(error.message).to.eq(DefaultWatcher.ERROR_FORCE_CLOSED);
+                expect(error).to.be.instanceof(RaspistillInterruptError);
                 done();
             });
     });
@@ -133,7 +136,7 @@ describe('watcher', function(): void {
                 done('Promise should not resolve');
             })
             .catch((error) => {
-                expect(error.message).to.eq(DefaultWatcher.ERROR_FORCE_CLOSED);
+                expect(error).to.be.instanceof(RaspistillInterruptError);
                 done();
             });
 

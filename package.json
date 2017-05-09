@@ -41,7 +41,7 @@
     "sinon": "^2.1.0",
     "tslint": "^5.0.0",
     "tslint-eslint-rules": "^4.0.0",
-    "typescript": "^2.2.1"
+    "typescript": "^2.3.2"
   },
   "dependencies": {
     "image-type": "^3.0.0",
