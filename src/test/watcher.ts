@@ -17,7 +17,7 @@ describe('watcher', function(): void {
     const FILE_NAME = '1.txt';
     const FILE_DATA = 'test';
 
-    this.timeout(4000);
+    this.timeout(5000);
 
     const watcher = new DefaultWatcher({expireTime: 2000});
 
@@ -93,7 +93,7 @@ describe('watcher', function(): void {
 
     it('should watch for files and apply callback', function(done: MochaDone): void {
         let counter = 0;
-        watcher.watchAndGetFiles(PHOTOS_DIR, 3500, (file) => {
+        watcher.watchAndGetFiles(PHOTOS_DIR, 4000, (file) => {
             expect(file).to.be.instanceOf(Buffer);
             counter++;
         })

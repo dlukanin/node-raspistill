@@ -235,7 +235,7 @@ describe('camera', function(): void {
     });
 
     it('should exec camera in timelapse mode (file save)', function(done: MochaDone): void {
-        this.timeout(4000);
+        this.timeout(5000);
         child_process.execFile.restore();
 
         sandbox.stub(
@@ -255,7 +255,7 @@ describe('camera', function(): void {
         });
 
         let i = 0;
-        camera.timelapse(500, 3000, (image) => {
+        camera.timelapse(500, 4000, (image) => {
             expect(image).to.be.instanceOf(Buffer);
             i++;
         }).then(() => {
@@ -268,7 +268,7 @@ describe('camera', function(): void {
         const args: any = child_process.execFile.args[0];
         expect(args[0]).to.eql('raspistill');
         expect(args[1]).to.eql([
-            '-n', '-e', 'jpg', '-t', '3000', '-tl', '500', '-o', PHOTOS_DIR + '/image%04d.jpg'
+            '-n', '-e', 'jpg', '-t', '4000', '-tl', '500', '-o', PHOTOS_DIR + '/image%04d.jpg'
         ]);
     });
 
