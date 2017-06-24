@@ -1,13 +1,15 @@
 import {expect} from 'chai';
 import * as sinon from 'sinon';
 import {DefaultCamera} from '../lib/camera/default';
-import {TMochaDoneFunction} from './main';
 import * as rmdir from 'rmdir';
+import {RaspistillInterruptError} from '../lib/error/interrupt';
 /* tslint:disable */
 // NOTE we cast child_process as any because of sinon patching
 const child_process = require('child_process');
 const fs = require('fs-promise');
 /* tslint:enable */
+
+// TODO refactor me
 
 describe('camera', function(): void {
     const sandbox = sinon.sandbox.create();
@@ -22,7 +24,7 @@ describe('camera', function(): void {
 
     this.timeout(4000);
 
-    beforeEach(function(done: TMochaDoneFunction): void {
+    beforeEach(function(done: MochaDone): void {
         sandbox.stub(
             child_process,
             'execFile'
@@ -42,7 +44,7 @@ describe('camera', function(): void {
         done();
     });
 
-    it('should round width and height values passed to constructor', (done: TMochaDoneFunction) => {
+    it('should round width and height values passed to constructor', (done: MochaDone) => {
         const camera = new DefaultCamera({
             width: 800.12,
             height: 599.90
@@ -54,7 +56,7 @@ describe('camera', function(): void {
         done();
     });
 
-    it('should use default args while executing raspistill command', (done: TMochaDoneFunction) => {
+    it('should use default args while executing raspistill command', (done: MochaDone) => {
         const camera = new DefaultCamera();
 
         camera.takePhoto();
@@ -67,7 +69,7 @@ describe('camera', function(): void {
         done();
     });
 
-    it('should set default options', (done: TMochaDoneFunction) => {
+    it('should set default options', (done: MochaDone) => {
         const camera = new DefaultCamera({
             width: 1000,
             outputDir: PHOTOS_DIR + '/test'
@@ -94,7 +96,7 @@ describe('camera', function(): void {
         done();
     });
 
-    it('should apply custom args raspistill command', (done: TMochaDoneFunction) => {
+    it('should apply custom args raspistill command', (done: MochaDone) => {
         const camera = new DefaultCamera({
             verticalFlip: true,
             horizontalFlip: true,
@@ -136,7 +138,7 @@ describe('camera', function(): void {
         done();
     });
 
-    it('should return buffer object with noFileSave option', (done: TMochaDoneFunction) => {
+    it('should return buffer object with noFileSave option', (done: MochaDone) => {
         const originalSpawn = child_process.spawn;
 
         sandbox.stub(
@@ -172,7 +174,7 @@ describe('camera', function(): void {
         done();
     });
 
-    it('should take photo', (done: TMochaDoneFunction) => {
+    it('should take photo', (done: MochaDone) => {
         camera.takePhoto(FILE_NAME)
             .then((data: any) => {
                 expect(data).to.be.instanceOf(Buffer);
@@ -184,7 +186,7 @@ describe('camera', function(): void {
             });
     });
 
-    it('should take photo with same name', (done: TMochaDoneFunction) => {
+    it('should take photo with same name', (done: MochaDone) => {
         camera.takePhoto(FILE_NAME)
             .then((data: any) => {
                 expect(data).to.be.instanceOf(Buffer);
@@ -196,7 +198,7 @@ describe('camera', function(): void {
             });
     });
 
-    it('should exec camera in timelapse mode (no file save)', function(done: TMochaDoneFunction): void {
+    it('should exec camera in timelapse mode (no file save)', function(done: MochaDone): void {
         this.timeout(4000);
         const originalSpawn = child_process.spawn;
 
@@ -232,7 +234,87 @@ describe('camera', function(): void {
         ]);
     });
 
-    it('should exec camera in timelapse mode (file save)', function(done: TMochaDoneFunction): void {
+    it('should exec camera in timelapse mode (file save)', function(done: MochaDone): void {
+        this.timeout(5000);
+        child_process.execFile.restore();
+
+        sandbox.stub(
+            child_process,
+            'execFile'
+        ).callsFake(function(arg: any, secondArg: any, opts: any, callback: (...args: any[]) => void): void {
+            const process = child_process.spawn('node', [__dirname + '/helpers/child_process_timelapse_file.js']);
+            process.on('close', function(): void {
+                callback(null, 'success');
+            });
+        });
+
+        const camera = new DefaultCamera({
+            outputDir: PHOTOS_DIR,
+            fileName: 'image%04d',
+            encoding: 'jpg'
+        });
+
+        let i = 0;
+        camera.timelapse(500, 4000, (image) => {
+            expect(image).to.be.instanceOf(Buffer);
+            i++;
+        }).then(() => {
+            expect(i).to.eq(5);
+            done();
+        }).catch((err) => {
+            done(err);
+        });
+
+        const args: any = child_process.execFile.args[0];
+        expect(args[0]).to.eql('raspistill');
+        expect(args[1]).to.eql([
+            '-n', '-e', 'jpg', '-t', '4000', '-tl', '500', '-o', PHOTOS_DIR + '/image%04d.jpg'
+        ]);
+    });
+
+    it('should force stop (takePhoto)', function(done: MochaDone): void {
+        const camera = new DefaultCamera();
+
+        camera.takePhoto()
+            .then((photo) => {
+                done('Camera should not take photo');
+            })
+            .catch((error) => {
+                expect(error).to.be.instanceOf(RaspistillInterruptError);
+                done();
+            });
+
+        camera.stop();
+    });
+
+    it('should force stop (takePhoto with no file save)', function(done: MochaDone): void {
+        this.timeout(4000);
+        const originalSpawn = child_process.spawn;
+
+        sandbox.stub(
+            child_process,
+            'spawn'
+        ).callsFake((command: string, args: string[]) => {
+            return originalSpawn.call(child_process, 'node', [__dirname + '/helpers/child_process_timelapse.js']);
+        });
+
+        const camera = new DefaultCamera({
+            noFileSave: true
+        });
+
+        camera.takePhoto()
+            .then((photo) => {
+                done('Camera should not take photo');
+            })
+            .catch((error) => {
+                expect(error).to.be.instanceOf(RaspistillInterruptError);
+                done();
+            });
+
+        camera.stop();
+    });
+
+    it('should force stop (timelapse)', function(done: MochaDone): void {
         this.timeout(4000);
         child_process.execFile.restore();
 
@@ -254,27 +336,51 @@ describe('camera', function(): void {
 
         let i = 0;
         camera.timelapse(500, 3000, (image) => {
-            expect(image).to.be.instanceOf(Buffer);
             i++;
         }).then(() => {
-            expect(i).to.eq(5);
-            done();
+            done('Timelapse should not resolve');
         }).catch((err) => {
-            done(err);
+            expect(err).to.be.instanceOf(RaspistillInterruptError);
+            done();
         });
 
-        const args: any = child_process.execFile.args[0];
-        expect(args[0]).to.eql('raspistill');
-        expect(args[1]).to.eql([
-            '-n', '-e', 'jpg', '-t', '3000', '-tl', '500', '-o', PHOTOS_DIR + '/image%04d.jpg'
-        ]);
+        camera.stop();
+    });
+
+    it('should force stop (timelapse with no file save)', function(done: MochaDone): void {
+        this.timeout(4000);
+        const originalSpawn = child_process.spawn;
+
+        sandbox.stub(
+            child_process,
+            'spawn'
+        ).callsFake((command: string, args: string[]) => {
+            return originalSpawn.call(child_process, 'node', [__dirname + '/helpers/child_process_timelapse.js']);
+        });
+
+        const camera = new DefaultCamera({
+            noFileSave: true,
+            outputDir: PHOTOS_DIR + '/test'
+        });
+
+        let i = 0;
+        camera.timelapse(500, 3000, (image) => {
+            i++;
+        }).then(() => {
+            done('Timelapse should not resolve');
+        }).catch((err) => {
+            expect(err).to.be.instanceOf(RaspistillInterruptError);
+            done();
+        });
+
+        camera.stop();
     });
 
     afterEach(function(): void {
         sandbox.restore();
     });
 
-    after(function(done: TMochaDoneFunction): void {
+    after(function(done: MochaDone): void {
         rmdir(PHOTOS_DIR, (err) => {
             if (err) {
                 done(err);

@@ -4,6 +4,9 @@ import {IWatcher} from '../watcher/interfaces';
 import {DefaultWatcher} from '../watcher/default';
 import {IRaspistillExecutor} from '../executor/interfaces';
 import {DefaultRaspistillExecutor} from '../executor/default';
+import {ChildProcess} from 'child_process';
+import {RaspistillInterruptError} from '../error/interrupt';
+import {RaspistillDefaultError} from '../error/raspistill';
 
 export class DefaultCamera extends AbstractCamera implements ICamera {
     constructor(options: ICameraOptions = {},
@@ -38,7 +41,8 @@ export class DefaultCamera extends AbstractCamera implements ICamera {
                 time: execTimeMs,
                 timelapse: intervalMs,
                 fileName
-            }), cb);
+            }), cb)
+                .catch(this.processError);
         }
 
         let cameraFileName = this.getOption('fileName') || Date.now().toString() + '%04d';
@@ -64,14 +68,13 @@ export class DefaultCamera extends AbstractCamera implements ICamera {
             this.watcher.watchAndGetFiles(this.getOption('outputDir'), execTimeMs, cb)
         ])
             .then(() => { return; })
-            .catch((error) => {
-                throw new Error((new Date()).toISOString() + ' Raspistill failed: ' + error.message);
-            });
+            .catch(this.processError);
     }
 
     public takePhoto(fileName?: string): Promise<Buffer> {
         if (this.getOption('noFileSave') === true) {
-            return this.executor.spawnAndGetImage(this.processOptions());
+            return this.executor.spawnAndGetImage(this.processOptions())
+                .catch(this.processError);
         }
 
         let cameraFileName = this.getOption('fileName') || Date.now().toString();
@@ -101,8 +104,19 @@ export class DefaultCamera extends AbstractCamera implements ICamera {
 
                 return result;
             })
-            .catch((error) => {
-                throw new Error((new Date()).toISOString() + ' Raspistill failed: ' + error.message);
-            });
+            .catch(this.processError);
+    }
+
+    public stop(): void {
+        this.watcher.closeWatcher();
+        this.executor.killProcess();
+    }
+
+    private processError(error: Error): never {
+        // TODO
+        if (error instanceof RaspistillInterruptError) {
+            throw error;
+        }
+        throw new RaspistillDefaultError(error.message);
     }
 }

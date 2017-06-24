@@ -10,4 +10,8 @@ export interface IRaspistillExecutor {
      */
     spawnAndGetImage(args: string[]): Promise<Buffer>;
     spawnAndGetImages(args: string[], cb: (image: Buffer) => any): Promise<void>;
+    /**
+     * Kills current raspistill execution process.
+     */
+    killProcess(): void;
 }

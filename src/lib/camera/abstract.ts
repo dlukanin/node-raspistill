@@ -50,6 +50,8 @@ export abstract class AbstractCamera implements ICamera {
         cb: (image: Buffer) => any
     ): Promise<void>;
 
+    public abstract stop(): void;
+
     public setOptions(options: ICameraOptions): void {
         if (!options) {
             return;

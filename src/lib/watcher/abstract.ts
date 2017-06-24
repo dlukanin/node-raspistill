@@ -1,8 +1,8 @@
-import {IWatcherOptions} from './interfaces';
+import {IWatcherOptions, IWatcher} from './interfaces';
 import defaultOptions from './options/default';
 import * as assign from 'object.assign';
 
-export abstract class AbstractWatcher {
+export abstract class AbstractWatcher implements IWatcher {
     /**
      * Default watcher options.
      * @type {IWatcherOptions}
@@ -20,7 +20,12 @@ export abstract class AbstractWatcher {
         this.setOptions(opts);
     }
 
-    // TODO move to some kind of configurable abstract class
+    public abstract watchAndGetFile(filePath: string, options?: IWatcherOptions): Promise<Buffer>;
+
+    public abstract watchAndGetFiles(dirPath: string, watchTimeMs: number, cb: (file: Buffer) => any): Promise<void>;
+
+    public abstract closeWatcher(): void;
+
     public setOptions(options: IWatcherOptions): void {
         if (!options) {
             return;

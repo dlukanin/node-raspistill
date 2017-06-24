@@ -6,8 +6,8 @@ function generateImage(): void {
     const val = Math.floor(Math.random() * 20);
     if (counter <= 4) {
         imageGenerator.generateImage(
-            800 + val,
-            600,
+            100 + val,
+            50,
             40,
             function(err: any, image: any): void {
                 if (err) {

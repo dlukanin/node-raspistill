@@ -4,8 +4,8 @@ let counter: number = 0;
 function generateImage(): void {
     if (counter <= 4) {
         imageGenerator.generateImage(
-            800 + Math.floor(Math.random() * 20),
-            600,
+            100 + Math.floor(Math.random() * 20),
+            50,
             40,
             function(err: any, image: any): void {
                 if (err) {

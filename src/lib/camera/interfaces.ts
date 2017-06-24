@@ -55,6 +55,11 @@ export interface ICamera {
      * @param {Function} cb
      */
     timelapse(intervalMs: number, execTimeMs: number, cb: (image: Buffer) => any): Promise<void>;
+
+    /**
+     * Stops execution of current raspistill command.
+     */
+    stop(): void;
     /**
      * Sets new camera options.
      * @param options
