@@ -78,6 +78,10 @@ export class DefaultWatcher extends AbstractWatcher implements IWatcher {
         return new Promise<void>((resolve, reject) => {
             this.makeDir(dirName);
             const watcher = fs.watch(dirName, (eventType: string, changedFileName: string) => {
+                /* tslint:disable */
+                console.log(eventType);
+                console.log(changedFileName);
+                /* tslint:enable */
                 if (
                     changedFileName[changedFileName.length - 1] === DefaultWatcher.IMAGE_IN_PROGRESS_SYMBOL
                 ) {
