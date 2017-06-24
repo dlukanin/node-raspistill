@@ -91,28 +91,6 @@ describe('watcher', function(): void {
             });
     });
 
-    // NOTE watcher on unix machines with raspistill mocks works not as real raspistill (see watcher impl to
-    // see how raspistill util works) but we can test watcher to see if he just watches files or not.
-    // Timeout is a bit big for developing, but it is ok for travis - sometimes travis can fall tests because of
-    // small timeout in such tests
-    it('should watch for files and apply callback', function(done: MochaDone): void {
-        this.timeout(10000);
-        let counter = 0;
-        watcher.watchAndGetFiles(PHOTOS_DIR, 8000, (file) => {
-            expect(file).to.be.instanceOf(Buffer);
-            counter++;
-        })
-            .then(() => {
-                expect(counter).to.eq(5);
-                done();
-            })
-            .catch((error) => {
-                done(error);
-            });
-
-        childProcess.spawn('node', [__dirname + '/helpers/child_process_timelapse_file.js']);
-    });
-
     it('should close watcher process (watchAndGetFile method)', function(done: MochaDone): void {
         const watcherPromise = watcher.watchAndGetFile(PHOTOS_DIR + '3.txt').then((file) => {
             done('Watcher should not trigger');
