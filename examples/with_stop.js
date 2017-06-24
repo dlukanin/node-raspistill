@@ -9,13 +9,19 @@ const raspistill = new Raspistill({
     height: 480
 });
 
+let i = 0;
 raspistill.timelapse(1000, 30000, (image) => {
-    console.log('got photo, trying to stop raspistill');
-    raspistill.stop();
+    i++;
+    console.log('got ' + i + ' photo');
+    if (i === 5) {
+        console.log('trying to stop');
+        raspistill.stop();
+    }
 })
     .then(() => {
-        console.log('timelapse ended')
+        console.log('timelapse ended');
     })
     .catch((err) => {
-        console.log(err instanceof RaspistillInterruptError) // true, raspistill was interrupted;
+        console.log('probably stopped, checking error');
+        console.log(err instanceof RaspistillInterruptError); // true, raspistill was interrupted;
     });
