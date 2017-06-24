@@ -92,8 +92,9 @@ describe('watcher', function(): void {
     });
 
     it('should watch for files and apply callback', function(done: MochaDone): void {
+        this.timeout(10000);
         let counter = 0;
-        watcher.watchAndGetFiles(PHOTOS_DIR, 4000, (file) => {
+        watcher.watchAndGetFiles(PHOTOS_DIR, 8000, (file) => {
             expect(file).to.be.instanceOf(Buffer);
             counter++;
         })
