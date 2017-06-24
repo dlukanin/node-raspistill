@@ -91,6 +91,10 @@ describe('watcher', function(): void {
             });
     });
 
+    // NOTE watcher on unix machines with raspistill mocks works not as real raspistill (see watcher impl to
+    // see how raspistill util works) but we can test watcher to see if he just watches files or not.
+    // Timeout is a bit big for developing, but it is ok for travis - sometimes travis can fall tests because of
+    // small timeout in such tests
     it('should watch for files and apply callback', function(done: MochaDone): void {
         this.timeout(10000);
         let counter = 0;
