@@ -8,10 +8,10 @@ import {RaspistillInterruptError} from '../error/interrupt';
 
 export class DefaultRaspistillExecutor implements IRaspistillExecutor {
     /**
-     * Event code for manual closing watch action.
+     * Signal for closing watch action.
      * @type {string}
      */
-    public static readonly FORCE_CLOSE_EVENT: string = 'forceClose';
+    public static readonly FORCE_CLOSE_SIGNAL: string = 'SIGTERM';
 
     private childProcess: ChildProcess;
 
@@ -48,24 +48,24 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
                 args
             );
 
-            childProcess.on(DefaultRaspistillExecutor.FORCE_CLOSE_EVENT, () => {
-                error = new RaspistillInterruptError();
-                childProcess.kill();
-            });
-
             childProcess.on('error', (processError: any) => {
                 error = processError;
             });
 
-            childProcess.on('close', () => {
-                childProcess.kill();
+            childProcess.on('exit', (code: string, signal: string) => {
+                if (signal === DefaultRaspistillExecutor.FORCE_CLOSE_SIGNAL) {
+                    reject(new RaspistillInterruptError());
+                    return;
+                }
 
                 if (error) {
                     reject(error);
+                    return;
                 }
 
                 if (errorBuffer.toString().length) {
                     reject(new Error(errorBuffer.toString()));
+                    return;
                 }
 
                 resolve(photoBuffer);
@@ -93,19 +93,20 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
                 args
             );
 
-            childProcess.on(DefaultRaspistillExecutor.FORCE_CLOSE_EVENT, () => {
-                error = new RaspistillInterruptError();
-                childProcess.kill();
-            });
-
             childProcess.on('error', (processError: any) => {
                 error = processError;
             });
 
-            childProcess.on('close', () => {
+            childProcess.on('exit', (code: string, signal: string) => {
+                if (signal === DefaultRaspistillExecutor.FORCE_CLOSE_SIGNAL) {
+                    reject(new RaspistillInterruptError());
+                    return;
+                }
+
                 if (error) {
                     childProcess.kill();
                     reject(error);
+                    return;
                 }
 
                 cb(photoBuffer);
@@ -127,7 +128,7 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
 
     public killProcess(): void {
         if (this.childProcess) {
-            this.childProcess.emit(DefaultRaspistillExecutor.FORCE_CLOSE_EVENT);
+            this.childProcess.kill(DefaultRaspistillExecutor.FORCE_CLOSE_SIGNAL);
         }
     }
 }

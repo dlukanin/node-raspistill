@@ -46,8 +46,11 @@ export class DefaultWatcher extends AbstractWatcher implements IWatcher {
 
         return new Promise<Buffer>((resolve, reject) => {
             this.makeDir(dirName);
+            let timeout: Timer;
+
             const watcher = fs.watch(dirName, (eventType: string, changedFileName: string) => {
                 if ((eventType === EVENT_RENAME || eventType === EVENT_CHANGE) && fileName === changedFileName) {
+                    clearTimeout(timeout);
                     watcher.close();
 
                     fs.readFile(filePath, (err: any, data: Buffer) => {
@@ -63,10 +66,12 @@ export class DefaultWatcher extends AbstractWatcher implements IWatcher {
                 }
             });
 
-            this.addForceCloseHandler(watcher, setTimeout(() => {
+            timeout = setTimeout(() => {
                 watcher.close();
                 reject(new Error(DefaultWatcher.ERROR_NO_PHOTO));
-            }, this.getOption('expireTime')), reject);
+            }, this.getOption('expireTime'));
+
+            this.addForceCloseHandler(watcher, timeout, reject);
 
             this.watcher = watcher;
         });
@@ -77,6 +82,7 @@ export class DefaultWatcher extends AbstractWatcher implements IWatcher {
 
         return new Promise<void>((resolve, reject) => {
             this.makeDir(dirName);
+
             const watcher = fs.watch(dirName, (eventType: string, changedFileName: string) => {
                 if (
                     changedFileName[changedFileName.length - 1] === DefaultWatcher.IMAGE_IN_PROGRESS_SYMBOL
