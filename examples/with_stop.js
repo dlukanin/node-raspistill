@@ -1,20 +1,21 @@
 const Raspistill = require('node-raspistill').Raspistill;
+const RaspistillInterruptError = require('node-raspistill').RaspistillInterruptError;
+const fs = require('fs');
+
 const raspistill = new Raspistill({
+    fileName: 'image%04d',
+    encoding: 'jpg',
     width: 640,
     height: 480
 });
 
-raspistill.takePhoto('first')
-    .then((photo) => {
-        console.log('took first photo', photo);
-        raspistill.setOptions({
-            verticalFlip: true
-        });
-        return raspistill.takePhoto('second');
+raspistill.timelapse(1000, 30000, (image) => {
+    console.log('got photo, trying to stop raspistill');
+    raspistill.stop();
+})
+    .then(() => {
+        console.log('timelapse ended')
     })
-    .then((photo) => {
-        console.log('took second photo', photo);
-    })
-    .catch((error) => {
-        console.error('something bad happened', error);
+    .catch((err) => {
+        console.log(err instanceof RaspistillInterruptError) // true, raspistill was interrupted;
     });

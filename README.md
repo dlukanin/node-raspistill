@@ -48,6 +48,9 @@ You can also find some usage examples here: https://github.com/dlukanin/node-ras
 ## Changelog
 
 #### v 0.0.11
+Added raspistill stop method.
+
+#### v 0.0.11
 Timelapse mode. Something like beta version, can be unstable in some cases. 
 Feel free to submit issue if you think that mode doesn't work well in your project.
 
@@ -129,6 +132,23 @@ camera.timelapse('image%04d', 500, 3000, (image) => {
     // something bad happened
 });
 ```
+
+#### stop(): void;
+Tries to stop current raspistill running action. Note that pending raspistill promises will be
+rejected with RaspistillInterruptError if stop was completed.
+```
+raspistill.timelapse(1000, 30000, (image) => {
+    console.log('got photo, trying to stop raspistill');
+    raspistill.stop();
+})
+    .then(() => {
+        console.log('timelapse ended')
+    })
+    .catch((err) => {
+        console.log(err instanceof RaspistillInterruptError) // true, raspistill was interrupted;
+    });
+```
+
 
 #### setOptions(options: ICameraOptions): void
 Sets new options for current Raspistill instance.

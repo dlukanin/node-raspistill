@@ -7,8 +7,9 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "test": "mocha build/test",
-    "lint": "tslint './src/**/*.ts' --type-check --project tsconfig.json"
+    "test": "istanbul cover node_modules/.bin/_mocha build/test",
+    "lint": "tslint './src/**/*.ts' --type-check --project tsconfig.json",
+    "coverage": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "repository": {
     "type": "git",
@@ -34,6 +35,7 @@
     "@types/sinon": "^2.1.2",
     "chai": "^3.5.0",
     "fs-promise": "^2.0.0",
+    "istanbul": "^0.4.5",
     "js-image-generator": "^1.0.2",
     "mocha": "^3.2.0",
     "nock-exec": "^0.1.0",

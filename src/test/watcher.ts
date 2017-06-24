@@ -91,7 +91,6 @@ describe('watcher', function(): void {
             });
     });
 
-
     // TODO correct watcher watchAndGetFiles metod test
 
     it('should close watcher process (watchAndGetFile method)', function(done: MochaDone): void {
