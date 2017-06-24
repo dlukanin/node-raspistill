@@ -1,5 +1,6 @@
 # node-raspistill
 [![Build Status](https://travis-ci.org/dlukanin/node-raspistill.svg?branch=master)](https://travis-ci.org/dlukanin/node-raspistill)
+[![Coverage Status](https://coveralls.io/repos/github/dlukanin/node-raspistill/badge.svg?branch=master)](https://coveralls.io/github/dlukanin/node-raspistill?branch=master)
 
 Simple wrapper for taking photos using Raspberry Pi raspistill app.
 
