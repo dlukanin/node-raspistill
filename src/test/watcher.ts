@@ -91,6 +91,9 @@ describe('watcher', function(): void {
             });
     });
 
+
+    // TODO correct watcher watchAndGetFiles metod test
+
     it('should close watcher process (watchAndGetFile method)', function(done: MochaDone): void {
         const watcherPromise = watcher.watchAndGetFile(PHOTOS_DIR + '3.txt').then((file) => {
             done('Watcher should not trigger');
