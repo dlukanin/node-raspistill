@@ -1,6 +1,5 @@
 language: node_js
 sudo: true
-group: deprecated-2017Q1
 node_js:
   - "7"
   - "6"
