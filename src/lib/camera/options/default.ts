@@ -1,4 +1,4 @@
-import {ICameraOptions} from '../interfaces';
+import { ICameraOptions } from '../interfaces';
 export const defaultOptions: ICameraOptions = {
     noFileSave: false,
     verticalFlip: false,
@@ -8,5 +8,11 @@ export const defaultOptions: ICameraOptions = {
     fileName: undefined,
     encoding: 'jpg',
     width: undefined,
-    height: undefined
+    height: undefined,
+    time: undefined,
+    iso: undefined,
+    shutterspeed: undefined,
+    contrast: undefined,
+    brightness: undefined,
+    saturation: undefined
 };

@@ -24,11 +24,32 @@ export interface ICameraOptions {
     encoding?: TCameraFileEncoding;
     width?: number;
     height?: number;
+
+    /**
+     * Timeout in ms before an image is taken.
+     */
+    time?: number;
+
+    /**
+     * ISO sensitivity.
+     */
+    iso?: number;
+
+    /**
+     * Shutter speed in microseconds.
+     */
+    shutterspeed?: number;
+
+    /**
+     * Image correction settings.
+     */
+    contrast?: number;
+    brightness?: number;
+    saturation?: number;
 }
 
 export interface IInnerExecCameraOptions extends ICameraOptions {
     timelapse?: number;
-    time?: number;
 }
 
 /**

@@ -1,6 +1,6 @@
 photos
 build
-src/*.js
+src/**/*.js
 *.js.map
 logs
 *.log
