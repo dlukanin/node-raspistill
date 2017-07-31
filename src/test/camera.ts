@@ -11,7 +11,7 @@ const fs = require('fs-promise');
 
 // TODO refactor me
 
-describe('camera', function (): void {
+describe('camera', function(): void {
     const sandbox = sinon.sandbox.create();
     const PHOTOS_DIR = './photos';
     const FILE_NAME = 'test';
@@ -24,11 +24,11 @@ describe('camera', function (): void {
 
     this.timeout(4000);
 
-    beforeEach(function (done: MochaDone): void {
+    beforeEach(function(done: MochaDone): void {
         sandbox.stub(
             child_process,
             'execFile'
-        ).callsFake(function (arg: any, secondArg: any, opts: any, callback: (...args: any[]) => void): void {
+        ).callsFake(function(arg: any, secondArg: any, opts: any, callback: (...args: any[]) => void): void {
             fs.mkdir(PHOTOS_DIR)
                 .catch(() => {
                     return;
@@ -128,17 +128,23 @@ describe('camera', function (): void {
 
         expect(args[0]).to.eql('raspistill');
         expect(args[1]).to.eql([
-            '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-t', '1', '-ISO', '100', '-ss', '10', '-co', '10', '-br', '10', '-sa', '10', '-o', PHOTOS_DIR + '/test/foo.png'
+            '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-t', '1',
+            '-ISO', '100', '-ss', '10', '-co', '10', '-br', '10', '-sa', '10', '-o',
+            PHOTOS_DIR + '/test/foo.png'
         ]);
 
         expect(secondCallArgs[0]).to.eql('raspistill');
         expect(secondCallArgs[1]).to.eql([
-            '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-t', '1', '-ISO', '100', '-ss', '10', '-co', '10', '-br', '10', '-sa', '10', '-o', PHOTOS_DIR + '/test/test.png'
+            '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-t', '1',
+            '-ISO', '100', '-ss', '10', '-co', '10', '-br', '10', '-sa', '10', '-o',
+            PHOTOS_DIR + '/test/test.png'
         ]);
 
         expect(thirdCallArgs[0]).to.eql('raspistill');
         expect(thirdCallArgs[1]).to.eql([
-            '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '1000', '-t', '1', '-ISO', '100', '-ss', '10', '-co', '10', '-br', '10', '-sa', '10', '-n', '-o', PHOTOS_DIR + '/test/anotherTest.png'
+            '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '1000', '-t', '1',
+            '-ISO', '100', '-ss', '10', '-co', '10', '-br', '10', '-sa', '10', '-n', '-o',
+            PHOTOS_DIR + '/test/anotherTest.png'
         ]);
 
         done();
@@ -204,7 +210,7 @@ describe('camera', function (): void {
             });
     });
 
-    it('should exec camera in timelapse mode (no file save)', function (done: MochaDone): void {
+    it('should exec camera in timelapse mode (no file save)', function(done: MochaDone): void {
         this.timeout(4000);
         const originalSpawn = child_process.spawn;
 
@@ -240,16 +246,16 @@ describe('camera', function (): void {
         ]);
     });
 
-    it('should exec camera in timelapse mode (file save)', function (done: MochaDone): void {
+    it('should exec camera in timelapse mode (file save)', function(done: MochaDone): void {
         this.timeout(5000);
         child_process.execFile.restore();
 
         sandbox.stub(
             child_process,
             'execFile'
-        ).callsFake(function (arg: any, secondArg: any, opts: any, callback: (...args: any[]) => void): void {
+        ).callsFake(function(arg: any, secondArg: any, opts: any, callback: (...args: any[]) => void): void {
             const process = child_process.spawn('node', [__dirname + '/helpers/child_process_timelapse_file.js']);
-            process.on('close', function (): void {
+            process.on('close', function(): void {
                 callback(null, 'success');
             });
         });
@@ -278,7 +284,7 @@ describe('camera', function (): void {
         ]);
     });
 
-    it('should force stop (takePhoto)', function (done: MochaDone): void {
+    it('should force stop (takePhoto)', function(done: MochaDone): void {
         const camera = new DefaultCamera();
 
         camera.takePhoto()
@@ -293,7 +299,7 @@ describe('camera', function (): void {
         camera.stop();
     });
 
-    it('should force stop (takePhoto with no file save)', function (done: MochaDone): void {
+    it('should force stop (takePhoto with no file save)', function(done: MochaDone): void {
         this.timeout(4000);
         const originalSpawn = child_process.spawn;
 
@@ -320,16 +326,16 @@ describe('camera', function (): void {
         camera.stop();
     });
 
-    it('should force stop (timelapse)', function (done: MochaDone): void {
+    it('should force stop (timelapse)', function(done: MochaDone): void {
         this.timeout(4000);
         child_process.execFile.restore();
 
         sandbox.stub(
             child_process,
             'execFile'
-        ).callsFake(function (arg: any, secondArg: any, opts: any, callback: (...args: any[]) => void): void {
+        ).callsFake(function(arg: any, secondArg: any, opts: any, callback: (...args: any[]) => void): void {
             const process = child_process.spawn('node', [__dirname + '/helpers/child_process_timelapse_file.js']);
-            process.on('close', function (): void {
+            process.on('close', function(): void {
                 callback(null, 'success');
             });
         });
@@ -353,7 +359,7 @@ describe('camera', function (): void {
         camera.stop();
     });
 
-    it('should force stop (timelapse with no file save)', function (done: MochaDone): void {
+    it('should force stop (timelapse with no file save)', function(done: MochaDone): void {
         this.timeout(4000);
         const originalSpawn = child_process.spawn;
 
@@ -382,11 +388,11 @@ describe('camera', function (): void {
         camera.stop();
     });
 
-    afterEach(function (): void {
+    afterEach(function(): void {
         sandbox.restore();
     });
 
-    after(function (done: MochaDone): void {
+    after(function(done: MochaDone): void {
         rmdir(PHOTOS_DIR, (err) => {
             if (err) {
                 done(err);
