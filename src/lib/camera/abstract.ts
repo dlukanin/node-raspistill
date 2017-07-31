@@ -1,5 +1,5 @@
-import {ICamera, ICameraOptions, IInnerExecCameraOptions} from './interfaces';
-import {defaultOptions} from './options/default';
+import { ICamera, ICameraOptions, IInnerExecCameraOptions } from './interfaces';
+import { defaultOptions } from './options/default';
 import * as assign from 'object.assign';
 
 export abstract class AbstractCamera implements ICamera {
@@ -19,7 +19,7 @@ export abstract class AbstractCamera implements ICamera {
      * Map "option and option value -> raspistil exec arg"
      * @type {any}
      */
-    protected optionsMap: {[key: string]: string} = {
+    protected optionsMap: { [key: string]: string } = {
         verticalFlip: '-vf',
         horizontalFlip: '-hf',
         noPreview: '-n',
@@ -27,7 +27,12 @@ export abstract class AbstractCamera implements ICamera {
         width: '-w',
         height: '-h',
         timelapse: '-tl',
-        time: '-t'
+        time: '-t',
+        shutterspeed: '-ss',
+        contrast: '-co',
+        brightness: '-br',
+        saturation: '-sa',
+        iso: '-ISO'
     };
 
     constructor(options: ICameraOptions = {}) {

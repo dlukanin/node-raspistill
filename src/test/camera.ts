@@ -1,8 +1,8 @@
-import {expect} from 'chai';
+import { expect } from 'chai';
 import * as sinon from 'sinon';
-import {DefaultCamera} from '../lib/camera/default';
+import { DefaultCamera } from '../lib/camera/default';
 import * as rmdir from 'rmdir';
-import {RaspistillInterruptError} from '../lib/error/interrupt';
+import { RaspistillInterruptError } from '../lib/error/interrupt';
 /* tslint:disable */
 // NOTE we cast child_process as any because of sinon patching
 const child_process = require('child_process');
@@ -20,7 +20,7 @@ describe('camera', function(): void {
 
     let firstPhotoBuffer: Buffer;
 
-    const camera = new DefaultCamera({outputDir: PHOTOS_DIR});
+    const camera = new DefaultCamera({ outputDir: PHOTOS_DIR });
 
     this.timeout(4000);
 
@@ -105,7 +105,13 @@ describe('camera', function(): void {
             fileName: 'foo',
             encoding: 'png',
             width: 1000,
-            height: 800
+            height: 800,
+            shutterspeed: 10,
+            iso: 100,
+            brightness: 10,
+            contrast: 10,
+            saturation: 10,
+            time: 1
         });
 
         camera.takePhoto();
@@ -122,17 +128,23 @@ describe('camera', function(): void {
 
         expect(args[0]).to.eql('raspistill');
         expect(args[1]).to.eql([
-            '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-o', PHOTOS_DIR + '/test/foo.png'
+            '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-t', '1',
+            '-ISO', '100', '-ss', '10', '-co', '10', '-br', '10', '-sa', '10', '-o',
+            PHOTOS_DIR + '/test/foo.png'
         ]);
 
         expect(secondCallArgs[0]).to.eql('raspistill');
         expect(secondCallArgs[1]).to.eql([
-            '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-o', PHOTOS_DIR + '/test/test.png'
+            '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-t', '1',
+            '-ISO', '100', '-ss', '10', '-co', '10', '-br', '10', '-sa', '10', '-o',
+            PHOTOS_DIR + '/test/test.png'
         ]);
 
         expect(thirdCallArgs[0]).to.eql('raspistill');
         expect(thirdCallArgs[1]).to.eql([
-            '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '1000', '-n', '-o', PHOTOS_DIR + '/test/anotherTest.png'
+            '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '1000', '-t', '1',
+            '-ISO', '100', '-ss', '10', '-co', '10', '-br', '10', '-sa', '10', '-n', '-o',
+            PHOTOS_DIR + '/test/anotherTest.png'
         ]);
 
         done();
