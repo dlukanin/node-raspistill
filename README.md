@@ -87,6 +87,12 @@ Options - object, that can contain:
 |encoding|string|'jpg'|'jpg', 'bpm', 'gif' or 'png'|
 |width|number|undefined|Width of taken image in pixels. If width is not set - raspistill uses default max camera sensor resolution width|
 |height|number|undefined|Height of taken image in pixels. If height is not set - raspistill uses default max camera sensor resolution height|
+|time|number|undefined|Time before camera takes photo. If undefined raspistill util use it's own 5 sec timeout|
+|shutterspeed|number|undefined|Shutter speed in microseconds|
+|contrast|number|undefined|Contrast of the image (-100 ... 100). If undefined - raspistill util use contrast 0 value |
+|brightness|number|undefined|Brightness of the image. 50 is the default raspistill util value.|
+|saturation|number|undefined|Image saturation (-100 ... 100). Raspistill util uses 0 value if undefined|
+|iso|number|undefined|Capture ISO (100 ... 800)|
 
 ```
 const camera = new Raspistill({
@@ -94,6 +100,8 @@ const camera = new Raspistill({
     fileName: 'foo'
 });
 ```
+
+You can find more info about raspistill util options in the official docs: https://www.raspberrypi.org/documentation/raspbian/applications/camera.md
 
 
 #### takePhoto(fileName?: string): Promise\<Buffer\>
