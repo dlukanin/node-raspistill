@@ -48,6 +48,9 @@ You can also find some usage examples here: https://github.com/dlukanin/node-ras
 
 ## Changelog
 
+#### v 0.0.14
+Some fixes in dependencies.
+
 #### v 0.0.13
 New options ([thx for PR](https://github.com/dlukanin/node-raspistill/pull/7)): time, shutterspeed, contrast, brightness, saturation, iso.
 
