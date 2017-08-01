@@ -7,3 +7,4 @@ tsconfig.json
 .idea
 .travis.yml
 tslint.json
+npm-shrinkwrap.json
