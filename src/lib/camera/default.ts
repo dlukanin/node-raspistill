@@ -74,7 +74,7 @@ export class DefaultCamera extends AbstractCamera implements ICamera {
     public takePhoto(fileName?: string): Promise<Buffer> {
         if (this.getOption('noFileSave') === true) {
             return this.executor.spawnAndGetImage(this.processOptions())
-                .catch(this.processError);
+                //.catch(this.processError);
         }
 
         let cameraFileName = this.getOption('fileName') || Date.now().toString();

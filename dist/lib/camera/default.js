@@ -80,8 +80,7 @@ var DefaultCamera = (function (_super) {
     };
     DefaultCamera.prototype.takePhoto = function (fileName) {
         if (this.getOption('noFileSave') === true) {
-            return this.executor.spawnAndGetImage(this.processOptions())
-                .catch(this.processError);
+            return this.executor.spawnAndGetImage(this.processOptions());
         }
         var cameraFileName = this.getOption('fileName') || Date.now().toString();
         var cameraEncoding = this.getOption('encoding');
