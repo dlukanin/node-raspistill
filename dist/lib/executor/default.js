@@ -31,6 +31,7 @@ var DefaultRaspistillExecutor = (function () {
             var childProcess = child_process_1.spawn(_this.command, args);
             childProcess.on('error', function (processError) {
                 error = processError;
+                reject(error);
             });
             childProcess.on('exit', function (code, signal) {
                 if (signal === DefaultRaspistillExecutor.FORCE_CLOSE_SIGNAL) {

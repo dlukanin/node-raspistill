@@ -50,7 +50,6 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
 
             childProcess.on('error', (processError: any) => {
                 error = processError;
-                reject(error)
             });
 
             childProcess.on('exit', (code: string, signal: string) => {
