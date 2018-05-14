@@ -82,9 +82,9 @@ describe('watcher', function(): void {
 
     it('should return error if no file exists after timeout', function(done: MochaDone): void {
         watcher.watchAndGetFile(PHOTOS_DIR + '2.txt').catch((error) => {
-            expect(error).to.eql(new Error('No taken photo found'));
+            //  expect(error).to.eql(new Error('No taken photo found'));
             // TODO
-          //  expect(error.message).to.eq('No taken photo found');
+            expect(error.message).to.eq('No taken photo found');
             done();
         })
             .catch((err) => {
