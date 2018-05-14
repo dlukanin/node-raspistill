@@ -96,6 +96,20 @@ describe('camera', function(): void {
         done();
     });
 
+    it('should change options from one value to another', (done: MochaDone) => {
+        const camera = new DefaultCamera({
+            noFileSave: true
+        });
+
+        camera.setOptions({
+            noFileSave: false
+        });
+
+        expect(camera.getOption('noFileSave')).to.eq(false);
+
+        done();
+    });
+
     it('should apply custom args raspistill command', (done: MochaDone) => {
         const camera = new DefaultCamera({
             verticalFlip: true,
@@ -142,8 +156,8 @@ describe('camera', function(): void {
 
         expect(thirdCallArgs[0]).to.eql('raspistill');
         expect(thirdCallArgs[1]).to.eql([
-            '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '1000', '-t', '1',
-            '-ISO', '100', '-ss', '10', '-co', '10', '-br', '10', '-sa', '10', '-n', '-o',
+            '-vf', '-hf', '-n', '-e', 'png', '-w', '1000', '-h', '1000', '-t', '1',
+            '-ISO', '100', '-ss', '10', '-co', '10', '-br', '10', '-sa', '10', '-o',
             PHOTOS_DIR + '/test/anotherTest.png'
         ]);
 
