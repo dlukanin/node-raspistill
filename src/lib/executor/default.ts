@@ -25,7 +25,7 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
                 args,
                 {
                     maxBuffer: this.maxBuffer,
-                    encoding: 'binary'
+                    encoding: 'buffer'
                 },
                 (error: any, stdout, stderr) => {
                     if (error) {
