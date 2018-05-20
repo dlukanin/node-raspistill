@@ -48,6 +48,9 @@ You can also find some usage examples here: https://github.com/dlukanin/node-ras
 
 ## Changelog
 
+#### v 0.0.15
+Deps update. Fixes in setting camera options methods ([thx for mentioning it in PR](https://github.com/dlukanin/node-raspistill/pull/8))
+
 #### v 0.0.14
 Some fixes in dependencies.
 
