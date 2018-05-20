@@ -63,7 +63,7 @@ export abstract class AbstractCamera implements ICamera {
         }
 
         Object.keys(defaultOptions).forEach((key: string) => {
-            const value = options[key] || this.options[key];
+            const value = typeof options[key] !== 'undefined' ?  options[key] : this.options[key];
 
             if (typeof value !== 'undefined') {
                 this.options[key] = value;
