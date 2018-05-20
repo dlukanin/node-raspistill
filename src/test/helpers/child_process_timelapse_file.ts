@@ -20,7 +20,7 @@ function generateImage(): void {
                     generateImage();
                 }
             );
-        }, 100);
+        }, 200);
     }
 }
 

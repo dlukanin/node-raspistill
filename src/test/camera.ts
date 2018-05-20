@@ -280,7 +280,7 @@ describe('camera', function(): void {
         });
 
         let i = 0;
-        camera.timelapse(200, 1000, (image) => {
+        camera.timelapse(400, 2000, (image) => {
             expect(image).to.be.instanceOf(Buffer);
             i++;
         }).then(() => {
@@ -293,7 +293,7 @@ describe('camera', function(): void {
         const args: any = child_process.execFile.args[0];
         expect(args[0]).to.eql('raspistill');
         expect(args[1]).to.eql([
-            '-n', '-e', 'jpg', '-t', '1000', '-tl', '200', '-o', PHOTOS_DIR + '/image%04d.jpg'
+            '-n', '-e', 'jpg', '-t', '2000', '-tl', '400', '-o', PHOTOS_DIR + '/image%04d.jpg'
         ]);
     });
 
