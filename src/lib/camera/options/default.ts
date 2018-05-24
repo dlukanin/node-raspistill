@@ -3,6 +3,7 @@ export const defaultOptions: ICameraOptions = {
     noFileSave: false,
     verticalFlip: false,
     horizontalFlip: false,
+    rotation: 0,
     noPreview: true,
     outputDir: 'photos',
     fileName: undefined,
