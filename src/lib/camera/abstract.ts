@@ -22,6 +22,7 @@ export abstract class AbstractCamera implements ICamera {
     protected optionsMap: { [key: string]: string } = {
         verticalFlip: '-vf',
         horizontalFlip: '-hf',
+        rotation: '-rot',
         noPreview: '-n',
         encoding: '-e',
         width: '-w',

@@ -7,6 +7,7 @@ export interface ICameraOptions {
     noFileSave?: boolean;
     verticalFlip?: boolean;
     horizontalFlip?: boolean;
+    rotation?: number;
     noPreview?: boolean;
     /**
      * Default output directory.
