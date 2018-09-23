@@ -171,7 +171,7 @@ describe('camera', function(): void {
             child_process,
             'spawn'
         ).callsFake((command: string, args: string[]) => {
-            return originalSpawn.call(child_process, 'node', [__dirname + '/helpers/child_process.js']);
+            return originalSpawn.call(child_process, 'node', ['src/test/helpers/child_process.js']);
         });
 
         const camera = new DefaultCamera({
@@ -232,7 +232,7 @@ describe('camera', function(): void {
             child_process,
             'spawn'
         ).callsFake((command: string, args: string[]) => {
-            return originalSpawn.call(child_process, 'node', [__dirname + '/helpers/child_process_timelapse.js']);
+            return originalSpawn.call(child_process, 'node', ['src/test/helpers/child_process_timelapse.js']);
         });
 
         const camera = new DefaultCamera({
@@ -267,7 +267,7 @@ describe('camera', function(): void {
             child_process,
             'execFile'
         ).callsFake(function(arg: any, secondArg: any, opts: any, callback: (...args: any[]) => void): void {
-            const process = child_process.spawn('node', [__dirname + '/helpers/child_process_timelapse_file.js']);
+            const process = child_process.spawn('node', ['src/test/helpers/child_process_timelapse_file.js']);
             process.on('close', function(): void {
                 callback(null, 'success');
             });
@@ -320,7 +320,7 @@ describe('camera', function(): void {
             child_process,
             'spawn'
         ).callsFake((command: string, args: string[]) => {
-            return originalSpawn.call(child_process, 'node', [__dirname + '/helpers/child_process_timelapse.js']);
+            return originalSpawn.call(child_process, 'node', ['src/test/helpers/child_process_timelapse.js']);
         });
 
         const camera = new DefaultCamera({
@@ -347,7 +347,7 @@ describe('camera', function(): void {
             child_process,
             'execFile'
         ).callsFake(function(arg: any, secondArg: any, opts: any, callback: (...args: any[]) => void): void {
-            const process = child_process.spawn('node', [__dirname + '/helpers/child_process_timelapse_file.js']);
+            const process = child_process.spawn('node', ['src/test/helpers/child_process_timelapse_file.js']);
             process.on('close', function(): void {
                 callback(null, 'success');
             });
@@ -380,7 +380,7 @@ describe('camera', function(): void {
             child_process,
             'spawn'
         ).callsFake((command: string, args: string[]) => {
-            return originalSpawn.call(child_process, 'node', [__dirname + '/helpers/child_process_timelapse.js']);
+            return originalSpawn.call(child_process, 'node', ['src/test/helpers/child_process_timelapse.js']);
         });
 
         const camera = new DefaultCamera({

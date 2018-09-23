@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "test": "istanbul cover node_modules/.bin/_mocha build/test",
+    "test": "nyc mocha && nyc report --reporter=lcov",
     "lint": "tslint './src/**/*.ts' --project tsconfig.json",
     "coverage": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
@@ -40,8 +40,11 @@
     "js-image-generator": "^1.0.2",
     "mocha": "^5.2.0",
     "nock-exec": "^0.1.0",
+    "nyc": "^13.0.1",
     "rmdir": "^1.2.0",
     "sinon": "^5.1.1",
+    "source-map-support": "^0.5.9",
+    "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
     "tslint-eslint-rules": "^5.4.0",
     "typescript": "^3.0.3"
@@ -49,5 +52,22 @@
   "dependencies": {
     "image-type": "^3.0.0",
     "object.assign": "^4.1.0"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.ts"
+    ],
+    "extension": [
+      ".ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ],
+    "reporter": [
+      "text-summary",
+      "html"
+    ],
+    "sourceMap": true,
+    "instrument": true
   }
 }
