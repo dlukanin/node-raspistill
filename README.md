@@ -102,6 +102,8 @@ Options - object, that can contain:
 |brightness|number|undefined|Brightness of the image. 50 is the default raspistill util value.|
 |saturation|number|undefined|Image saturation (-100 ... 100). Raspistill util uses 0 value if undefined|
 |iso|number|undefined|Capture ISO (100 ... 800)|
+|awb|string|undefined|'off', 'auto', 'sun', 'cloud', 'shade', 'tungsten', 'fluorescent', 'incandescent', 'flash', 'horizon'|
+|awbg|string|undefined|Sets blue and red gains (as floating point numbers) to be applied when awb=off. e.g. '1.5,1.2'|
 
 ```
 const camera = new Raspistill({

@@ -14,5 +14,7 @@ export const defaultOptions: ICameraOptions = {
     shutterspeed: undefined,
     contrast: undefined,
     brightness: undefined,
-    saturation: undefined
+    saturation: undefined,
+    awb: undefined,
+    awbg: undefined
 };

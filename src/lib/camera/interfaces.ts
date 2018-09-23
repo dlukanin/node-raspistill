@@ -47,6 +47,12 @@ export interface ICameraOptions {
     contrast?: number;
     brightness?: number;
     saturation?: number;
+
+    /**
+     * White balance
+     */
+    awb?: string;
+    awbg?: string;
 }
 
 export interface IInnerExecCameraOptions extends ICameraOptions {
