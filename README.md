@@ -8,6 +8,10 @@ Module is written in typescript and provides type definitions out-of-the-box.
 
 Tested with Raspberry Pi 2 B (Raspbian OS), and Raspberry Camera Module v2.
 
+## Requirements
+Raspbian OS with node.js v 6+ installed, raspberry camera module connected to your pi.
+
+
 ## Usage
 
 ```
