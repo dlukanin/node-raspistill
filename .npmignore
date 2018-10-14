@@ -1,4 +1,7 @@
 photos
+.nyc_output
+coverage
+test
 examples
 src
 build/test
