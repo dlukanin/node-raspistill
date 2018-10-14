@@ -125,7 +125,10 @@ describe('camera', function(): void {
             brightness: 10,
             contrast: 10,
             saturation: 10,
-            time: 1
+            time: 1,
+            rotation: 100,
+            awb: 'auto',
+            awbg: '1.5,1.2'
         });
 
         camera.takePhoto();
@@ -143,21 +146,24 @@ describe('camera', function(): void {
         expect(args[0]).to.eql('raspistill');
         expect(args[1]).to.eql([
             '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-t', '1',
-            '-ISO', '100', '-ss', '10', '-co', '10', '-br', '10', '-sa', '10', '-o',
+            '-ISO', '100', '-ss', '10', '-co', '10', '-br', '10', '-sa', '10', '-awb', 'auto', '-awbg', '1.5,1.2',
+            '-rot', '100', '-o',
             PHOTOS_DIR + '/test/foo.png'
         ]);
 
         expect(secondCallArgs[0]).to.eql('raspistill');
         expect(secondCallArgs[1]).to.eql([
             '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-t', '1',
-            '-ISO', '100', '-ss', '10', '-co', '10', '-br', '10', '-sa', '10', '-o',
+            '-ISO', '100', '-ss', '10', '-co', '10', '-br', '10', '-sa', '10', '-awb', 'auto', '-awbg', '1.5,1.2',
+            '-rot', '100', '-o',
             PHOTOS_DIR + '/test/test.png'
         ]);
 
         expect(thirdCallArgs[0]).to.eql('raspistill');
         expect(thirdCallArgs[1]).to.eql([
             '-vf', '-hf', '-n', '-e', 'png', '-w', '1000', '-h', '1000', '-t', '1',
-            '-ISO', '100', '-ss', '10', '-co', '10', '-br', '10', '-sa', '10', '-o',
+            '-ISO', '100', '-ss', '10', '-co', '10', '-br', '10', '-sa', '10', '-awb', 'auto', '-awbg', '1.5,1.2',
+            '-rot', '100', '-o',
             PHOTOS_DIR + '/test/anotherTest.png'
         ]);
 
