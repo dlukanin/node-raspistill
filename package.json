@@ -19,7 +19,8 @@
     "raspberry",
     "camera",
     "raspistill",
-    "typescript"
+    "typescript",
+    "iot"
   ],
   "author": "dylukanin@gmail.com",
   "license": "MIT",
