@@ -1,6 +1,5 @@
 import {IWatcherOptions, IWatcher} from './interfaces';
 import defaultOptions from './options/default';
-import * as assign from 'object.assign';
 
 export abstract class AbstractWatcher implements IWatcher {
     /**
@@ -16,7 +15,7 @@ export abstract class AbstractWatcher implements IWatcher {
     private options: IWatcherOptions = {};
 
     constructor(options: IWatcherOptions = {}) {
-        const opts = assign({}, AbstractWatcher.DEFAULT_OPTIONS, options);
+        const opts = Object.assign({}, AbstractWatcher.DEFAULT_OPTIONS, options);
         this.setOptions(opts);
     }
 

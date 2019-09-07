@@ -1,6 +1,5 @@
 import { ICamera, ICameraOptions, IInnerExecCameraOptions } from './interfaces';
 import { defaultOptions } from './options/default';
-import * as assign from 'object.assign';
 
 export abstract class AbstractCamera implements ICamera {
     /**
@@ -39,7 +38,7 @@ export abstract class AbstractCamera implements ICamera {
     };
 
     constructor(options: ICameraOptions = {}) {
-        const opts = assign({}, AbstractCamera.DEFAULT_OPTIONS, options);
+        const opts = Object.assign({}, AbstractCamera.DEFAULT_OPTIONS, options);
         this.setOptions(opts);
     }
 
@@ -109,7 +108,7 @@ export abstract class AbstractCamera implements ICamera {
      * @return {Array<string>}
      */
     protected processOptions(newOptions?: IInnerExecCameraOptions): string[] {
-        const currentOptions: ICameraOptions = assign({}, this.options, newOptions);
+        const currentOptions: ICameraOptions = Object.assign({}, this.options, newOptions);
         const processedOptions = [];
 
         Object.keys(currentOptions).forEach((key) => {
