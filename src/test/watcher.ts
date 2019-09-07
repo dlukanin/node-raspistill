@@ -2,7 +2,7 @@ import {DefaultWatcher} from '../lib/watcher/default';
 import defaultOptions from '../lib/watcher/options/default';
 import {expect} from 'chai';
 import {IWatcherOptions} from '../lib/watcher/interfaces';
-import * as rmdir from 'rmdir';
+import * as rimraf from 'rimraf';
 /* tslint:disable */
 const fs = require('fs-promise');
 /* tslint:enable */
@@ -131,7 +131,7 @@ describe('watcher', function(): void {
     });
 
     after(function(done: MochaDone): void {
-        rmdir(PHOTOS_DIR, (err) => {
+        rimraf(PHOTOS_DIR, (err) => {
             if (err) {
                 done(err);
             } else {

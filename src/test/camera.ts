@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { DefaultCamera } from '../lib/camera/default';
-import * as rmdir from 'rmdir';
 import { RaspistillInterruptError } from '../lib/error/interrupt';
+import * as rimraf from 'rimraf';
 /* tslint:disable */
 // NOTE we cast child_process as any because of sinon patching
 const child_process = require('child_process');
@@ -412,7 +412,7 @@ describe('camera', function(): void {
     });
 
     after(function(done: MochaDone): void {
-        rmdir(PHOTOS_DIR, (err) => {
+        rimraf(PHOTOS_DIR, (err) => {
             if (err) {
                 done(err);
             } else {
