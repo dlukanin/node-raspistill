@@ -52,6 +52,9 @@ You can also find some usage examples here: https://github.com/dlukanin/node-ras
 
 ## Changelog
 
+#### v 0.0.17
+Deps update. Vulnerability fixes.
+
 #### v 0.0.16
 Deps update. Added new parameters for camera options ([#10](https://github.com/dlukanin/node-raspistill/pull/10), [#11](https://github.com/dlukanin/node-raspistill/pull/11))
 
