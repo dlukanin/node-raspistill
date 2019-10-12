@@ -7,6 +7,6 @@ install:
   - npm install
   - npm run build
 script:
-  - npm run lint
+  - npm run ci-lint
   - npm test
 after_success: 'npm run coverage'

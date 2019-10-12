@@ -9,7 +9,8 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "test": "nyc mocha && nyc report --reporter=lcov",
-    "lint": "tslint './src/**/*.ts' --project tsconfig.json",
+    "lint": "tslint './src/**/*.ts' --fix --project tsconfig.json",
+    "ci-lint": "tslint './src/**/*.ts' --project tsconfig.json",
     "coverage": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "repository": {
