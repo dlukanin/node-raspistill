@@ -54,6 +54,12 @@ You can also find some usage examples here: https://github.com/dlukanin/node-ras
 <details>
 <summary>Details</summary>
 
+#### v 0.0.19
+Fixes in interface exports.
+
+#### v 0.0.18
+Minor deps update. Fixes for typings location in package.json
+
 #### v 0.0.18
 Minor deps update. Fixes for typings location in package.json
 
