@@ -3,6 +3,7 @@
   "version": "0.0.17",
   "description": "Node wrapper for taking photos using Raspberry Pi raspistill app.",
   "main": "build/index.js",
+  "types": "build/index.d.ts",
   "typings": "build/index",
   "scripts": {
     "build": "tsc",
@@ -29,28 +30,28 @@
   },
   "homepage": "https://github.com/dlukanin/node-raspistill#readme",
   "devDependencies": {
-    "@types/chai": "^4.2.1",
+    "@types/chai": "^4.2.3",
     "@types/fs-promise": "^1.0.3",
     "@types/mocha": "^5.2.7",
-    "@types/node": "^12.7.4",
-    "@types/sinon": "^7.0.13",
+    "@types/node": "^12.7.12",
+    "@types/sinon": "^7.5.0",
     "chai": "^4.2.0",
-    "coveralls": "^3.0.6",
+    "coveralls": "^3.0.7",
     "fs-promise": "^2.0.3",
     "istanbul": "^0.4.5",
     "js-image-generator": "^1.0.2",
-    "mocha": "^6.2.0",
+    "mocha": "^6.2.1",
     "nock-exec": "^0.1.0",
     "nyc": "^14.1.1",
-    "sinon": "^7.4.2",
+    "sinon": "^7.5.0",
     "source-map-support": "^0.5.13",
-    "ts-node": "^8.3.0",
-    "tslint": "^5.19.0",
+    "ts-node": "^8.4.1",
+    "tslint": "^5.20.0",
     "tslint-eslint-rules": "^5.4.0",
-    "typescript": "^3.6.2"
+    "typescript": "^3.6.4"
   },
   "dependencies": {
-    "image-type": "3.0.0",
+    "image-type": "4.1.0",
     "rimraf": "^3.0.0"
   },
   "nyc": {
