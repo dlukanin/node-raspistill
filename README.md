@@ -51,6 +51,11 @@ See full options list in the docs below.
 You can also find some usage examples here: https://github.com/dlukanin/node-raspistill/tree/master/examples
 
 ## Changelog
+<details>
+<summary>Details</summary>
+
+#### v 0.0.18
+Minor deps update. Fixes for typings location in package.json
 
 #### v 0.0.17
 Deps update. Vulnerability fixes.
@@ -87,6 +92,7 @@ Updated some dependencies.
 
 #### v 0.0.8
 Added noPreview option.
+</details>
 
 ## Docs
 ### Raspistill
