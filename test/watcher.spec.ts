@@ -1,15 +1,18 @@
 import { DefaultWatcher } from '../src/lib/watcher/default';
 import defaultOptions from '../src/lib/watcher/options/default';
 import { IWatcherOptions } from '../src/lib/watcher/interfaces';
-import * as rimraf from 'rimraf';
-import * as rmfr from 'rmfr';
+
 /* tslint:disable */
 const fs = require('fs-promise');
 /* tslint:enable */
-const PHOTOS_DIR = './photos/';
+const PHOTOS_DIR = './watcher/';
 
 import * as childProcess from 'child_process';
 import { RaspistillInterruptError } from '../src/lib/error/interrupt';
+import * as util from 'util';
+import * as rimraf from 'rimraf';
+
+const rmrf = util.promisify(rimraf);
 
 // TODO refactor me
 
@@ -20,15 +23,20 @@ describe('watcher', function(): void {
     const watcher = new DefaultWatcher({ expireTime: 2000 });
 
     beforeEach(async () => {
-        await rmfr(PHOTOS_DIR);
+        await rmrf(PHOTOS_DIR);
     });
 
-    it.skip('should create dir if not exists', async (done: jest.DoneCallback) => {
+    afterEach(async () => {
+        await rmrf(PHOTOS_DIR);
+    });
+
+    it('should create dir if not exists', async (done: jest.DoneCallback) => {
         try {
-            await fs.rmdir(PHOTOS_DIR);
-            await watcher.watchAndGetFile(
+            watcher.watchAndGetFile(
                 PHOTOS_DIR + FILE_NAME
-            ); // NOTE we don't need to test file watching in this case, so we ignore it.
+            ).catch((err) => {
+                // NOTE we don't need to test file watching in this case, so we ignore it.
+            });
             await fs.access(PHOTOS_DIR);
             done();
         } catch (e) {
@@ -58,18 +66,18 @@ describe('watcher', function(): void {
         expect(testWatcher.getOptions()).toStrictEqual(defaultOptions);
     });
 
-    xit('should return buffer object', async (done: jest.DoneCallback) => {
-        const file = await watcher.watchAndGetFile(PHOTOS_DIR + FILE_NAME);
-        expect(file).toBeInstanceOf(Buffer);
-        expect(file.toString()).toBe('test');
+    it('should return buffer object', async (done: jest.DoneCallback) => {
+        watcher.watchAndGetFile(PHOTOS_DIR + FILE_NAME).then((file) => {
+            expect(file).toBeInstanceOf(Buffer);
+            expect(file.toString()).toBe('test');
+            done();
+        });
+
         await fs.writeFile(PHOTOS_DIR + FILE_NAME, FILE_DATA);
-        done();
     });
 
     it('should return error if no file exists after timeout', (done: jest.DoneCallback) => {
         watcher.watchAndGetFile(PHOTOS_DIR + '2.txt').catch((error) => {
-            //  expect(error).to.eql(new Error('No taken photo found'));
-            // TODO
             expect(error.message).toBe('No taken photo found');
             done();
         })
@@ -78,7 +86,7 @@ describe('watcher', function(): void {
             });
     });
 
-    // // TODO correct watcher watchAndGetFiles metod test
+    // // TODO correct watcher watchAndGetFiles method test
 
     it('should close watcher process (watchAndGetFile method)', (done: jest.DoneCallback) => {
         const watcherPromise = watcher.watchAndGetFile(PHOTOS_DIR + '3.txt').then((file) => {

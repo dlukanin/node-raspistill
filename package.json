@@ -41,7 +41,7 @@
     "js-image-generator": "^1.0.2",
     "nock-exec": "^0.1.0",
     "nyc": "^14.1.1",
-    "rmfr": "^2.0.0",
+    "rimraf": "^3.0.0",
     "sinon": "^7.5.0",
     "source-map-support": "^0.5.13",
     "ts-jest": "^24.1.0",

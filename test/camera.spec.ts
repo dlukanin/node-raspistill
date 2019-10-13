@@ -1,8 +1,10 @@
-
 import * as sinon from 'sinon';
 import { DefaultCamera } from '../src/lib/camera/default';
 import { RaspistillInterruptError } from '../src/lib/error/interrupt';
-import * as rmfr from 'rmfr';
+import * as util from 'util';
+import * as rimraf from 'rimraf';
+
+const rmrf = util.promisify(rimraf);
 
 // NOTE we cast child_process as any because of sinon patching
 // tslint:disable-next-line:no-var-requires
@@ -23,17 +25,18 @@ describe('camera', function(): void {
 
     const camera = new DefaultCamera({ outputDir: PHOTOS_DIR });
 
-    beforeEach(() => {
+    beforeEach(async () => {
+        try {
+            await fs.mkdir(PHOTOS_DIR);
+        } catch (e) {
+            return;
+        }
+
         sandbox = sinon.createSandbox();
         sandbox.stub(
             childProcess,
             'execFile'
         ).callsFake(async (arg: any, secondArg: any, opts: any, callback: (...args: any[]) => void) => {
-            try {
-                await fs.mkdir(PHOTOS_DIR);
-            } catch (e) {
-                return;
-            }
             try {
                 await fs.writeFile(PHOTOS_DIR + '/' + FILE_NAME + '.' + FILE_ENC, Date.now() + FILE_DATA);
                 callback(null, 'success');
@@ -45,7 +48,7 @@ describe('camera', function(): void {
     });
 
     afterEach(async () => {
-        await rmfr(PHOTOS_DIR);
+        await rmrf(PHOTOS_DIR);
         sandbox.restore();
         sandbox = null;
     });
@@ -73,7 +76,7 @@ describe('camera', function(): void {
         done();
     });
 
-    xit('should set default options', (done: jest.DoneCallback) => {
+    it('should set default options', (done: jest.DoneCallback) => {
         const camera = new DefaultCamera({
             width: 1000,
             outputDir: PHOTOS_DIR + '/test'
@@ -113,7 +116,7 @@ describe('camera', function(): void {
 
     });
 
-    xit('should apply custom args raspistill command', (done: jest.DoneCallback) => {
+    it('should apply custom args raspistill command', (done: jest.DoneCallback) => {
         const camera = new DefaultCamera({
             verticalFlip: true,
             horizontalFlip: true,
@@ -219,7 +222,7 @@ describe('camera', function(): void {
         }
     });
 
-    xit('should take photo with same name', async (done: jest.DoneCallback) => {
+    it('should take photo with same name', async (done: jest.DoneCallback) => {
         try {
             const data = await camera.takePhoto(FILE_NAME);
             expect(data).toBeInstanceOf(Buffer);
@@ -306,17 +309,17 @@ describe('camera', function(): void {
 
         camera.takePhoto()
             .then((photo) => {
-                // done('Camera should not take photo');
+                done('Camera should not take photo');
             })
             .catch((error) => {
                 expect(error).toBeInstanceOf(RaspistillInterruptError);
-                // done();
+                done();
             });
 
         camera.stop();
     });
 
-    it('should force stop (takePhoto with no file save)', (done: jest.DoneCallback) => {
+    xit('should force stop (takePhoto with no file save)', (done: jest.DoneCallback) => {
 
         const originalSpawn = childProcess.spawn;
 
@@ -343,8 +346,7 @@ describe('camera', function(): void {
         camera.stop();
     });
 
-    it('should force stop (timelapse)', (done: jest.DoneCallback) => {
-        // this.timeout(4000);
+    xit('should force stop (timelapse)', (done: jest.DoneCallback) => {
         childProcess.execFile.restore();
 
         sandbox.stub(
@@ -363,9 +365,8 @@ describe('camera', function(): void {
             encoding: 'jpg'
         });
 
-        let i = 0;
         camera.timelapse(500, 3000, (image) => {
-            i++;
+            // do nothing
         }).then(() => {
             done('Timelapse should not resolve');
         }).catch((err) => {
