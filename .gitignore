@@ -2,7 +2,7 @@ photos
 build
 src/**/*.js
 *.js.map
-src/test/helpers/*
+test/helpers/*
 !src/test/helpers/*.js
 !src/test/helpers/*.ts
 logs

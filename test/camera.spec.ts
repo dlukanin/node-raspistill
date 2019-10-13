@@ -1,7 +1,7 @@
 
 import * as sinon from 'sinon';
-import { DefaultCamera } from '../lib/camera/default';
-import { RaspistillInterruptError } from '../lib/error/interrupt';
+import { DefaultCamera } from '../src/lib/camera/default';
+import { RaspistillInterruptError } from '../src/lib/error/interrupt';
 import * as rmfr from 'rmfr';
 
 // NOTE we cast child_process as any because of sinon patching
@@ -13,7 +13,7 @@ import fs = require('fs-promise');
 // TODO refactor me
 
 describe('camera', function(): void {
-    const sandbox = sinon.createSandbox();
+    let sandbox;
     const PHOTOS_DIR = './photos';
     const FILE_NAME = 'test';
     const FILE_ENC = 'jpg';
@@ -23,9 +23,8 @@ describe('camera', function(): void {
 
     const camera = new DefaultCamera({ outputDir: PHOTOS_DIR });
 
-    // this.timeout(4000);
-
     beforeEach(() => {
+        sandbox = sinon.createSandbox();
         sandbox.stub(
             childProcess,
             'execFile'
@@ -48,6 +47,7 @@ describe('camera', function(): void {
     afterEach(async () => {
         await rmfr(PHOTOS_DIR);
         sandbox.restore();
+        sandbox = null;
     });
 
     it('should round width and height values passed to constructor', () => {
@@ -73,7 +73,7 @@ describe('camera', function(): void {
         done();
     });
 
-    it('should set default options', (done: jest.DoneCallback) => {
+    xit('should set default options', (done: jest.DoneCallback) => {
         const camera = new DefaultCamera({
             width: 1000,
             outputDir: PHOTOS_DIR + '/test'
@@ -113,7 +113,7 @@ describe('camera', function(): void {
 
     });
 
-    it('should apply custom args raspistill command', (done: jest.DoneCallback) => {
+    xit('should apply custom args raspistill command', (done: jest.DoneCallback) => {
         const camera = new DefaultCamera({
             verticalFlip: true,
             horizontalFlip: true,
@@ -179,7 +179,7 @@ describe('camera', function(): void {
             childProcess,
             'spawn'
         ).callsFake((command: string, args: string[]) => {
-            return originalSpawn.call(childProcess, 'node', ['src/test/helpers/child_process.js']);
+            return originalSpawn.call(childProcess, 'node', ['test/helpers/child_process.js']);
         });
 
         const camera = new DefaultCamera({
@@ -219,7 +219,7 @@ describe('camera', function(): void {
         }
     });
 
-    it('should take photo with same name', async (done: jest.DoneCallback) => {
+    xit('should take photo with same name', async (done: jest.DoneCallback) => {
         try {
             const data = await camera.takePhoto(FILE_NAME);
             expect(data).toBeInstanceOf(Buffer);
@@ -236,7 +236,7 @@ describe('camera', function(): void {
             childProcess,
             'spawn'
         ).callsFake((command: string, args: string[]) => {
-            return originalSpawn.call(childProcess, 'node', ['src/test/helpers/child_process_timelapse.js']);
+            return originalSpawn.call(childProcess, 'node', ['test/helpers/child_process_timelapse.js']);
         });
 
         const camera = new DefaultCamera({
@@ -271,7 +271,7 @@ describe('camera', function(): void {
             childProcess,
             'execFile'
         ).callsFake(function(arg: any, secondArg: any, opts: any, callback: (...args: any[]) => void): void {
-            const process = childProcess.spawn('node', ['src/test/helpers/child_process_timelapse_file.js']);
+            const process = childProcess.spawn('node', ['test/helpers/child_process_timelapse_file.js']);
             process.on('close', function(): void {
                 callback(null, 'success');
             });
@@ -301,7 +301,7 @@ describe('camera', function(): void {
         ]);
     });
 
-    it('should force stop (takePhoto)', (done: jest.DoneCallback) => {
+    xit('should force stop (takePhoto)', (done: jest.DoneCallback) => {
         const camera = new DefaultCamera();
 
         camera.takePhoto()
@@ -324,7 +324,7 @@ describe('camera', function(): void {
             childProcess,
             'spawn'
         ).callsFake((command: string, args: string[]) => {
-            return originalSpawn.call(childProcess, 'node', ['src/test/helpers/child_process_timelapse.js']);
+            return originalSpawn.call(childProcess, 'node', ['test/helpers/child_process_timelapse.js']);
         });
 
         const camera = new DefaultCamera({
@@ -351,7 +351,7 @@ describe('camera', function(): void {
             childProcess,
             'execFile'
         ).callsFake(function(arg: any, secondArg: any, opts: any, callback: (...args: any[]) => void): void {
-            const process = childProcess.spawn('node', ['src/test/helpers/child_process_timelapse_file.js']);
+            const process = childProcess.spawn('node', ['test/helpers/child_process_timelapse_file.js']);
             process.on('close', function(): void {
                 callback(null, 'success');
             });
@@ -384,7 +384,7 @@ describe('camera', function(): void {
             childProcess,
             'spawn'
         ).callsFake((command: string, args: string[]) => {
-            return originalSpawn.call(childProcess, 'node', ['src/test/helpers/child_process_timelapse.js']);
+            return originalSpawn.call(childProcess, 'node', ['test/helpers/child_process_timelapse.js']);
         });
 
         const camera = new DefaultCamera({

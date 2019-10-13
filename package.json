@@ -6,9 +6,9 @@
   "types": "build/index.d.ts",
   "typings": "build/index",
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf ./build && tsc",
     "watch": "tsc --watch",
-    "test": "jest --coverage",
+    "test": "jest --coverage --runInBand --forceExit",
     "lint": "tslint './src/**/*.ts' --fix --project tsconfig.json",
     "ci-lint": "tslint './src/**/*.ts' --project tsconfig.json"
   },

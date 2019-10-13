@@ -11,3 +11,5 @@ tsconfig.json
 .travis.yml
 tslint.json
 npm-shrinkwrap.json
+jest.config.ts
+test
