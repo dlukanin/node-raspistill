@@ -1,12 +1,11 @@
 import {ICamera, ICameraOptions} from './interfaces';
 import {AbstractCamera} from './abstract';
-import {IWatcher} from '../watcher/interfaces';
+import {IWatcher} from '../..';
 import {DefaultWatcher} from '../watcher/default';
-import {IRaspistillExecutor} from '../executor/interfaces';
+import {IRaspistillExecutor} from '../..';
 import {DefaultRaspistillExecutor} from '../executor/default';
-import {ChildProcess} from 'child_process';
-import {RaspistillInterruptError} from '../error/interrupt';
-import {RaspistillDefaultError} from '../error/raspistill';
+import {RaspistillInterruptError} from '../..';
+import {RaspistillDefaultError} from '../..';
 
 export class DefaultCamera extends AbstractCamera implements ICamera {
     constructor(options: ICameraOptions = {},

@@ -1,6 +1,5 @@
-import * as sinon from 'sinon';
 import { DefaultCamera } from '../src/lib/camera/default';
-import { RaspistillInterruptError } from '../src/lib/error/interrupt';
+import { RaspistillInterruptError } from '../src';
 import * as util from 'util';
 import * as rimraf from 'rimraf';
 
@@ -15,7 +14,6 @@ import fs = require('fs-promise');
 // TODO refactor me
 
 describe('camera', function(): void {
-    let sandbox;
     const PHOTOS_DIR = './photos';
     const FILE_NAME = 'test';
     const FILE_ENC = 'jpg';
@@ -25,6 +23,8 @@ describe('camera', function(): void {
 
     const camera = new DefaultCamera({ outputDir: PHOTOS_DIR });
 
+    let execFileSpy;
+
     beforeEach(async () => {
         try {
             await fs.mkdir(PHOTOS_DIR);
@@ -32,25 +32,19 @@ describe('camera', function(): void {
             return;
         }
 
-        sandbox = sinon.createSandbox();
-        sandbox.stub(
-            childProcess,
-            'execFile'
-        ).callsFake(async (arg: any, secondArg: any, opts: any, callback: (...args: any[]) => void) => {
-            try {
-                await fs.writeFile(PHOTOS_DIR + '/' + FILE_NAME + '.' + FILE_ENC, Date.now() + FILE_DATA);
-                callback(null, 'success');
-            } catch (e) {
-                return callback(e);
-            }
-
-        });
+        execFileSpy = spyOn(childProcess, 'execFile')
+            .and.callFake(async (arg: any, secondArg: any, opts: any, callback: (...args: any[]) => void) => {
+                try {
+                    await fs.writeFile(PHOTOS_DIR + '/' + FILE_NAME + '.' + FILE_ENC, Date.now() + FILE_DATA);
+                    callback(null, 'success');
+                } catch (e) {
+                    return callback(e);
+                }
+            });
     });
 
     afterEach(async () => {
         await rmrf(PHOTOS_DIR);
-        sandbox.restore();
-        sandbox = null;
     });
 
     it('should round width and height values passed to constructor', () => {
@@ -69,7 +63,7 @@ describe('camera', function(): void {
 
         camera.takePhoto();
 
-        const args: any[] = childProcess.execFile.args[0];
+        const args: any[] = execFileSpy.calls.mostRecent().args;
 
         expect(args[0]).toBe('raspistill');
         expect(args[1]).toStrictEqual(['-n', '-e', 'jpg', '-o', args[1][4]]); // TODO path check
@@ -84,7 +78,7 @@ describe('camera', function(): void {
 
         camera.takePhoto('foo');
 
-        const fooArgs: any[] = childProcess.execFile.args[0];
+        const fooArgs: any[] = execFileSpy.calls.mostRecent().args;
 
         expect(fooArgs[0]).toBe('raspistill');
         expect(fooArgs[1]).toStrictEqual([
@@ -94,7 +88,7 @@ describe('camera', function(): void {
         camera.setDefaultOptions();
         camera.takePhoto('bar');
 
-        const barArgs: any[] = childProcess.execFile.args[1];
+        const barArgs: any[] = execFileSpy.calls.mostRecent().args;
 
         expect(barArgs[0]).toBe('raspistill');
         expect(barArgs[1]).toStrictEqual([
@@ -145,9 +139,10 @@ describe('camera', function(): void {
         });
         camera.takePhoto('anotherTest');
 
-        const args: any[] = childProcess.execFile.args[0];
-        const secondCallArgs: any[] = childProcess.execFile.args[1];
-        const thirdCallArgs: any[] = childProcess.execFile.args[2];
+        const allCalls = execFileSpy.calls.all();
+        const args = allCalls[0].args;
+        const secondCallArgs = allCalls[1].args;
+        const thirdCallArgs = allCalls[2].args;
 
         expect(args[0]).toBe('raspistill');
         expect(args[1]).toStrictEqual([
@@ -177,13 +172,10 @@ describe('camera', function(): void {
 
     it('should return buffer object with noFileSave option', (done: jest.DoneCallback) => {
         const originalSpawn = childProcess.spawn;
-
-        sandbox.stub(
-            childProcess,
-            'spawn'
-        ).callsFake((command: string, args: string[]) => {
-            return originalSpawn.call(childProcess, 'node', ['test/helpers/child_process.js']);
-        });
+        const spawnSpy = spyOn(childProcess, 'spawn')
+            .and.callFake(() => {
+                return originalSpawn.call(childProcess, 'node', ['test/helpers/child_process.js']);
+            });
 
         const camera = new DefaultCamera({
             noFileSave: true,
@@ -200,9 +192,9 @@ describe('camera', function(): void {
                 done(error);
             });
 
-        expect(childProcess.execFile.args.length).toBe(0);
+        expect(execFileSpy).not.toHaveBeenCalled();
 
-        const args: any = childProcess.spawn.args[0];
+        const args = spawnSpy.calls.mostRecent().args;
         expect(args[0]).toBe('raspistill');
         expect(args[1]).toStrictEqual([
             '-n', '-e', 'jpg', '-o', '-'
@@ -235,12 +227,12 @@ describe('camera', function(): void {
 
     it('should exec camera in timelapse mode (no file save)', (done: jest.DoneCallback) => {
         const originalSpawn = childProcess.spawn;
-        sandbox.stub(
+        const spawnSpy = spyOn(
             childProcess,
             'spawn'
-        ).callsFake((command: string, args: string[]) => {
-            return originalSpawn.call(childProcess, 'node', ['test/helpers/child_process_timelapse.js']);
-        });
+        ).and.callFake(() =>
+            originalSpawn.call(childProcess, 'node', ['test/helpers/child_process_timelapse.js'])
+        );
 
         const camera = new DefaultCamera({
             noFileSave: true,
@@ -260,7 +252,7 @@ describe('camera', function(): void {
             done(err);
         });
 
-        const args: any = childProcess.spawn.args[0];
+        const args: any = spawnSpy.calls.mostRecent().args;
         expect(args[0]).toBe('raspistill');
         expect(args[1]).toStrictEqual([
             '-n', '-e', 'jpg', '-t', '3000', '-tl', '500', '-o', '-'
@@ -268,12 +260,12 @@ describe('camera', function(): void {
     });
 
     it('should exec camera in timelapse mode (file save)', (done: jest.DoneCallback) => {
-        childProcess.execFile.restore();
-
-        sandbox.stub(
-            childProcess,
-            'execFile'
-        ).callsFake(function(arg: any, secondArg: any, opts: any, callback: (...args: any[]) => void): void {
+        execFileSpy.and.callFake(function(
+            arg: any,
+            secondArg: any,
+            opts: any,
+            callback: (...args: any[]) => void
+        ): void {
             const process = childProcess.spawn('node', ['test/helpers/child_process_timelapse_file.js']);
             process.on('close', function(): void {
                 callback(null, 'success');
@@ -297,7 +289,7 @@ describe('camera', function(): void {
             done(err);
         });
 
-        const args: any = childProcess.execFile.args[0];
+        const args: any = execFileSpy.calls.mostRecent().args;
         expect(args[0]).toBe('raspistill');
         expect(args[1]).toStrictEqual([
             '-n', '-e', 'jpg', '-t', '2000', '-tl', '400', '-o', PHOTOS_DIR + '/image%04d.jpg'
@@ -308,7 +300,7 @@ describe('camera', function(): void {
         const camera = new DefaultCamera();
 
         camera.takePhoto()
-            .then((photo) => {
+            .then(() => {
                 done('Camera should not take photo');
             })
             .catch((error) => {
@@ -320,13 +312,11 @@ describe('camera', function(): void {
     });
 
     it('should force stop (takePhoto with no file save)', (done: jest.DoneCallback) => {
-
         const originalSpawn = childProcess.spawn;
-
-        sandbox.stub(
+        spyOn(
             childProcess,
             'spawn'
-        ).callsFake((command: string, args: string[]) => {
+        ).and.callFake(() => {
             return originalSpawn.call(childProcess, 'node', ['test/helpers/child_process_timelapse.js']);
         });
 
@@ -335,7 +325,7 @@ describe('camera', function(): void {
         });
 
         camera.takePhoto()
-            .then((photo) => {
+            .then(() => {
                 done('Camera should not take photo');
             })
             .catch((error) => {
@@ -347,12 +337,12 @@ describe('camera', function(): void {
     });
 
     it('should force stop (timelapse)', (done: jest.DoneCallback) => {
-        childProcess.execFile.restore();
-
-        sandbox.stub(
-            childProcess,
-            'execFile'
-        ).callsFake(function(arg: any, secondArg: any, opts: any, callback: (...args: any[]) => void): void {
+        execFileSpy.and.callFake(function(
+            arg: any,
+            secondArg: any,
+            opts: any,
+            callback: (...args: any[]) => void
+        ): void {
             const process = childProcess.spawn('node', ['test/helpers/child_process_timelapse_file.js']);
             process.on('close', function(): void {
                 callback(null, 'success');
@@ -365,7 +355,7 @@ describe('camera', function(): void {
             encoding: 'jpg'
         });
 
-        camera.timelapse(500, 3000, (image) => {
+        camera.timelapse(500, 3000, () => {
             // do nothing
         }).then(() => {
             done('Timelapse should not resolve');
@@ -381,10 +371,10 @@ describe('camera', function(): void {
 
         const originalSpawn = childProcess.spawn;
 
-        sandbox.stub(
+        spyOn(
             childProcess,
             'spawn'
-        ).callsFake((command: string, args: string[]) => {
+        ).and.callFake(() => {
             return originalSpawn.call(childProcess, 'node', ['test/helpers/child_process_timelapse.js']);
         });
 
@@ -394,7 +384,7 @@ describe('camera', function(): void {
         });
 
         let i = 0;
-        camera.timelapse(500, 3000, (image) => {
+        camera.timelapse(500, 3000, () => {
             i++;
         }).then(() => {
             done('Timelapse should not resolve');
