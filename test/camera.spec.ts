@@ -304,7 +304,7 @@ describe('camera', function(): void {
         ]);
     });
 
-    xit('should force stop (takePhoto)', (done: jest.DoneCallback) => {
+    it('should force stop (takePhoto)', (done: jest.DoneCallback) => {
         const camera = new DefaultCamera();
 
         camera.takePhoto()
@@ -319,7 +319,7 @@ describe('camera', function(): void {
         camera.stop();
     });
 
-    xit('should force stop (takePhoto with no file save)', (done: jest.DoneCallback) => {
+    it('should force stop (takePhoto with no file save)', (done: jest.DoneCallback) => {
 
         const originalSpawn = childProcess.spawn;
 
@@ -346,7 +346,7 @@ describe('camera', function(): void {
         camera.stop();
     });
 
-    xit('should force stop (timelapse)', (done: jest.DoneCallback) => {
+    it('should force stop (timelapse)', (done: jest.DoneCallback) => {
         childProcess.execFile.restore();
 
         sandbox.stub(

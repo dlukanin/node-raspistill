@@ -127,7 +127,7 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
     }
 
     public killProcess(): void {
-        if (this.childProcess) {
+        if (this.childProcess && this.childProcess.kill) {
             this.childProcess.kill(DefaultRaspistillExecutor.FORCE_CLOSE_SIGNAL);
         }
     }
