@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var fs = require("fs");
 var imageGenerator = require("js-image-generator");
 imageGenerator.generateImage(800, 600, 80, function (err, image) {

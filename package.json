@@ -8,10 +8,9 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "test": "nyc mocha && nyc report --reporter=lcov",
+    "test": "jest --coverage",
     "lint": "tslint './src/**/*.ts' --fix --project tsconfig.json",
-    "ci-lint": "tslint './src/**/*.ts' --project tsconfig.json",
-    "coverage": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls"
+    "ci-lint": "tslint './src/**/*.ts' --project tsconfig.json"
   },
   "repository": {
     "type": "git",
@@ -31,29 +30,28 @@
   },
   "homepage": "https://github.com/dlukanin/node-raspistill#readme",
   "devDependencies": {
-    "@types/chai": "^4.2.3",
     "@types/fs-promise": "^1.0.3",
-    "@types/mocha": "^5.2.7",
+    "@types/jest": "^24.0.18",
     "@types/node": "^12.7.12",
+    "@types/rmfr": "^2.0.0",
     "@types/sinon": "^7.5.0",
-    "chai": "^4.2.0",
-    "coveralls": "^3.0.7",
     "fs-promise": "^2.0.3",
     "istanbul": "^0.4.5",
+    "jest": "^24.9.0",
     "js-image-generator": "^1.0.2",
-    "mocha": "^6.2.1",
     "nock-exec": "^0.1.0",
     "nyc": "^14.1.1",
+    "rmfr": "^2.0.0",
     "sinon": "^7.5.0",
     "source-map-support": "^0.5.13",
+    "ts-jest": "^24.1.0",
     "ts-node": "^8.4.1",
     "tslint": "^5.20.0",
     "tslint-eslint-rules": "^5.4.0",
     "typescript": "^3.6.4"
   },
   "dependencies": {
-    "image-type": "4.1.0",
-    "rimraf": "^3.0.0"
+    "image-type": "4.1.0"
   },
   "nyc": {
     "include": [
