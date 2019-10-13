@@ -1,6 +1,5 @@
 const Raspistill = require('node-raspistill').Raspistill;
 const RaspistillInterruptError = require('node-raspistill').RaspistillInterruptError;
-const fs = require('fs');
 
 const raspistill = new Raspistill({
     fileName: 'image%04d',
