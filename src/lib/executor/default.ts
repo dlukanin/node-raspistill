@@ -39,8 +39,8 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
 
     public spawnAndGetImage(args: string[]): Promise<Buffer> {
         return new Promise((resolve, reject) => {
-            let photoBuffer: Buffer = new Buffer(0);
-            let errorBuffer: Buffer = new Buffer(0);
+            let photoBuffer: Buffer = Buffer.alloc(0);
+            let errorBuffer: Buffer = Buffer.alloc(0);
             let error: any;
 
             const childProcess = spawn(
@@ -85,7 +85,7 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
 
     public spawnAndGetImages(args: string[], cb: (image: Buffer) => any): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            let photoBuffer: Buffer = new Buffer(0);
+            let photoBuffer: Buffer = Buffer.alloc(0);
             let error: any;
 
             const childProcess = spawn(
