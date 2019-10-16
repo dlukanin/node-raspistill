@@ -8,9 +8,10 @@
   "scripts": {
     "build": "rm -rf ./build && tsc",
     "watch": "tsc --watch",
-    "test": "jest --coverage --runInBand --forceExit",
+    "test": "jest --coverage --runInBand --forceExit --detectOpenHandles",
     "lint": "tslint './src/**/*.ts' --fix --project tsconfig.json",
-    "ci-lint": "tslint './src/**/*.ts' --project tsconfig.json"
+    "ci-lint": "tslint './src/**/*.ts' --project tsconfig.json",
+    "coverage": "cat ./coverage/lcov.info | coveralls"
   },
   "repository": {
     "type": "git",
@@ -34,8 +35,8 @@
     "@types/jest": "^24.0.18",
     "@types/node": "^12.7.12",
     "@types/rmfr": "^2.0.0",
+    "coveralls": "3.0.7",
     "fs-promise": "^2.0.3",
-    "istanbul": "^0.4.5",
     "jest": "^24.9.0",
     "js-image-generator": "^1.0.2",
     "nock-exec": "^0.1.0",
