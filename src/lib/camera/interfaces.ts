@@ -1,4 +1,4 @@
-export type TCameraFileEncoding = 'jpg' | 'bpm' | 'gif' | 'png';
+export type TCameraFileEncoding = 'jpg' | 'bmp' | 'gif' | 'png';
 
 export interface ICameraOptions {
     /**
@@ -20,7 +20,7 @@ export interface ICameraOptions {
      */
     fileName?: string;
     /**
-     * File encoding. jpg, bpm, gif or png
+     * File encoding. jpg, bmp, gif or png
      */
     encoding?: TCameraFileEncoding;
     width?: number;
