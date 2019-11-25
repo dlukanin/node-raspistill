@@ -215,3 +215,8 @@ Gets current raspistill options.
 
 #### getOption(key: string): any
 Gets current raspistill option by key.
+
+## Support on Beerpay
+Hey dude! Help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/dlukanin/node-raspistill/badge.svg?style=beer-square)](https://beerpay.io/dlukanin/node-raspistill)  [![Beerpay](https://beerpay.io/dlukanin/node-raspistill/make-wish.svg?style=flat-square)](https://beerpay.io/dlukanin/node-raspistill?focus=wish)
