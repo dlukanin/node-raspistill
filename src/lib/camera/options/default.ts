@@ -17,5 +17,7 @@ export const defaultOptions: ICameraOptions = {
     saturation: undefined,
     awb: undefined,
     awbg: undefined,
-    rotation: undefined
+    rotation: undefined,
+    quality: undefined,
+    thumb: undefined
 };
