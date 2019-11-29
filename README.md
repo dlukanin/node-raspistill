@@ -20,7 +20,7 @@ Raspbian OS with node.js v 6+ installed, raspberry camera module connected to yo
 npm install node-raspistill
 ```
 
-```
+```typescript
 const Raspistill = require('node-raspistill').Raspistill;
 const camera = new Raspistill();
 
@@ -29,7 +29,7 @@ camera.takePhoto().then((photo) => {
 });
 ```
 Or (if you use imports):
-```
+```typescript
 import {Raspistill} from 'node-raspistill';
 const camera = new Raspistill();
 
@@ -40,7 +40,7 @@ camera.takePhoto().then((photo) => {
 
 You can also pass some options to constructor method:
 
-```
+```typescript
 const camera = new Raspistill({
     verticalFlip: true,
     width: 800,
@@ -111,6 +111,8 @@ Added noPreview option.
 #### constructor(options?: ICameraOptions)
 Creates new Raspistill instance.
 
+<details>
+<summary></summary>
 Options - object, that can contain:
 
 |key|type|defaults|desc|
@@ -136,7 +138,7 @@ Options - object, that can contain:
 |quality|string|undefined|JPEG quality <0 to 100>|
 |thumb|string|undefined|Specification of the thumbnail image inserted into the JPEG file. If not specified, defaults are a size of 64x48 at quality 35|
 
-```
+```typescript
 const camera = new Raspistill({
     verticalFlip: true,
     fileName: 'foo'
@@ -144,15 +146,20 @@ const camera = new Raspistill({
 ```
 
 You can find more info about raspistill util options in the official docs: https://www.raspberrypi.org/documentation/raspbian/applications/camera.md
-
+</details>
 
 #### takePhoto(fileName?: string): Promise\<Buffer\>
 Takes new photo. Returns Promise, resolving with Buffer object.
-```
+
+<details>
+<summary></summary>
+
+```typescript
 camera.takePhoto('testPhotoName').then((photo) => {
     ...
 });
 ```
+</details>
 
 #### timelapse(fileName: string, intervalMs: number, execTimeMs: number, cb: (image: Buffer) => any): Promise\<void\>;
 #### timelapse(intervalMs: number, execTimeMs: number, cb: (image: Buffer) => any): Promise\<void\>;
@@ -164,7 +171,10 @@ Remember that raspberry camera has it's own limits of taking photos speed even i
 Check out official raspistill docs (https://www.raspberrypi.org/documentation/raspbian/applications/camera.md) for
 file naming rules and interval/total exec time params usage.
 
-```
+<details>
+<summary></summary>
+
+```typescript
 camera.timelapse(500, 3000, (image) => {
     // got image from camera, do something
 }).then(() => {
@@ -174,7 +184,7 @@ camera.timelapse(500, 3000, (image) => {
 });
 ```
 or
-```
+```typescript
 camera.timelapse('image%04d', 500, 3000, (image) => {
     // got image from camera, do something
 }).then(() => {
@@ -183,11 +193,16 @@ camera.timelapse('image%04d', 500, 3000, (image) => {
     // something bad happened
 });
 ```
+</details>
 
 #### stop(): void;
 Tries to stop current raspistill running action. Note that pending raspistill promises will be
 rejected with RaspistillInterruptError if stop was completed.
-```
+
+<details>
+<summary></summary>
+
+```typescript
 const RaspistillInterruptError = require('node-raspistill').RaspistillInterruptError;
 
 raspistill.timelapse(1000, 30000, (image) => {
@@ -202,15 +217,21 @@ raspistill.timelapse(1000, 30000, (image) => {
     });
 ```
 
+</details>
 
 #### setOptions(options: ICameraOptions): void
 Sets new options for current Raspistill instance.
-```
+
+<details>
+<summary></summary>
+
+```typescript
 camera.setOptions({
     horizontalFlip: true,
     noPreview: false
 });
 ```
+</details>
 
 #### setDefaultOptions(): void
 Reverts all option values of current Raspistill instance to default.
