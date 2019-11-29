@@ -34,7 +34,9 @@ export abstract class AbstractCamera implements ICamera {
         saturation: '-sa',
         iso: '-ISO',
         awb: '-awb',
-        awbg: '-awbg'
+        awbg: '-awbg',
+        quality: '-q',
+        thumb: '-th'
     };
 
     constructor(options: ICameraOptions = {}) {
