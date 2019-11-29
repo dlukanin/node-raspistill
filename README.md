@@ -129,6 +129,8 @@ Options - object, that can contain:
 |rotation|number|undefined|Image rotation param|
 |awb|string|undefined|'off', 'auto', 'sun', 'cloud', 'shade', 'tungsten', 'fluorescent', 'incandescent', 'flash', 'horizon'|
 |awbg|string|undefined|Sets blue and red gains (as floating point numbers) to be applied when awb=off. e.g. '1.5,1.2'|
+|quality|string|undefined|JPEG quality <0 to 100>|
+|thumb|string|undefined|Specification of the thumbnail image inserted into the JPEG file. If not specified, defaults are a size of 64x48 at quality 35|
 
 ```
 const camera = new Raspistill({
