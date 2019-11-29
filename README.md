@@ -112,7 +112,7 @@ Added noPreview option.
 Creates new Raspistill instance.
 
 <details>
-<summary></summary>
+<summary>Details</summary>
 Options - object, that can contain:
 
 |key|type|defaults|desc|
@@ -152,7 +152,7 @@ You can find more info about raspistill util options in the official docs: https
 Takes new photo. Returns Promise, resolving with Buffer object.
 
 <details>
-<summary></summary>
+<summary>Details</summary>
 
 ```typescript
 camera.takePhoto('testPhotoName').then((photo) => {
@@ -172,7 +172,7 @@ Check out official raspistill docs (https://www.raspberrypi.org/documentation/ra
 file naming rules and interval/total exec time params usage.
 
 <details>
-<summary></summary>
+<summary>Details</summary>
 
 ```typescript
 camera.timelapse(500, 3000, (image) => {
@@ -200,7 +200,7 @@ Tries to stop current raspistill running action. Note that pending raspistill pr
 rejected with RaspistillInterruptError if stop was completed.
 
 <details>
-<summary></summary>
+<summary>Details</summary>
 
 ```typescript
 const RaspistillInterruptError = require('node-raspistill').RaspistillInterruptError;
@@ -223,7 +223,7 @@ raspistill.timelapse(1000, 30000, (image) => {
 Sets new options for current Raspistill instance.
 
 <details>
-<summary></summary>
+<summary>Details</summary>
 
 ```typescript
 camera.setOptions({
