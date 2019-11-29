@@ -53,6 +53,9 @@ export interface ICameraOptions {
      */
     awb?: string;
     awbg?: string;
+
+    quality?: string;
+    thumb?: string;
 }
 
 export interface IInnerExecCameraOptions extends ICameraOptions {
