@@ -54,7 +54,7 @@ export interface ICameraOptions {
     awb?: string;
     awbg?: string;
 
-    quality?: string;
+    quality?: number;
     thumb?: string;
 }
 
