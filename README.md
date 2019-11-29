@@ -56,6 +56,10 @@ You can also find some usage examples here: https://github.com/dlukanin/node-ras
 <details>
 <summary>Details</summary>
 
+#### v 0.0.20
+[fix encoding options #20](https://github.com/dlukanin/node-raspistill/pull/20)
+[options added #21 #21](https://github.com/dlukanin/node-raspistill/pull/21)
+
 #### v 0.0.19
 Fixes in interface exports.
 
@@ -217,6 +221,10 @@ Gets current raspistill options.
 
 #### getOption(key: string): any
 Gets current raspistill option by key.
+
+## Contributors
+
+Just want to say thx for all [contributors](https://github.com/dlukanin/node-raspistill/graphs/contributors). You are wonderful. :)
 
 ## Support on Beerpay
 Hey dude! Help me out for a couple of :beers:!
