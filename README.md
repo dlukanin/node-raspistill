@@ -58,7 +58,7 @@ You can also find some usage examples here: https://github.com/dlukanin/node-ras
 
 #### v 0.0.20
 [fix encoding options #20](https://github.com/dlukanin/node-raspistill/pull/20)
-[options added #21 #21](https://github.com/dlukanin/node-raspistill/pull/21)
+[options added #21](https://github.com/dlukanin/node-raspistill/pull/21)
 
 #### v 0.0.19
 Fixes in interface exports.
