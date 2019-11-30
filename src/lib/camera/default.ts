@@ -57,7 +57,7 @@ export class DefaultCamera implements ICamera {
     constructor(
         protected options: ICameraOptions = {},
         protected watcher: IWatcher = new DefaultWatcher(),
-        protected executor: IRaspistillExecutor = new DefaultRaspistillExecutor(),
+        protected executor: IRaspistillExecutor = new DefaultRaspistillExecutor()
     ) {
         this._optionsParser = new ClaMapper(this._optionsMap);
         this.setOptions(Object.assign({}, this.defaultOptions, options));
