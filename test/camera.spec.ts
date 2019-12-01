@@ -359,5 +359,4 @@ describe('camera', function(): void {
 
         camera.stop();
     });
-
 });

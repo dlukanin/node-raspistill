@@ -6,7 +6,7 @@ export interface IWatcherOptions {
 }
 
 /**
- * Interface for file system watcher - helper for camera.
+ * Interface for file system _watcher - helper for camera.
  */
 export interface IWatcher {
     /**
@@ -23,21 +23,21 @@ export interface IWatcher {
     watchAndGetFiles(dirPath: string, watchTimeMs: number, cb: (file: Buffer) => any): Promise<void>;
 
     /**
-     * Closes current running fs watcher.
+     * Closes current running fs _watcher.
      */
     closeWatcher(): void;
 
     /**
-     * Sets current watcher options.
+     * Sets current _watcher options.
      * @param options
      */
     setOptions(options: IWatcherOptions): void;
     /**
-     * Gets current watcher options.
+     * Gets current _watcher options.
      */
     getOptions(): IWatcherOptions;
     /**
-     * Gets current watcher option by key.
+     * Gets current _watcher option by key.
      * @param key
      */
     getOption(key: string): any;

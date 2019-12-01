@@ -4,13 +4,12 @@ import { IWatcherOptions } from '../src/lib/watcher/interfaces';
 /* tslint:disable */
 const fs = require('fs-promise');
 /* tslint:enable */
-const PHOTOS_DIR = './watcher/';
+const PHOTOS_DIR = './_watcher/';
 
 import * as childProcess from 'child_process';
 import { RaspistillInterruptError } from '../src/lib/error/interrupt';
 import * as util from 'util';
 import * as rimraf from 'rimraf';
-import { defaultOptions } from '../src/lib/watcher/options/default';
 
 const rmrf = util.promisify(rimraf);
 
@@ -60,12 +59,6 @@ describe('watcher', function(): void {
         done();
     });
 
-    it('should ignore non WatcherOptions attrs', () => {
-        const opts = { foo: 1 };
-        const testWatcher = new DefaultWatcher(opts as any);
-        expect(testWatcher.getOptions()).toStrictEqual(defaultOptions);
-    });
-
     it('should return buffer object', async (done: jest.DoneCallback) => {
         watcher.watchAndGetFile(PHOTOS_DIR + FILE_NAME).then((file) => {
             expect(file).toBeInstanceOf(Buffer);
@@ -78,7 +71,7 @@ describe('watcher', function(): void {
 
     it('should return error if no file exists after timeout', (done: jest.DoneCallback) => {
         watcher.watchAndGetFile(PHOTOS_DIR + '2.txt').catch((error) => {
-            expect(error.message).toBe('No taken photo found');
+            expect(error.message).toBe('Raspistill failed, code: NO_TAKEN_PHOTO_FOUND message: undefined');
             done();
         })
             .catch((err) => {
@@ -86,7 +79,7 @@ describe('watcher', function(): void {
             });
     });
 
-    // // TODO correct watcher watchAndGetFiles method test
+    // // TODO correct _watcher watchAndGetFiles method test
 
     it('should close watcher process (watchAndGetFile method)', (done: jest.DoneCallback) => {
         const watcherPromise = watcher.watchAndGetFile(PHOTOS_DIR + '3.txt').then((file) => {

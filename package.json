@@ -33,7 +33,7 @@
   "devDependencies": {
     "@types/fs-promise": "^1.0.3",
     "@types/jest": "^24.0.18",
-    "@types/node": "^12.7.12",
+    "@types/node": "^12.12.14",
     "@types/rmfr": "^2.0.0",
     "coveralls": "3.0.7",
     "fs-promise": "^2.0.3",

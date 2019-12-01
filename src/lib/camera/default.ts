@@ -8,19 +8,6 @@ import { RaspistillDefaultError } from '../..';
 import { ClaMapper, IClaMapper } from 'cla-mapper';
 
 export class DefaultCamera implements ICamera {
-    /**
-     * Default camera options
-     * @type {ICameraOptions}
-     */
-    public readonly defaultOptions: ICameraOptions = {
-        noFileSave: false,
-        verticalFlip: false,
-        horizontalFlip: false,
-        noPreview: true,
-        outputDir: 'photos',
-        encoding: 'jpg'
-    };
-
     protected _options: ICameraOptions = {};
 
     /**
@@ -49,16 +36,28 @@ export class DefaultCamera implements ICamera {
         output: '-o'
     };
 
-    // tslint:disable-next-line:variable-name
-    protected _optionsParser: IClaMapper;
+    /**
+     * Default camera options
+     * @type {ICameraOptions}
+     */
+    private readonly _defaultOptions: ICameraOptions = {
+        noFileSave: false,
+        verticalFlip: false,
+        horizontalFlip: false,
+        noPreview: true,
+        outputDir: 'photos',
+        encoding: 'jpg'
+    };
+
+    private _optionsParser: IClaMapper;
 
     constructor(
-        protected options: ICameraOptions = {},
-        protected watcher: IWatcher = new DefaultWatcher(),
-        protected executor: IRaspistillExecutor = new DefaultRaspistillExecutor()
+        options: ICameraOptions = {},
+        protected _watcher: IWatcher = new DefaultWatcher(),
+        protected _executor: IRaspistillExecutor = new DefaultRaspistillExecutor()
     ) {
         this._optionsParser = new ClaMapper(this._optionsMap);
-        this.setOptions(Object.assign({}, this.defaultOptions, options));
+        this.setOptions(Object.assign({}, this._defaultOptions, options));
     }
 
     public setOptions(options: ICameraOptions): void {
@@ -95,15 +94,11 @@ export class DefaultCamera implements ICamera {
         }
 
         if (this._options.noFileSave) {
-            try {
-                return await this.executor.spawnAndGetImages(this._processOptions({
-                    time: execTimeMs,
-                    timelapse: intervalMs,
-                    fileName
-                }), cb);
-            } catch (err) {
-                this._processError(err);
-            }
+            return await this._executor.spawnAndGetImages(this._processOptions({
+                time: execTimeMs,
+                timelapse: intervalMs,
+                fileName
+            }), cb);
         }
 
         let cameraFileName = this._options.fileName || Date.now().toString() + '%04d';
@@ -119,28 +114,20 @@ export class DefaultCamera implements ICamera {
             }
         }
 
-        try {
-            await Promise.all([
-                this.executor.exec(this._processOptions({
-                    fileName: cameraFileName,
-                    encoding: cameraEncoding,
-                    time: execTimeMs,
-                    timelapse: intervalMs
-                })),
-                this.watcher.watchAndGetFiles(this.options.outputDir, execTimeMs, cb)
-            ]);
-        } catch (err) {
-            this._processError(err);
-        }
+        await Promise.all([
+            this._executor.exec(this._processOptions({
+                fileName: cameraFileName,
+                encoding: cameraEncoding,
+                time: execTimeMs,
+                timelapse: intervalMs
+            })),
+            this._watcher.watchAndGetFiles(this._options.outputDir, execTimeMs, cb)
+        ]);
     }
 
     public async takePhoto(fileName?: string): Promise<Buffer> {
         if (this._options.noFileSave === true) {
-            try {
-                return await this.executor.spawnAndGetImage(this._processOptions());
-            } catch (err) {
-                this._processError(err);
-            }
+            return await this._executor.spawnAndGetImage(this._processOptions());
         }
 
         let cameraFileName = this._options.fileName || Date.now().toString();
@@ -156,28 +143,24 @@ export class DefaultCamera implements ICamera {
             }
         }
 
-        try {
-            const result = await Promise.all([
-                this.executor.exec(this._processOptions({
-                    fileName: cameraFileName,
-                    encoding: cameraEncoding
-                })),
-                this.watcher.watchAndGetFile(this._options.outputDir + '/' + (cameraFileName + '.' + cameraEncoding))
-            ]);
+        const result = await Promise.all([
+            this._executor.exec(this._processOptions({
+                fileName: cameraFileName,
+                encoding: cameraEncoding
+            })),
+            this._watcher.watchAndGetFile(this._options.outputDir + '/' + (cameraFileName + '.' + cameraEncoding))
+        ]);
 
-            if (result instanceof Array) {
-                return result[1];
-            }
-
-            return result;
-        } catch (err) {
-            this._processError(err);
+        if (result instanceof Array) {
+            return result[1];
         }
+
+        return result;
     }
 
     public stop(): void {
-        this.watcher.closeWatcher();
-        this.executor.killProcess();
+        this._watcher.closeWatcher();
+        this._executor.killProcess();
     }
 
     /**
@@ -191,13 +174,5 @@ export class DefaultCamera implements ICamera {
             (options.outputDir + '/' + options.fileName + '.' + options.encoding);
 
         return this._optionsParser.getCommandLineArgs(options);
-    }
-
-    private _processError(error: Error): never {
-        // TODO
-        if (error instanceof RaspistillInterruptError) {
-            throw error;
-        }
-        throw new RaspistillDefaultError(error.message);
     }
 }
