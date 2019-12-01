@@ -1,5 +1,5 @@
-import {IWatcherOptions, IWatcher} from './interfaces';
-import defaultOptions from './options/default';
+import { IWatcherOptions, IWatcher } from './interfaces';
+import { defaultOptions } from './options/default';
 
 export abstract class AbstractWatcher implements IWatcher {
     /**

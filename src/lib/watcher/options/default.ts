@@ -1,3 +1,3 @@
-export default {
+export const defaultOptions = {
     expireTime: 20000
 };

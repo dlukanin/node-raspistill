@@ -1,11 +1,11 @@
-import {ICamera, ICameraOptions, IInnerExecCameraOptions, TCameraFileEncoding} from './interfaces';
-import {IWatcher} from '../..';
-import {DefaultWatcher} from '../watcher/default';
-import {IRaspistillExecutor} from '../..';
-import {DefaultRaspistillExecutor} from '../executor/default';
-import {RaspistillInterruptError} from '../..';
-import {RaspistillDefaultError} from '../..';
-import {ClaMapper, IClaMapper} from 'cla-mapper';
+import { ICamera, ICameraOptions, IInnerExecCameraOptions, TCameraFileEncoding } from './interfaces';
+import { IWatcher } from '../..';
+import { DefaultWatcher } from '../watcher/default';
+import { IRaspistillExecutor } from '../..';
+import { DefaultRaspistillExecutor } from '../executor/default';
+import { RaspistillInterruptError } from '../..';
+import { RaspistillDefaultError } from '../..';
+import { ClaMapper, IClaMapper } from 'cla-mapper';
 
 export class DefaultCamera implements ICamera {
     /**
@@ -21,14 +21,12 @@ export class DefaultCamera implements ICamera {
         encoding: 'jpg'
     };
 
-    // tslint:disable-next-line:variable-name
     protected _options: ICameraOptions = {};
 
     /**
      * Map "option and option value -> raspistil exec arg"
      * @type {any}
      */
-        // tslint:disable-next-line:variable-name
     protected readonly _optionsMap: Record<string, string> = {
         verticalFlip: '-vf',
         horizontalFlip: '-hf',
@@ -121,17 +119,19 @@ export class DefaultCamera implements ICamera {
             }
         }
 
-        return Promise.all([
-            this.executor.exec(this._processOptions({
-                fileName: cameraFileName,
-                encoding: cameraEncoding,
-                time: execTimeMs,
-                timelapse: intervalMs
-            })),
-            this.watcher.watchAndGetFiles(this.options.outputDir, execTimeMs, cb)
-        ])
-            .then(() => { return; })
-            .catch(this._processError);
+        try {
+            await Promise.all([
+                this.executor.exec(this._processOptions({
+                    fileName: cameraFileName,
+                    encoding: cameraEncoding,
+                    time: execTimeMs,
+                    timelapse: intervalMs
+                })),
+                this.watcher.watchAndGetFiles(this.options.outputDir, execTimeMs, cb)
+            ]);
+        } catch (err) {
+            this._processError(err);
+        }
     }
 
     public async takePhoto(fileName?: string): Promise<Buffer> {

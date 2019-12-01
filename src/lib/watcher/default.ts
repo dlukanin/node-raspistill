@@ -1,10 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import {AbstractWatcher} from './abstract';
-import {IWatcher, IWatcherOptions} from './interfaces';
-import {FSWatcher} from 'fs';
+import { AbstractWatcher } from './abstract';
+import { IWatcher, IWatcherOptions } from './interfaces';
+import { FSWatcher } from 'fs';
 import Timer = NodeJS.Timer;
-import {RaspistillInterruptError} from '../error/interrupt';
+import { RaspistillInterruptError } from '../error/interrupt';
 
 // TODO move into watcher class (?)
 const EVENT_RENAME = 'rename';

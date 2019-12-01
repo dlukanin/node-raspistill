@@ -1,5 +1,4 @@
 import { DefaultWatcher } from '../src/lib/watcher/default';
-import defaultOptions from '../src/lib/watcher/options/default';
 import { IWatcherOptions } from '../src/lib/watcher/interfaces';
 
 /* tslint:disable */
@@ -11,6 +10,7 @@ import * as childProcess from 'child_process';
 import { RaspistillInterruptError } from '../src/lib/error/interrupt';
 import * as util from 'util';
 import * as rimraf from 'rimraf';
+import { defaultOptions } from '../src/lib/watcher/options/default';
 
 const rmrf = util.promisify(rimraf);
 

@@ -1,8 +1,8 @@
-import {IRaspistillExecutor} from './interfaces';
-import {execFile, spawn} from 'child_process';
+import { IRaspistillExecutor } from './interfaces';
+import { execFile, spawn } from 'child_process';
 import * as imageType from 'image-type';
-import {ChildProcess} from 'child_process';
-import {RaspistillInterruptError} from '../error/interrupt';
+import { ChildProcess } from 'child_process';
+import { RaspistillInterruptError } from '../error/interrupt';
 
 // TODO refactor me
 
