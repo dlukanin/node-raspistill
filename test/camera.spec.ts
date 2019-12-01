@@ -1,5 +1,5 @@
 import { DefaultCamera } from '../src/lib/camera/default';
-import { RaspistillInterruptError } from '../src';
+import { RaspistillDefaultError, RaspistillInterruptError } from '../src';
 import * as util from 'util';
 import * as rimraf from 'rimraf';
 
@@ -165,6 +165,30 @@ describe('camera', function(): void {
         ]);
 
         done();
+    });
+
+    it('should return error object with noFileSave and stdout err', (done: jest.DoneCallback) => {
+        const originalSpawn = childProcess.spawn;
+        const spawnSpy = spyOn(childProcess, 'spawn')
+            .and.callFake(() => {
+                return originalSpawn.call(childProcess, 'node', ['test/helpers/child_process_err.js']);
+            });
+
+        const camera = new DefaultCamera({
+            noFileSave: true,
+            outputDir: PHOTOS_DIR + '/test',
+            fileName: 'no_file_saved',
+            encoding: 'jpg'
+        });
+
+        camera.takePhoto()
+            .then((data: any) => {
+                done('Should not be called');
+            })
+            .catch((error) => {
+                expect(error).toBeInstanceOf(RaspistillDefaultError);
+                done();
+            });
     });
 
     it('should take photo', async (done: jest.DoneCallback) => {
