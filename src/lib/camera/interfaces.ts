@@ -60,6 +60,7 @@ export interface ICameraOptions {
 
 export interface IInnerExecCameraOptions extends ICameraOptions {
     timelapse?: number;
+    output?: string;
 }
 
 /**
@@ -97,16 +98,11 @@ export interface ICamera {
      */
     setOptions(options: ICameraOptions): void;
     /**
-     * Sets camera options to default.
-     */
-    setDefaultOptions(): void;
-    /**
      * Gets current camera options.
      */
     getOptions(): ICameraOptions;
     /**
-     * Returns current camera option by key.
-     * @param key
+     * Gets current camera option.
      */
     getOption(key: string): any;
 }

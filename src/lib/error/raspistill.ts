@@ -1,11 +1,10 @@
 export class RaspistillDefaultError extends Error {
-    constructor(message: string) {
-        super('Raspistill failed: ' + message);
+    public static readonly CODE_NO_PHOTO: string = 'NO_TAKEN_PHOTO_FOUND';
+    public static readonly CODE_SPAWN_PROC_ERROR: string = 'SPAWN_PROC_ERROR';
+
+    constructor(public readonly code: string, message?: string) {
+        super('Raspistill failed, code: ' + code + ' message: ' + message);
+
         this.name = 'RaspistillDefaultError';
-
-        // NOTE https://github.com/Microsoft/TypeScript-wiki/blob
-        // /master/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
-        (this as any).__proto__ = RaspistillDefaultError.prototype;
-
     }
 }

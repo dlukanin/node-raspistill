@@ -1,30 +1,29 @@
-import {IRaspistillExecutor} from './interfaces';
-import {execFile, spawn} from 'child_process';
+import { IRaspistillExecutor } from './interfaces';
+import { execFile, spawn } from 'child_process';
 import * as imageType from 'image-type';
-import {ChildProcess} from 'child_process';
-import {RaspistillInterruptError} from '../error/interrupt';
-
-// TODO refactor me
+import { ChildProcess } from 'child_process';
+import { RaspistillInterruptError } from '../error/interrupt';
+import { RaspistillDefaultError } from '../error/raspistill';
 
 export class DefaultRaspistillExecutor implements IRaspistillExecutor {
     /**
      * Signal for closing watch action.
      * @type {string}
      */
-    public static readonly FORCE_CLOSE_SIGNAL: string = 'SIGTERM';
+    private readonly _forceCloseSignal: 'SIGTERM' = 'SIGTERM';
 
-    private childProcess: ChildProcess;
+    private _childProcess: ChildProcess;
 
-    private command: string = 'raspistill';
-    private maxBuffer: number = 400 * 1024;
+    private _command: string = 'raspistill';
+    private _maxBuffer: number = 400 * 1024;
 
-    public exec(args: string[]): Promise<Buffer> {
+    public async exec(args: string[]): Promise<Buffer> {
         return new Promise((resolve, reject) => {
-            this.childProcess = execFile(
-                this.command,
+            this._childProcess = execFile(
+                this._command,
                 args,
                 {
-                    maxBuffer: this.maxBuffer,
+                    maxBuffer: this._maxBuffer,
                     encoding: 'buffer'
                 },
                 (error: any, stdout, stderr) => {
@@ -37,14 +36,14 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
         });
     }
 
-    public spawnAndGetImage(args: string[]): Promise<Buffer> {
-        return new Promise((resolve, reject) => {
+    public async spawnAndGetImage(args: string[]): Promise<Buffer> {
+        return await new Promise((resolve, reject) => {
             let photoBuffer: Buffer = Buffer.alloc(0);
             let errorBuffer: Buffer = Buffer.alloc(0);
             let error: any;
 
             const childProcess = spawn(
-                this.command,
+                this._command,
                 args
             );
 
@@ -53,7 +52,7 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
             });
 
             childProcess.on('exit', (code: string, signal: string) => {
-                if (signal === DefaultRaspistillExecutor.FORCE_CLOSE_SIGNAL) {
+                if (signal === this._forceCloseSignal) {
                     reject(new RaspistillInterruptError());
                     return;
                 }
@@ -64,7 +63,10 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
                 }
 
                 if (errorBuffer.toString().length) {
-                    reject(new Error(errorBuffer.toString()));
+                    reject(new RaspistillDefaultError(
+                        RaspistillDefaultError.CODE_SPAWN_PROC_ERROR, errorBuffer.toString()
+                    ));
+
                     return;
                 }
 
@@ -79,17 +81,17 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
                 errorBuffer = Buffer.concat([errorBuffer, data]);
             });
 
-            this.childProcess = childProcess;
+            this._childProcess = childProcess;
         });
     }
 
-    public spawnAndGetImages(args: string[], cb: (image: Buffer) => any): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
+    public async spawnAndGetImages(args: string[], cb: (image: Buffer) => any): Promise<void> {
+        await new Promise<void>((resolve, reject) => {
             let photoBuffer: Buffer = Buffer.alloc(0);
             let error: any;
 
             const childProcess = spawn(
-                this.command,
+                this._command,
                 args
             );
 
@@ -98,7 +100,7 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
             });
 
             childProcess.on('exit', (code: string, signal: string) => {
-                if (signal === DefaultRaspistillExecutor.FORCE_CLOSE_SIGNAL) {
+                if (signal === this._forceCloseSignal) {
                     reject(new RaspistillInterruptError());
                     return;
                 }
@@ -122,13 +124,13 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
                 photoBuffer = Buffer.concat([photoBuffer, data]);
             });
 
-            this.childProcess = childProcess;
+            this._childProcess = childProcess;
         });
     }
 
     public killProcess(): void {
-        if (this.childProcess && this.childProcess.kill) {
-            this.childProcess.kill(DefaultRaspistillExecutor.FORCE_CLOSE_SIGNAL);
+        if (this._childProcess && this._childProcess.kill) {
+            this._childProcess.kill(this._forceCloseSignal);
         }
     }
 }

@@ -1,5 +1,5 @@
 import { DefaultCamera } from '../src/lib/camera/default';
-import { RaspistillInterruptError } from '../src';
+import { RaspistillDefaultError, RaspistillInterruptError } from '../src';
 import * as util from 'util';
 import * as rimraf from 'rimraf';
 
@@ -21,11 +21,13 @@ describe('camera', function(): void {
 
     let firstPhotoBuffer: Buffer;
 
-    const camera = new DefaultCamera({ outputDir: PHOTOS_DIR });
+    let camera: DefaultCamera;
 
     let execFileSpy;
 
     beforeEach(async () => {
+        camera = new DefaultCamera({ outputDir: PHOTOS_DIR });
+
         try {
             await fs.mkdir(PHOTOS_DIR);
         } catch (e) {
@@ -47,17 +49,6 @@ describe('camera', function(): void {
         await rmrf(PHOTOS_DIR);
     });
 
-    it('should round width and height values passed to constructor', () => {
-        const camera = new DefaultCamera({
-            width: 800.12,
-            height: 599.90
-        });
-
-        expect(camera.getOption('width')).toBe(800);
-        expect(camera.getOption('height')).toBe(600);
-
-    });
-
     it('should use default args while executing raspistill command', (done: jest.DoneCallback) => {
         const camera = new DefaultCamera();
 
@@ -67,33 +58,6 @@ describe('camera', function(): void {
 
         expect(args[0]).toBe('raspistill');
         expect(args[1]).toStrictEqual(['-n', '-e', 'jpg', '-o', args[1][4]]); // TODO path check
-        done();
-    });
-
-    it('should set default options', (done: jest.DoneCallback) => {
-        const camera = new DefaultCamera({
-            width: 1000,
-            outputDir: PHOTOS_DIR + '/test'
-        });
-
-        camera.takePhoto('foo');
-
-        const fooArgs: any[] = execFileSpy.calls.mostRecent().args;
-
-        expect(fooArgs[0]).toBe('raspistill');
-        expect(fooArgs[1]).toStrictEqual([
-            '-n', '-e', 'jpg', '-w', '1000', '-h', '1000', '-o', PHOTOS_DIR + '/test/foo.jpg'
-        ]);
-
-        camera.setDefaultOptions();
-        camera.takePhoto('bar');
-
-        const barArgs: any[] = execFileSpy.calls.mostRecent().args;
-
-        expect(barArgs[0]).toBe('raspistill');
-        expect(barArgs[1]).toStrictEqual([
-            '-n', '-e', 'jpg', '-o', 'photos/bar.jpg'
-        ]);
         done();
     });
 
@@ -110,7 +74,7 @@ describe('camera', function(): void {
 
     });
 
-    it('should apply custom args raspistill command', (done: jest.DoneCallback) => {
+    it('should apply custom args raspistill command', async (done: jest.DoneCallback) => {
         const camera = new DefaultCamera({
             verticalFlip: true,
             horizontalFlip: true,
@@ -120,22 +84,22 @@ describe('camera', function(): void {
             encoding: 'png',
             width: 1000,
             height: 800,
-            shutterspeed: 10,
-            iso: 100,
-            brightness: 10,
-            contrast: 10,
-            saturation: 10,
             time: 1,
-            rotation: 100,
+            iso: 100,
+            shutterspeed: 10,
+            contrast: 20,
+            brightness: 15,
+            saturation: 30,
             awb: 'auto',
-            awbg: '1.5,1.2'
+            awbg: '1.5,1.2',
+            rotation: 100
         });
 
         camera.takePhoto();
         camera.takePhoto('test');
         camera.setOptions({
             noPreview: true,
-            height: undefined
+            height: 700
         });
         camera.takePhoto('anotherTest');
 
@@ -147,7 +111,7 @@ describe('camera', function(): void {
         expect(args[0]).toBe('raspistill');
         expect(args[1]).toStrictEqual([
             '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-t', '1',
-            '-ISO', '100', '-ss', '10', '-co', '10', '-br', '10', '-sa', '10', '-awb', 'auto', '-awbg', '1.5,1.2',
+            '-ISO', '100', '-ss', '10', '-co', '20', '-br', '15', '-sa', '30', '-awb', 'auto', '-awbg', '1.5,1.2',
             '-rot', '100', '-o',
             PHOTOS_DIR + '/test/foo.png'
         ]);
@@ -155,15 +119,15 @@ describe('camera', function(): void {
         expect(secondCallArgs[0]).toBe('raspistill');
         expect(secondCallArgs[1]).toStrictEqual([
             '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-t', '1',
-            '-ISO', '100', '-ss', '10', '-co', '10', '-br', '10', '-sa', '10', '-awb', 'auto', '-awbg', '1.5,1.2',
+            '-ISO', '100', '-ss', '10', '-co', '20', '-br', '15', '-sa', '30', '-awb', 'auto', '-awbg', '1.5,1.2',
             '-rot', '100', '-o',
             PHOTOS_DIR + '/test/test.png'
         ]);
 
         expect(thirdCallArgs[0]).toBe('raspistill');
         expect(thirdCallArgs[1]).toStrictEqual([
-            '-vf', '-hf', '-n', '-e', 'png', '-w', '1000', '-h', '1000', '-t', '1',
-            '-ISO', '100', '-ss', '10', '-co', '10', '-br', '10', '-sa', '10', '-awb', 'auto', '-awbg', '1.5,1.2',
+            '-vf', '-hf', '-n', '-e', 'png', '-w', '1000', '-h', '700', '-t', '1',
+            '-ISO', '100', '-ss', '10', '-co', '20', '-br', '15', '-sa', '30', '-awb', 'auto', '-awbg', '1.5,1.2',
             '-rot', '100', '-o',
             PHOTOS_DIR + '/test/anotherTest.png'
         ]);
@@ -201,6 +165,30 @@ describe('camera', function(): void {
         ]);
 
         done();
+    });
+
+    it('should return error object with noFileSave and stdout err', (done: jest.DoneCallback) => {
+        const originalSpawn = childProcess.spawn;
+        const spawnSpy = spyOn(childProcess, 'spawn')
+            .and.callFake(() => {
+                return originalSpawn.call(childProcess, 'node', ['test/helpers/child_process_err.js']);
+            });
+
+        const camera = new DefaultCamera({
+            noFileSave: true,
+            outputDir: PHOTOS_DIR + '/test',
+            fileName: 'no_file_saved',
+            encoding: 'jpg'
+        });
+
+        camera.takePhoto()
+            .then((data: any) => {
+                done('Should not be called');
+            })
+            .catch((error) => {
+                expect(error).toBeInstanceOf(RaspistillDefaultError);
+                done();
+            });
     });
 
     it('should take photo', async (done: jest.DoneCallback) => {
@@ -395,5 +383,4 @@ describe('camera', function(): void {
 
         camera.stop();
     });
-
 });
