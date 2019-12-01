@@ -1,6 +1,6 @@
 {
   "name": "node-raspistill",
-  "version": "0.0.20",
+  "version": "1.0.0",
   "description": "Node wrapper for taking photos using Raspberry Pi raspistill app.",
   "main": "build/index.js",
   "types": "build/index.d.ts",

@@ -11,7 +11,7 @@ Module is written in typescript and provides type definitions out-of-the-box.
 Tested with Raspberry Pi 2 B (Raspbian OS), and Raspberry Camera Module v2.
 
 ## Requirements
-Raspbian OS with node.js v 6+ installed, raspberry camera module connected to your pi.
+Raspbian OS with node.js v 8+ installed, raspberry camera module connected to your pi.
 
 
 ## Usage
@@ -54,7 +54,15 @@ You can also find some usage examples here: https://github.com/dlukanin/node-ras
 
 ## Changelog
 <details>
-<summary>Details</summary>
+<summary>1.0.0</summary>
+Lib refactoring. General photo and timelapse methods are incompatible with older versions.
+Deleted `setDefaultOptions` method.
+
+If you have other problems with compatibility - please create issue.
+</details>
+
+<details>
+<summary>Older versions</summary>
 
 #### v 0.0.20
 [fix encoding options #20](https://github.com/dlukanin/node-raspistill/pull/20)
