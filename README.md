@@ -233,10 +233,6 @@ camera.setOptions({
 ```
 </details>
 
-#### setDefaultOptions(): void
-Reverts all option values of current Raspistill instance to default.
-Default values are presented in the options table.
-
 #### getOptions(): ICameraOptions
 Gets current raspistill options.
 
