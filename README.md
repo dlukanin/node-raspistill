@@ -55,6 +55,11 @@ You can also find some usage examples here: https://github.com/dlukanin/node-ras
 ## Changelog
 
 <details>
+<summary>1.0.1</summary>
+Minor deps update and security fixes.
+</details>
+
+<details>
 <summary>1.0.0</summary>
 Lib refactoring. General photo and timelapse methods are compatible with older versions.
 Deleted setDefaultOptions method.
