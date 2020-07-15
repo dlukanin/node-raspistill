@@ -35,7 +35,7 @@
     "@types/node": "^14.0.23",
     "@types/rmfr": "^2.0.0",
     "coveralls": "3.1.0",
-    "jest": "^26.1.0",
+    "jest": "^25.5.4",
     "js-image-generator": "^1.0.2",
     "mz": "^2.7.0",
     "nock-exec": "^0.1.0",
