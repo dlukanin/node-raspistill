@@ -2,7 +2,7 @@ import { DefaultWatcher } from '../src/lib/watcher/default';
 import { IWatcherOptions } from '../src/lib/watcher/interfaces';
 
 /* tslint:disable */
-const fs = require('fs-promise');
+const fs = require('mz/fs');
 /* tslint:enable */
 const PHOTOS_DIR = './_watcher/';
 
@@ -103,7 +103,7 @@ describe('watcher', function(): void {
     it('should close watcher process (watchAndGetFiles method)', (done: jest.DoneCallback) => {
         let counter = 0;
         watcher.watchAndGetFiles(PHOTOS_DIR, 3500, (file) => {
-            process.stdout.write((++counter).toString(), 'files');
+            counter++;
         })
             .then(() => {
                 done('Promise should not resolve');

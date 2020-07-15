@@ -8,7 +8,7 @@ const rmrf = util.promisify(rimraf);
 // NOTE we cast child_process as any because of sinon patching
 // tslint:disable-next-line:no-var-requires
 const childProcess = require('child_process');
-import fs = require('fs-promise');
+import fs = require('mz/fs');
 /* tslint:enable */
 
 // TODO refactor me
