@@ -3,7 +3,7 @@ import { IWatcher } from '../..';
 import { DefaultWatcher } from '../watcher/default';
 import { IRaspistillExecutor } from '../..';
 import { DefaultRaspistillExecutor } from '../executor/default';
-import { ClaMapper, IClaMapper } from 'cla-mapper';
+import { ClaMapper, IClaMapper } from '@dlukanin/cla-mapper';
 
 export class DefaultCamera implements ICamera {
     protected _options: ICameraOptions = {};

@@ -103,7 +103,7 @@ describe('watcher', function(): void {
     it('should close watcher process (watchAndGetFiles method)', (done: jest.DoneCallback) => {
         let counter = 0;
         watcher.watchAndGetFiles(PHOTOS_DIR, 3500, (file) => {
-            process.stdout.write((++counter).toString(), 'files');
+            process.stdout.write((++counter).toString());
         })
             .then(() => {
                 done('Promise should not resolve');
