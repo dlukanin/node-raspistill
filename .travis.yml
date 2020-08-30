@@ -3,7 +3,6 @@ sudo: true
 node_js:
   - "12"
   - "10"
-  - "8"
 install:
   - npm install
   - npm run build
