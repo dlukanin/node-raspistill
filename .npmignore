@@ -9,7 +9,7 @@ tsconfig.json
 .gitignore
 .idea
 .travis.yml
-tslint.json
+.eslintrc.json
 npm-shrinkwrap.json
 jest.config.ts
 test
