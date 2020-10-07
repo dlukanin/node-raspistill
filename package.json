@@ -45,7 +45,7 @@
     "eslint-plugin-unicorn": "^22.0.0",
     "fs-promise": "^2.0.3",
     "jest": "^26.4.2",
-    "js-image-generator": "^1.0.2",
+    "js-image-generator": "^1.0.3",
     "nock-exec": "^0.1.0",
     "nyc": "^15.1.0",
     "rimraf": "^3.0.2",
