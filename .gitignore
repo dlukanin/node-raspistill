@@ -22,3 +22,4 @@ jspm_packages
 .node_repl_history
 .idea
 application/configs/app.js
+test/helpers/test_image.jpg
