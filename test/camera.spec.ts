@@ -92,7 +92,11 @@ describe('camera', function(): void {
             saturation: 30,
             awb: 'auto',
             awbg: '1.5,1.2',
-            rotation: 100
+            rotation: 100,
+            exposure: 'night',
+            flicker: 'off',
+            imageEffect: 'oilpaint',
+            drc: 'high'
         });
 
         camera.takePhoto();
@@ -112,7 +116,7 @@ describe('camera', function(): void {
         expect(args[1]).toStrictEqual([
             '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-t', '1',
             '-ISO', '100', '-ss', '10', '-co', '20', '-br', '15', '-sa', '30', '-awb', 'auto', '-awbg', '1.5,1.2',
-            '-rot', '100', '-o',
+            '-rot', '100', '-ex', 'night', '-fli', 'off', '-ifx', 'oilpaint', '-drc', 'high', '-o',
             PHOTOS_DIR + '/test/foo.png'
         ]);
 
@@ -120,7 +124,7 @@ describe('camera', function(): void {
         expect(secondCallArgs[1]).toStrictEqual([
             '-vf', '-hf', '-e', 'png', '-w', '1000', '-h', '800', '-t', '1',
             '-ISO', '100', '-ss', '10', '-co', '20', '-br', '15', '-sa', '30', '-awb', 'auto', '-awbg', '1.5,1.2',
-            '-rot', '100', '-o',
+            '-rot', '100', '-ex', 'night', '-fli', 'off', '-ifx', 'oilpaint', '-drc', 'high', '-o',
             PHOTOS_DIR + '/test/test.png'
         ]);
 
@@ -128,7 +132,7 @@ describe('camera', function(): void {
         expect(thirdCallArgs[1]).toStrictEqual([
             '-vf', '-hf', '-n', '-e', 'png', '-w', '1000', '-h', '700', '-t', '1',
             '-ISO', '100', '-ss', '10', '-co', '20', '-br', '15', '-sa', '30', '-awb', 'auto', '-awbg', '1.5,1.2',
-            '-rot', '100', '-o',
+            '-rot', '100', '-ex', 'night', '-fli', 'off', '-ifx', 'oilpaint', '-drc', 'high', '-o',
             PHOTOS_DIR + '/test/anotherTest.png'
         ]);
         done();

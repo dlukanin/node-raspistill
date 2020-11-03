@@ -156,6 +156,10 @@ Options - object, that can contain:
 |awbg|string|undefined|Sets blue and red gains (as floating point numbers) to be applied when awb=off. e.g. '1.5,1.2'|
 |quality|number|undefined|JPEG quality <0 to 100>|
 |thumb|string|undefined|Specification of the thumbnail image inserted into the JPEG file. If not specified, defaults are a size of 64x48 at quality 35|
+|exposure|string|'auto'|'auto', 'night', 'nightpreview', 'backlight', 'spotlight', 'sports', 'snow', 'beach', 'verylong', 'fixedfps', 'antishake', 'fireworks'|
+|flicker|string|'off'|'off', 'auto', '50hz','60hz'|
+|imageEffect|string|'none'|'none','negative', 'solarise', 'posterise', 'whiteboard', 'blackboard', 'sketch', 'denoise', 'emboss', 'oilpaint', 'hatch', 'gpen', 'pastel', 'watercolour', 'film', 'blur', 'saturation'|
+|drc|string|'off'|'off', 'low', 'med', 'high'|
 
 ```typescript
 const camera = new Raspistill({
