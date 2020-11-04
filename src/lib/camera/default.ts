@@ -31,7 +31,11 @@ export class DefaultCamera implements ICamera {
         quality: '-q',
         thumb: '-th',
         rotation: '-rot',
-        output: '-o'
+        output: '-o',
+        exposure: '-ex',
+        flicker: '-fli',
+        imageEffect: '-ifx',
+        drc: '-drc'
     };
 
     /**
