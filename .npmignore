@@ -13,3 +13,4 @@ tsconfig.json
 npm-shrinkwrap.json
 jest.config.ts
 test
+.nvmrc
