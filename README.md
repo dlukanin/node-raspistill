@@ -55,6 +55,13 @@ You can also find some usage examples here: https://github.com/dlukanin/node-ras
 ## Changelog
 
 <details>
+<summary>1.0.3</summary>
+<br/>
+
+Add [feat: added exposure, flicker, image fx, and drc to camera options #27](https://github.com/dlukanin/node-raspistill/pull/27)
+</details>
+
+<details>
 <summary>1.0.2</summary>
 Minor deps update and security fixes.
 </details>
