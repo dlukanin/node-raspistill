@@ -55,6 +55,13 @@ You can also find some usage examples here: https://github.com/dlukanin/node-ras
 ## Changelog
 
 <details>
+<summary>1.0.4</summary>
+<br/>
+
+Deps up
+</details>
+
+<details>
 <summary>1.0.3</summary>
 <br/>
 
