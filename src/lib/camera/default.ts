@@ -175,6 +175,6 @@ export class DefaultCamera implements ICamera {
         options.output = options.noFileSave === true ? '-' :
             (options.outputDir + '/' + options.fileName + '.' + options.encoding);
 
-        return this._optionsParser.getCommandLineArgs(options);
+        return this._optionsParser.getCommandLineArgs(options as Record<string, string | number | boolean>);
     }
 }
