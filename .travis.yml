@@ -2,7 +2,7 @@ language: node_js
 sudo: true
 node_js:
   - "12"
-  - "10"
+  - "14"
 install:
   - npm install
   - npm run build
