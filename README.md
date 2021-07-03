@@ -103,6 +103,8 @@ const camera = new Raspistill({
 You can find more info about raspistill util options in the official docs: https://www.raspberrypi.org/documentation/raspbian/applications/camera.md
 </details>
 
+---
+
 #### takePhoto(fileName?: string): Promise\<Buffer\>
 Takes new photo. Returns Promise, resolving with Buffer object.
 
@@ -115,6 +117,8 @@ camera.takePhoto('testPhotoName').then((photo) => {
 });
 ```
 </details>
+
+---
 
 #### timelapse(fileName: string, intervalMs: number, execTimeMs: number, cb: (image: Buffer) => any): Promise\<void\>;
 #### timelapse(intervalMs: number, execTimeMs: number, cb: (image: Buffer) => any): Promise\<void\>;
@@ -150,6 +154,8 @@ camera.timelapse('image%04d', 500, 3000, (image) => {
 ```
 </details>
 
+---
+
 #### stop(): void;
 Tries to stop current raspistill running action. Note that pending raspistill promises will be
 rejected with RaspistillInterruptError if stop was completed.
@@ -174,6 +180,8 @@ raspistill.timelapse(1000, 30000, (image) => {
 
 </details>
 
+---
+
 #### setOptions(options: ICameraOptions): void
 Sets new options for current Raspistill instance.
 
@@ -188,11 +196,17 @@ camera.setOptions({
 ```
 </details>
 
+---
+
 #### getOptions(): ICameraOptions
 Gets current raspistill options.
 
+---
+
 #### getOption(key: string): any
 Gets current raspistill option by key.
+
+---
 
 ## Contributors
 
