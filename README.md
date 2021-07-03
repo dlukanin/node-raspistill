@@ -16,7 +16,7 @@ Raspbian OS with node.js 12+ installed, raspberry camera module connected to you
 
 ## Usage
 
-**You can check a lot of examples [here]( https://github.com/dlukanin/node-raspistill/tree/main/examples)**
+**You can check a lot of examples [here](https://github.com/dlukanin/node-raspistill/tree/main/examples).**
 
 Sample usage:
 ```
@@ -55,97 +55,7 @@ See full options list in the docs below.
 
 ## Changelog
 
-<details>
-<summary>2.0.0</summary>
-<br/>
-
-Deps up. Changed ts target to es2019. Use node 12+ or higher for correct work.
-</details>
-
-<details>
-<summary>1.0.4</summary>
-<br/>
-
-Deps up
-</details>
-
-<details>
-<summary>1.0.3</summary>
-<br/>
-
-Add [feat: added exposure, flicker, image fx, and drc to camera options #27](https://github.com/dlukanin/node-raspistill/pull/27)
-</details>
-
-<details>
-<summary>1.0.2</summary>
-Minor deps update and security fixes.
-</details>
-
-<details>
-<summary>1.0.1</summary>
-Minor deps update and security fixes.
-</details>
-
-<details>
-<summary>1.0.0</summary>
-Lib refactoring. General photo and timelapse methods are compatible with older versions.
-Deleted setDefaultOptions method.
-
-If you have other problems with compatibility - please create issue.
-</details>
-
-<details>
-<summary>Older versions</summary>
-
-#### v 0.0.20
-[fix encoding options #20](https://github.com/dlukanin/node-raspistill/pull/20)
-[options added #21](https://github.com/dlukanin/node-raspistill/pull/21)
-
-#### v 0.0.19
-Fixes in interface exports.
-
-#### v 0.0.18
-Minor deps update. Fixes for typings location in package.json
-
-#### v 0.0.18
-Minor deps update. Fixes for typings location in package.json
-
-#### v 0.0.17
-Deps update. Vulnerability fixes.
-
-#### v 0.0.16
-Deps update. Added new parameters for camera options ([#10](https://github.com/dlukanin/node-raspistill/pull/10), [#11](https://github.com/dlukanin/node-raspistill/pull/11))
-
-#### v 0.0.15
-Deps update. Fixes in setting camera options methods ([thx for mentioning it in PR](https://github.com/dlukanin/node-raspistill/pull/8))
-
-#### v 0.0.14
-Some fixes in dependencies.
-
-#### v 0.0.13
-New options ([thx for PR](https://github.com/dlukanin/node-raspistill/pull/7)): time, shutterspeed, contrast, brightness, saturation, iso.
-
-#### v 0.0.12
-Added raspistill stop method.
-
-#### v 0.0.11
-Timelapse mode. Something like beta version, can be unstable in some cases. 
-Feel free to submit issue if you think that mode doesn't work well in your project.
-
-#### v 0.0.10
-Added noFileSave option. 
-If you don't want to save photos on your raspberry pi - use this option.
-
-Some bug fixes and new examples.
-
-#### v 0.0.9
-Fixed some issues with width/height options.
-Added setDefaultOptions method.
-Updated some dependencies.
-
-#### v 0.0.8
-Added noPreview option.
-</details>
+You can see changelog [here](https://github.com/dlukanin/node-raspistill/releases).
 
 ## Docs
 ### Raspistill
