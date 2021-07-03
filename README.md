@@ -16,6 +16,9 @@ Raspbian OS with node.js 12+ installed, raspberry camera module connected to you
 
 ## Usage
 
+**You can check a lot of examples [here]( https://github.com/dlukanin/node-raspistill/tree/main/examples)**
+
+Sample usage:
 ```
 npm install node-raspistill
 ```
@@ -49,8 +52,6 @@ const camera = new Raspistill({
 ```
 
 See full options list in the docs below.
-
-You can also find some usage examples here: https://github.com/dlukanin/node-raspistill/tree/master/examples
 
 ## Changelog
 
