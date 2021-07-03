@@ -286,4 +286,3 @@ Gets current raspistill option by key.
 ## Contributors
 
 Just want to say thx for all [contributors](https://github.com/dlukanin/node-raspistill/graphs/contributors). You are wonderful. :)
-](https://beerpay.io/dlukanin/node-raspistill/badge.svg?style=beer-square)](https://beerpay.io/dlukanin/node-raspistill)  [![Beerpay](https://beerpay.io/dlukanin/node-raspistill/make-wish.svg?style=flat-square)](https://beerpay.io/dlukanin/node-raspistill?focus=wish)
