@@ -1,5 +1,5 @@
 # node-raspistill
-[![Build Status](https://travis-ci.org/dlukanin/node-raspistill.svg?branch=master)](https://travis-ci.org/dlukanin/node-raspistill)
+![Build status](https://github.com/dlukanin/node-raspistill/actions/workflows/main.yml/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/dlukanin/node-raspistill/badge.svg?branch=master)](https://coveralls.io/github/dlukanin/node-raspistill?branch=master)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/dlukanin/node-raspistill.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/dlukanin/node-raspistill/alerts/)
 [![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/dlukanin/node-raspistill.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/dlukanin/node-raspistill/context:javascript)
@@ -11,7 +11,7 @@ Module is written in typescript and provides type definitions out-of-the-box.
 Tested with Raspberry Pi 2 B (Raspbian OS), and Raspberry Camera Module v2.
 
 ## Requirements
-Raspbian OS with node.js LTS installed, raspberry camera module connected to your pi.
+Raspbian OS with node.js 12+ installed, raspberry camera module connected to your pi.
 
 
 ## Usage
@@ -53,6 +53,13 @@ See full options list in the docs below.
 You can also find some usage examples here: https://github.com/dlukanin/node-raspistill/tree/master/examples
 
 ## Changelog
+
+<details>
+<summary>2.0.0</summary>
+<br/>
+
+Deps up. Changed ts target to es2019. Use node 12+ or higher for correct work.
+</details>
 
 <details>
 <summary>1.0.4</summary>
