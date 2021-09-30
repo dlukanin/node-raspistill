@@ -9,6 +9,7 @@ const rmrf = util.promisify(rimraf);
 /* eslint-disable */
 const childProcess = require('child_process');
 const fs = require('fs-promise');
+
 /* eslint-enable */
 
 // TODO refactor me

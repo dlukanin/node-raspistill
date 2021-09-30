@@ -14,3 +14,7 @@ npm-shrinkwrap.json
 jest.config.ts
 test
 .nvmrc
+.husky
+.prettierrc
+CONTRIBUTING.md
+README.md
