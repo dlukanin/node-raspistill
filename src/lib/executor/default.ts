@@ -1,7 +1,6 @@
-import { IRaspistillExecutor } from './interfaces';
-import { execFile, spawn } from 'child_process';
+import { execFile, spawn, ChildProcess } from 'child_process';
 import * as imageType from 'image-type';
-import { ChildProcess } from 'child_process';
+import { IRaspistillExecutor } from './interfaces';
 import { RaspistillInterruptError } from '../error/interrupt';
 import { RaspistillDefaultError } from '../error/raspistill';
 
@@ -14,7 +13,8 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
 
     private _childProcess: ChildProcess;
 
-    private _command: string = 'raspistill';
+    private _command = 'raspistill';
+
     private _maxBuffer: number = 400 * 1024;
 
     public async exec(args: string[]): Promise<Buffer> {
@@ -24,14 +24,14 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
                 args,
                 {
                     maxBuffer: this._maxBuffer,
-                    encoding: 'buffer'
+                    encoding: 'buffer',
                 },
-                (error: any, stdout, stderr) => {
+                (error: any, stdout) => {
                     if (error) {
                         reject(error);
                     }
                     resolve(stdout);
-                }
+                },
             );
         });
     }
@@ -42,10 +42,7 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
             let errorBuffer: Buffer = Buffer.alloc(0);
             let error: any;
 
-            const childProcess = spawn(
-                this._command,
-                args
-            );
+            const childProcess = spawn(this._command, args);
 
             childProcess.on('error', (processError: any) => {
                 error = processError;
@@ -63,9 +60,12 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
                 }
 
                 if (errorBuffer.toString().length) {
-                    reject(new RaspistillDefaultError(
-                        RaspistillDefaultError.CODE_SPAWN_PROC_ERROR, errorBuffer.toString()
-                    ));
+                    reject(
+                        new RaspistillDefaultError(
+                            RaspistillDefaultError.CODE_SPAWN_PROC_ERROR,
+                            errorBuffer.toString(),
+                        ),
+                    );
 
                     return;
                 }
@@ -90,10 +90,7 @@ export class DefaultRaspistillExecutor implements IRaspistillExecutor {
             let photoBuffer: Buffer = Buffer.alloc(0);
             let error: any;
 
-            const childProcess = spawn(
-                this._command,
-                args
-            );
+            const childProcess = spawn(this._command, args);
 
             childProcess.on('error', (processError: any) => {
                 error = processError;

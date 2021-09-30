@@ -1,9 +1,8 @@
-import { ICamera, ICameraOptions, IInnerExecCameraOptions, TCameraFileEncoding } from './interfaces';
-import { IWatcher } from '../..';
-import { DefaultWatcher } from '../watcher/default';
-import { IRaspistillExecutor } from '../..';
-import { DefaultRaspistillExecutor } from '../executor/default';
 import { ClaMapper, IClaMapper } from '@dlukanin/cla-mapper';
+import { ICamera, ICameraOptions, IInnerExecCameraOptions, TCameraFileEncoding } from './interfaces';
+import { IWatcher, IRaspistillExecutor } from '../..';
+import { DefaultWatcher } from '../watcher/default';
+import { DefaultRaspistillExecutor } from '../executor/default';
 
 export class DefaultCamera implements ICamera {
     protected _options: ICameraOptions = {};
@@ -35,7 +34,7 @@ export class DefaultCamera implements ICamera {
         exposure: '-ex',
         flicker: '-fli',
         imageEffect: '-ifx',
-        drc: '-drc'
+        drc: '-drc',
     };
 
     /**
@@ -48,7 +47,7 @@ export class DefaultCamera implements ICamera {
         horizontalFlip: false,
         noPreview: true,
         outputDir: 'photos',
-        encoding: 'jpg'
+        encoding: 'jpg',
     };
 
     private _optionsParser: IClaMapper;
@@ -56,10 +55,10 @@ export class DefaultCamera implements ICamera {
     constructor(
         options: ICameraOptions = {},
         protected _watcher: IWatcher = new DefaultWatcher(),
-        protected _executor: IRaspistillExecutor = new DefaultRaspistillExecutor()
+        protected _executor: IRaspistillExecutor = new DefaultRaspistillExecutor(),
     ) {
         this._optionsParser = new ClaMapper(this._optionsMap);
-        this.setOptions(Object.assign({}, this._defaultOptions, options));
+        this.setOptions({ ...this._defaultOptions, ...options });
     }
 
     public setOptions(options: ICameraOptions): void {
@@ -75,9 +74,14 @@ export class DefaultCamera implements ICamera {
     }
 
     public async timelapse(
-        fileName: string, intervalMs: number, execTimeMs: number, cb: (image: Buffer) => any
+        fileName: string,
+        intervalMs: number,
+        execTimeMs: number,
+        cb: (image: Buffer) => any,
     ): Promise<void>;
+
     public async timelapse(intervalMs: number, execTimeMs: number, cb: (image: Buffer) => any): Promise<void>;
+
     public async timelapse(...args: any[]): Promise<void> {
         let fileName: string;
         let intervalMs: number;
@@ -96,14 +100,17 @@ export class DefaultCamera implements ICamera {
         }
 
         if (this._options.noFileSave) {
-            return await this._executor.spawnAndGetImages(this._processOptions({
-                time: execTimeMs,
-                timelapse: intervalMs,
-                fileName
-            }), cb);
+            return await this._executor.spawnAndGetImages(
+                this._processOptions({
+                    time: execTimeMs,
+                    timelapse: intervalMs,
+                    fileName,
+                }),
+                cb,
+            );
         }
 
-        let cameraFileName = this._options.fileName || Date.now().toString() + '%04d';
+        let cameraFileName = this._options.fileName || `${Date.now().toString()}%04d`;
         let cameraEncoding = this._options.encoding;
 
         if (fileName && fileName.length) {
@@ -117,13 +124,15 @@ export class DefaultCamera implements ICamera {
         }
 
         await Promise.all([
-            this._executor.exec(this._processOptions({
-                fileName: cameraFileName,
-                encoding: cameraEncoding,
-                time: execTimeMs,
-                timelapse: intervalMs
-            })),
-            this._watcher.watchAndGetFiles(this._options.outputDir, execTimeMs, cb)
+            this._executor.exec(
+                this._processOptions({
+                    fileName: cameraFileName,
+                    encoding: cameraEncoding,
+                    time: execTimeMs,
+                    timelapse: intervalMs,
+                }),
+            ),
+            this._watcher.watchAndGetFiles(this._options.outputDir, execTimeMs, cb),
         ]);
     }
 
@@ -146,11 +155,13 @@ export class DefaultCamera implements ICamera {
         }
 
         const result = await Promise.all([
-            this._executor.exec(this._processOptions({
-                fileName: cameraFileName,
-                encoding: cameraEncoding
-            })),
-            this._watcher.watchAndGetFile(this._options.outputDir + '/' + (cameraFileName + '.' + cameraEncoding))
+            this._executor.exec(
+                this._processOptions({
+                    fileName: cameraFileName,
+                    encoding: cameraEncoding,
+                }),
+            ),
+            this._watcher.watchAndGetFile(`${this._options.outputDir}/${cameraFileName}.${cameraEncoding}`),
         ]);
 
         if (result instanceof Array) {
@@ -170,10 +181,10 @@ export class DefaultCamera implements ICamera {
      * @return {Array<string>}
      */
     protected _processOptions(newOptions: IInnerExecCameraOptions = {}): string[] {
-        const options = Object.assign({}, this._options, newOptions);
+        const options = { ...this._options, ...newOptions };
 
-        options.output = options.noFileSave === true ? '-' :
-            (options.outputDir + '/' + options.fileName + '.' + options.encoding);
+        options.output =
+            options.noFileSave === true ? '-' : `${options.outputDir}/${options.fileName}.${options.encoding}`;
 
         return this._optionsParser.getCommandLineArgs(options as Record<string, string | number | boolean>);
     }

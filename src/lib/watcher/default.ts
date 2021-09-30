@@ -1,10 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { IWatcher, IWatcherOptions } from './interfaces';
 import { FSWatcher } from 'fs';
-import Timer = NodeJS.Timer;
+import { IWatcher, IWatcherOptions } from './interfaces';
 import { RaspistillInterruptError } from '../error/interrupt';
 import { RaspistillDefaultError } from '../..';
+import Timer = NodeJS.Timer;
 
 /**
  * Default _watcher class - wrapper around fs.watch.
@@ -25,7 +25,7 @@ export class DefaultWatcher implements IWatcher {
     private readonly _forceCloseEvent: string = 'forceClose';
 
     private readonly _defaultOptions: IWatcherOptions = {
-        expireTime: 20000
+        expireTime: 20000,
     };
 
     private _watcher: FSWatcher;
@@ -34,11 +34,11 @@ export class DefaultWatcher implements IWatcher {
         EVENT_RENAME: 'rename',
         EVENT_CHANGE: 'change',
         ENOENT: 'ENOENT',
-        EEXISTS: 'EEXIST'
+        EEXISTS: 'EEXIST',
     };
 
     constructor(options?: IWatcherOptions) {
-        this.setOptions(Object.assign({}, this._defaultOptions, options));
+        this.setOptions({ ...this._defaultOptions, ...options });
     }
 
     public setOptions(options: IWatcherOptions): void {
@@ -53,7 +53,7 @@ export class DefaultWatcher implements IWatcher {
         return this._options;
     }
 
-    public async watchAndGetFile(filePath: string, options?: IWatcherOptions): Promise<Buffer> {
+    public async watchAndGetFile(filePath: string): Promise<Buffer> {
         const dirName = path.dirname(filePath);
         const fileName = path.basename(filePath);
 
@@ -101,16 +101,12 @@ export class DefaultWatcher implements IWatcher {
 
         return await new Promise<void>((resolve, reject) => {
             const watcher = fs.watch(dirName, (eventType: string, changedFileName: string) => {
-                if (
-                    changedFileName[changedFileName.length - 1] === this._imageInProgressSymbol
-                ) {
+                if (changedFileName[changedFileName.length - 1] === this._imageInProgressSymbol) {
                     return;
                 }
 
-                if (
-                    (eventType === this._messages.EVENT_RENAME)
-                ) {
-                    fs.readFile(dirName + '/' + changedFileName, (err: any, data: Buffer) => {
+                if (eventType === this._messages.EVENT_RENAME) {
+                    fs.readFile(`${dirName}/${changedFileName}`, (err: any, data: Buffer) => {
                         if (err) {
                             reject(err);
                         } else {
@@ -120,10 +116,14 @@ export class DefaultWatcher implements IWatcher {
                 }
             });
 
-            this.addForceCloseHandler(watcher, setTimeout(() => {
-                watcher.close();
-                resolve();
-            }, watchTimeMs), reject);
+            this.addForceCloseHandler(
+                watcher,
+                setTimeout(() => {
+                    watcher.close();
+                    resolve();
+                }, watchTimeMs),
+                reject,
+            );
 
             this._watcher = watcher;
         });
@@ -138,7 +138,7 @@ export class DefaultWatcher implements IWatcher {
     private _makeDir(dirName: string): void {
         // TODO think about async - now async conflicts with stop method
         try {
-            fs.mkdirSync(dirName, {recursive: true});
+            fs.mkdirSync(dirName, { recursive: true });
         } catch (err) {
             if (err.code !== this._messages.EEXISTS) {
                 throw err;

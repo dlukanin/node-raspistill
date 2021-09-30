@@ -1,21 +1,21 @@
+import * as childProcess from 'child_process';
+import * as util from 'util';
+import * as rimraf from 'rimraf';
 import { DefaultWatcher } from '../src/lib/watcher/default';
 import { IWatcherOptions } from '../src/lib/watcher/interfaces';
 
-/* tslint:disable */
-const fs = require('fs-promise');
-/* tslint:enable */
-const PHOTOS_DIR = './_watcher/';
-
-import * as childProcess from 'child_process';
 import { RaspistillInterruptError } from '../src/lib/error/interrupt';
-import * as util from 'util';
-import * as rimraf from 'rimraf';
+
+/* eslint-disable */
+const fs = require('fs-promise');
+/* eslint-enable */
+const PHOTOS_DIR = './_watcher/';
 
 const rmrf = util.promisify(rimraf);
 
 // TODO refactor me
 
-describe('watcher', function(): void {
+describe('watcher', () => {
     const FILE_NAME = '1.txt';
     const FILE_DATA = 'test';
 
@@ -31,9 +31,8 @@ describe('watcher', function(): void {
 
     it('should create dir if not exists', async (done: jest.DoneCallback) => {
         try {
-            watcher.watchAndGetFile(
-                PHOTOS_DIR + FILE_NAME
-            ).catch((err) => {
+            /* eslint-disable-next-line */
+            watcher.watchAndGetFile(PHOTOS_DIR + FILE_NAME).catch((err) => {
                 // NOTE we don't need to test file watching in this case, so we ignore it.
             });
             await fs.access(PHOTOS_DIR);
@@ -70,10 +69,12 @@ describe('watcher', function(): void {
     });
 
     it('should return error if no file exists after timeout', (done: jest.DoneCallback) => {
-        watcher.watchAndGetFile(PHOTOS_DIR + '2.txt').catch((error) => {
-            expect(error.message).toBe('Raspistill failed, code: NO_TAKEN_PHOTO_FOUND message: undefined');
-            done();
-        })
+        watcher
+            .watchAndGetFile(`${PHOTOS_DIR}2.txt`)
+            .catch((error) => {
+                expect(error.message).toBe('Raspistill failed, code: NO_TAKEN_PHOTO_FOUND message: undefined');
+                done();
+            })
             .catch((err) => {
                 done(err);
             });
@@ -82,11 +83,11 @@ describe('watcher', function(): void {
     // // TODO correct _watcher watchAndGetFiles method test
 
     it('should close watcher process (watchAndGetFile method)', (done: jest.DoneCallback) => {
-        const watcherPromise = watcher.watchAndGetFile(PHOTOS_DIR + '3.txt').then((file) => {
+        const watcherPromise = watcher.watchAndGetFile(`${PHOTOS_DIR}3.txt`).then(() => {
             done('Watcher should not trigger');
         });
 
-        const fsPromise = fs.writeFile(PHOTOS_DIR + '3.txt', FILE_DATA);
+        const fsPromise = fs.writeFile(`${PHOTOS_DIR}3.txt`, FILE_DATA);
 
         watcher.closeWatcher();
 
@@ -102,9 +103,11 @@ describe('watcher', function(): void {
 
     it('should close watcher process (watchAndGetFiles method)', (done: jest.DoneCallback) => {
         let counter = 0;
-        watcher.watchAndGetFiles(PHOTOS_DIR, 3500, (file) => {
-            process.stdout.write((++counter).toString());
-        })
+        watcher
+            .watchAndGetFiles(PHOTOS_DIR, 3500, () => {
+                counter += 1;
+                process.stdout.write(counter.toString());
+            })
             .then(() => {
                 done('Promise should not resolve');
             })
@@ -113,7 +116,7 @@ describe('watcher', function(): void {
                 done();
             });
 
-        childProcess.spawn('node', [__dirname + '/helpers/child_process_timelapse_file.js']);
+        childProcess.spawn('node', [`${__dirname}/helpers/child_process_timelapse_file.js`]);
         watcher.closeWatcher();
     });
 });

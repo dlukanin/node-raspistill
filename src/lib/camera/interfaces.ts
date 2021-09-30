@@ -60,22 +60,48 @@ export interface ICameraOptions {
     /**
      * Exposure mode
      */
-    exposure?: 'auto' | 'night' | 'nightpreview' | 'backlight' | 'spotlight' | 'sports'
-    | 'snow' | 'beach' | 'verylong' | 'fixedfps' | 'antishake' | 'fireworks'
+    exposure?:
+        | 'auto'
+        | 'night'
+        | 'nightpreview'
+        | 'backlight'
+        | 'spotlight'
+        | 'sports'
+        | 'snow'
+        | 'beach'
+        | 'verylong'
+        | 'fixedfps'
+        | 'antishake'
+        | 'fireworks';
 
     /**
      * Flicker avoidance
      */
-    flicker?: 'off' | 'auto' | '50hz' | '60hz'
+    flicker?: 'off' | 'auto' | '50hz' | '60hz';
 
-    imageEffect?: 'none' | 'negative' | 'solarise' | 'posterise' | 'whiteboard' | 'blackboard' | 'sketch' |
-    'denoise' | 'emboss' | 'oilpaint' | 'hatch' | 'gpen' | 'pastel' | 'watercolour' | 'film' | 'blur' |
-    'saturation'
+    imageEffect?:
+        | 'none'
+        | 'negative'
+        | 'solarise'
+        | 'posterise'
+        | 'whiteboard'
+        | 'blackboard'
+        | 'sketch'
+        | 'denoise'
+        | 'emboss'
+        | 'oilpaint'
+        | 'hatch'
+        | 'gpen'
+        | 'pastel'
+        | 'watercolour'
+        | 'film'
+        | 'blur'
+        | 'saturation';
 
     /**
      * dynamic range compression
      */
-    drc?: 'off' | 'low' | 'med' | 'high'
+    drc?: 'off' | 'low' | 'med' | 'high';
 }
 
 export interface IInnerExecCameraOptions extends ICameraOptions {
