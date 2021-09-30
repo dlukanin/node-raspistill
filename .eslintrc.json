@@ -27,6 +27,7 @@
     "import/prefer-default-export": "off",
     "no-dupe-class-members": "off",
     "consistent-return": "off",
-    "prefer-destructuring": "off"
+    "prefer-destructuring": "off",
+    "class-methods-use-this": "off"
   }
 }
